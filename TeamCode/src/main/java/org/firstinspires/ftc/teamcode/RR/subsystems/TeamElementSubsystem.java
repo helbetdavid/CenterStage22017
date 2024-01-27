@@ -9,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.RR.pipelines.SplitAveragePipeline;
+import org.firstinspires.ftc.teamcode.OpenCv.;
 
 public class TeamElementSubsystem {
     OpenCvCamera camera;
