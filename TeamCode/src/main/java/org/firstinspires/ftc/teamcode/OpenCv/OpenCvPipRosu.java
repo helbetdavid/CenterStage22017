@@ -12,6 +12,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class OpenCvPipRosu extends OpenCvPipeline {
 
+    public static Object loculgasit;
     Telemetry telemetry;
 
     public OpenCvPipRosu(Telemetry tele){
@@ -23,7 +24,7 @@ public class OpenCvPipRosu extends OpenCvPipeline {
         Mijloc
     }
 
-    detectie locugasit;
+    public detectie locugasit;
 
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
