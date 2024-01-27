@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.rr.tuning;
+package org.firstinspires.ftc.teamcode.RR.tuning;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.rr.MecanumDrive;
-import org.firstinspires.ftc.teamcode.rr.TankDrive;
+import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
+import org.firstinspires.ftc.teamcode.RR.TankDrive;
 
 public class LocalizationTest extends LinearOpMode {
     @Override

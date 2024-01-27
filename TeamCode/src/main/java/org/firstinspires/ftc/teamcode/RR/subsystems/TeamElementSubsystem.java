@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.rr.subsystems;
+package org.firstinspires.ftc.teamcode.RR.subsystems;
 
 //package subsystems;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -10,7 +9,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-import org.firstinspires.ftc.teamcode.rr.pipelines.SplitAveragePipeline;
+import org.firstinspires.ftc.teamcode.RR.pipelines.SplitAveragePipeline;
 
 public class TeamElementSubsystem {
     OpenCvCamera camera;

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.rr;
+package org.firstinspires.ftc.teamcode.RR;
 
 import androidx.annotation.NonNull;
 
@@ -40,10 +40,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.rr.messages.DriveCommandMessage;
-import org.firstinspires.ftc.teamcode.rr.messages.MecanumCommandMessage;
-import org.firstinspires.ftc.teamcode.rr.messages.MecanumEncodersMessage;
-import org.firstinspires.ftc.teamcode.rr.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.RR.messages.DriveCommandMessage;
+import org.firstinspires.ftc.teamcode.RR.messages.MecanumCommandMessage;
+import org.firstinspires.ftc.teamcode.RR.messages.MecanumEncodersMessage;
+import org.firstinspires.ftc.teamcode.RR.messages.PoseMessage;
 
 import java.lang.Math;
 import java.util.Arrays;
