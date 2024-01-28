@@ -12,10 +12,11 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class OpenCvPipRosu extends OpenCvPipeline {
 
-    private static volatile detectie locugasit;
+
     Telemetry telemetry;
 
     public OpenCvPipRosu(Telemetry tele){
+
         this.telemetry = tele;
     }
     public enum detectie{
@@ -23,7 +24,7 @@ public class OpenCvPipRosu extends OpenCvPipeline {
         Dreapta,
         Mijloc
     }
-
+    private static volatile detectie locugasit;
 
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
@@ -50,7 +51,7 @@ public class OpenCvPipRosu extends OpenCvPipeline {
             DREPTUNGHI_3_COLT_STANGA_SUS.x + REGION_WIDTH,
             DREPTUNGHI_3_COLT_STANGA_SUS.y + REGION_HEIGHT);
 
-    public static double threshold = 600000;
+    public static double threshold = 300000;
 
     public void draw(detectie pozitiecurenta, Mat input, Mat mat, Point sus, Point jos){
         Scalar sum = Core.sumElems(mat);

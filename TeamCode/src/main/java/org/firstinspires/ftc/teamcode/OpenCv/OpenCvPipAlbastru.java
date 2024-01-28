@@ -13,7 +13,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class OpenCvPipAlbastru extends OpenCvPipeline {
 
     Telemetry telemetry;
-
+    private static volatile detectie locugasit;
     public OpenCvPipAlbastru(Telemetry tele){
         this.telemetry = tele;
     }
@@ -23,7 +23,6 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
         Mijloc
     }
 
-    detectie locugasit;
 
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
@@ -98,5 +97,8 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
         telemetry.addData("pozitie", locugasit);
         telemetry.update();
         return output ;
+    }
+    public static detectie getLocugasit() {
+        return locugasit;
     }
 }
