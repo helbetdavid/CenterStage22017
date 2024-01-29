@@ -32,17 +32,31 @@ public class Camera extends LinearOpMode {
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
     private static volatile OpenCvPipRosu.detectie nou;
 
-    Action TrajectoryAction1;
+    Action pixelToBoardNT,boardToMij,exactBoard;
     @Override
     public void runOpMode() throws InterruptedException {
+
+        //albastru dep
+        Pose2d beginPose = new Pose2d(13, 61, -Math.PI / 2);
+        Pose2d almostBoard = new Pose2d(48,36,0);
+        Pose2d boardMij = new Pose2d(53,36,0);
+        Pose2d boardSt = new Pose2d(53,41,0);
+        Pose2d boardDr = new Pose2d(53,29,0);
+        Pose2d mij = new Pose2d(11,11,0);
+        Pose2d stackFront = new Pose2d(-58,11,0);
+        Pose2d stackMij = new Pose2d(-58,23.5,0);
+        Pose2d stackLast = new Pose2d(-58,35.5,0);
+        Pose2d stackPreg = new Pose2d(-40,11,0);
+
+
+
         Lift lift = new Lift();
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-        Pose2d beginPose = new Pose2d(13, 61, -Math.PI / 2);
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
 
         initOpenCV(telemetry);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -61,22 +75,28 @@ public class Camera extends LinearOpMode {
             telemetry.update();
         }
         controlHubCam.stopStreaming();
+
+
+
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
         if(v[1]>v[2] && v[1]>v[3]){
-             TrajectoryAction1 = drive.actionBuilder(beginPose)
+            pixelToBoardNT = drive.actionBuilder(beginPose)
                     .strafeTo(new Vector2d(-49,32))
                     .strafeTo(new Vector2d(-49,36))
                     .strafeToLinearHeading(new Vector2d(48,36),0)
                     .build();
         }
         else if(v[2]>v[1]&& v[2]>v[3]){
-            TrajectoryAction1 = drive.actionBuilder(beginPose)
+            pixelToBoardNT = drive.actionBuilder(beginPose)
                     .strafeTo(new Vector2d(-38,32))
                     .strafeTo(new Vector2d(-38,36))
                     .strafeToLinearHeading(new Vector2d(48,36),0)
                     .build();
         }
         else{
-            TrajectoryAction1 = drive.actionBuilder(beginPose)
+            pixelToBoardNT = drive.actionBuilder(beginPose)
                     .splineTo(new Vector2d(-28, 36), -Math.PI/4)
                     .strafeToLinearHeading(new Vector2d(-41, 58), 0)
                     .strafeTo(new Vector2d(30,58))
@@ -104,7 +124,8 @@ public class Camera extends LinearOpMode {
 
             Actions.runBlocking(
                     new SequentialAction(
-                            TrajectoryAction1
+                            pixelToBoardNT
+
 
 //                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
 //                            new ParallelAction(
@@ -122,7 +143,35 @@ public class Camera extends LinearOpMode {
 
         );
 //        controlHubCam.stopStreaming();
+        switch (nou){
+
+            case Dreapta:
+
+                break;
+            case Stanga:
+
+                break;
+            case Mijloc:
+
+                break;
+
+        }
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     private void initOpenCV(Telemetry telemetry) {
 
@@ -139,7 +188,7 @@ public class Camera extends LinearOpMode {
         OpenCvPipRosu openCvPipRosu = new OpenCvPipRosu(telemetry);
 
         controlHubCam.setPipeline(openCvPipRosu);
-        controlHubCam.openCameraDevice();
+//        controlHubCam.openCameraDevice();
 
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
