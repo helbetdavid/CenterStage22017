@@ -1,13 +1,9 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -20,10 +16,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipRosu;
-import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipAlbastruAp;
-import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipRosuAp;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
-import org.firstinspires.ftc.teamcode.RR.subsystems.Lift;
+import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
