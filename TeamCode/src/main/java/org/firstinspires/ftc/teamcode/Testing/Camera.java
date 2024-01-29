@@ -123,10 +123,10 @@ public class Camera extends LinearOpMode {
 
                             ));
         }
-        Actions.runBlocking(drive.actionBuilder( new Pose2d(48, 46, 0))
-                .strafeTo(new Vector2d(53,36))
-
-        );
+//        Actions.runBlocking(drive.actionBuilder( new Pose2d(48, 46, 0))
+//                .strafeTo(new Vector2d(53,36))
+//
+//        );
 //        controlHubCam.stopStreaming();
     }
 
