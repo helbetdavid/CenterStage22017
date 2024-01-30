@@ -28,25 +28,66 @@ public class Camera extends LinearOpMode {
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
 
-
+    public enum StackPixel{
+        pixelStackFront,
+        pixelStackMid,
+        pixelStackFar
+    }
+    public StackPixel stackPixel;
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
     private static volatile OpenCvPipRosu.detectie nou;
 
-    Action pixelToBoardNT,boardToMij,exactBoard;
+    Action pixelToBoardNT,boardToMij,exactBoard, pixelStack, pixelToPreg;
     @Override
     public void runOpMode() throws InterruptedException {
+        stackPixel=StackPixel.pixelStackFront;
+
 
         //albastru dep
         Pose2d beginPose = new Pose2d(13, 61, -Math.PI / 2);
-        Pose2d almostBoard = new Pose2d(48,36,0);
-        Pose2d boardMij = new Pose2d(53,36,0);
-        Pose2d boardSt = new Pose2d(53,41,0);
-        Pose2d boardDr = new Pose2d(53,29,0);
-        Pose2d mij = new Pose2d(11,11,0);
-        Pose2d stackFront = new Pose2d(-58,11,0);
-        Pose2d stackMij = new Pose2d(-58,23.5,0);
-        Pose2d stackLast = new Pose2d(-58,35.5,0);
-        Pose2d stackPreg = new Pose2d(-40,11,0);
+        Pose2d almostBoard = new Pose2d(48,36,0); Vector2d almostBoardV = new Vector2d(48,36);
+        Pose2d boardMij = new Pose2d(53,36,0); Vector2d boardMijV = new Vector2d(53,36);
+        Pose2d boardSt = new Pose2d(53,41,0); Vector2d boardStV = new Vector2d(53,41);
+        Pose2d boardDr = new Pose2d(53,29,0); Vector2d boardDrV = new Vector2d(53, 29);
+        Pose2d mij = new Pose2d(11,11,0); Vector2d mijV = new Vector2d(11,11);
+        Pose2d stackFront = new Pose2d(-58,11,0); Vector2d stackFrontV = new Vector2d(-58,11);
+        Pose2d stackMid = new Pose2d(-58,23.5,0); Vector2d stackMidV = new Vector2d(-58, 23.5);
+        Pose2d stackFar = new Pose2d(-58,35.5,0); Vector2d stackFarV = new Vector2d(-58, 35.5);
+        Pose2d stackPreg = new Pose2d(-40,11,0); Vector2d stackPregV = new Vector2d(-40,11);
+
+        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+
+        switch (stackPixel){
+            case pixelStackFar:
+                    pixelStack = drive.actionBuilder(stackPreg)
+                            .setReversed(true)
+                            .splineToLinearHeading(stackFar,3)
+                            .build();
+                    pixelToPreg = drive.actionBuilder(stackFar)
+                            .strafeTo(stackPregV)
+                            .build();
+                break;
+
+            case pixelStackMid:
+                pixelStack = drive.actionBuilder(stackPreg)
+                        .setReversed(true)
+                        .splineToLinearHeading(stackMid,3)
+                        .build();
+                pixelToPreg = drive.actionBuilder(stackMid)
+                        .strafeTo(stackPregV)
+                        .build();
+                break;
+
+            case pixelStackFront:
+                pixelStack = drive.actionBuilder(stackPreg)
+                        .strafeTo(new Vector2d(-58,11))
+                        .build();
+                pixelToPreg = drive.actionBuilder(stackFront)
+                        .strafeTo(stackPregV)
+                        .build();
+                break;
+        }
 
 
 
@@ -79,7 +120,7 @@ public class Camera extends LinearOpMode {
 
 
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
 
         if(v[1]>v[2] && v[1]>v[3]){
             pixelToBoardNT = drive.actionBuilder(beginPose)
@@ -124,7 +165,12 @@ public class Camera extends LinearOpMode {
 
             Actions.runBlocking(
                     new SequentialAction(
-                            pixelToBoardNT
+                            pixelToBoardNT,
+                            //board
+                            //mij
+                            pixelStack,
+
+                            pixelToPreg
 
 
 //                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
