@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipRosu;
+import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipAlbastru;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -35,16 +35,16 @@ public class Camera extends LinearOpMode {
     }
     public StackPixel stackPixel;
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    private static volatile OpenCvPipRosu.detectie nou;
+    private static volatile OpenCvPipAlbastru.detectie nou;
 
-    Action pixelToBoardNT,boardToMij,exactBoard, pixelStack, pixelToPreg;
+    Action pixelToBoardNT,boardToMij,exactBoard, pixelStack, pixelToPreg, mijStackPreg;
     @Override
     public void runOpMode() throws InterruptedException {
         stackPixel=StackPixel.pixelStackFront;
 
 
         //albastru dep
-        Pose2d beginPose = new Pose2d(13, 61, -Math.PI / 2);
+        Pose2d beginPose = new Pose2d(-38, 61, -Math.PI / 2);
         Pose2d almostBoard = new Pose2d(48,36,0); Vector2d almostBoardV = new Vector2d(48,36);
         Pose2d boardMij = new Pose2d(53,36,0); Vector2d boardMijV = new Vector2d(53,36);
         Pose2d boardSt = new Pose2d(53,41,0); Vector2d boardStV = new Vector2d(53,41);
@@ -103,50 +103,66 @@ public class Camera extends LinearOpMode {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         FtcDashboard.getInstance().startCameraStream(controlHubCam, 30);
+
         int v[] = new int[4];
         v[1]=0;
         v[2]=0;
         v[3]=0;
+
         while(opModeInInit() && !isStopRequested()){
-            nou = OpenCvPipRosu.getLocugasit();
-            if(nou==OpenCvPipRosu.detectie.Dreapta)v[1]++;
-            else if(nou==OpenCvPipRosu.detectie.Stanga)v[2]++;
+            nou = OpenCvPipAlbastru.getLocugasit();
+            if(nou==OpenCvPipAlbastru.detectie.Dreapta)v[1]++;
+            else if(nou==OpenCvPipAlbastru.detectie.Stanga)v[2]++;
             else v[3]++;
             telemetry.addData("Detect",nou );
             telemetry.update();
         }
         controlHubCam.stopStreaming();
 
-
-
-
-
+        mijStackPreg = drive.actionBuilder(mij).strafeTo(stackPregV).build();
 
         if(v[1]>v[2] && v[1]>v[3]){
             pixelToBoardNT = drive.actionBuilder(beginPose)
                     .strafeTo(new Vector2d(-49,32))
-                    .strafeTo(new Vector2d(-49,36))
-                    .strafeToLinearHeading(new Vector2d(48,36),0)
+                    .strafeTo(new Vector2d(-38,36))
+                    .turnTo(0)
+                    .strafeTo(new Vector2d(48,36))
+                    .build();
+            exactBoard = drive.actionBuilder(almostBoard)
+                    .strafeTo(boardDrV)
+                    .build();
+            boardToMij = drive.actionBuilder(boardDr)
+                    .strafeTo(mijV)
                     .build();
         }
-        else if(v[2]>v[1]&& v[2]>v[3]){
+        else if(v[3]>v[1]&& v[3]>v[2]){
             pixelToBoardNT = drive.actionBuilder(beginPose)
                     .strafeTo(new Vector2d(-38,32))
                     .strafeTo(new Vector2d(-38,36))
-                    .strafeToLinearHeading(new Vector2d(48,36),0)
+                    .turnTo(0)
+                    .strafeTo(new Vector2d(48,36))
+                    .build();
+            exactBoard = drive.actionBuilder(almostBoard)
+                    .strafeTo(boardMijV)
+                    .build();
+            boardToMij = drive.actionBuilder(boardMij)
+                    .strafeTo(mijV)
                     .build();
         }
         else{
             pixelToBoardNT = drive.actionBuilder(beginPose)
                     .splineTo(new Vector2d(-28, 36), -Math.PI/4)
-                    .strafeToLinearHeading(new Vector2d(-41, 58), 0)
-                    .strafeTo(new Vector2d(30,58))
-//                    .splineTo(new Vector2d(52, 42), 0)
-                    .strafeToLinearHeading(new Vector2d(48,36),0)
+                    .strafeTo(new Vector2d(-38,36))
+                    .turnTo(0)
+                    .strafeTo(new Vector2d(48,36))
+                    .build();
+            exactBoard = drive.actionBuilder(almostBoard)
+                    .strafeTo(boardStV)
+                    .build();
+            boardToMij = drive.actionBuilder(boardSt)
+                    .strafeTo(mijV)
                     .build();
         }
-
-
 
         waitForStart();
 
@@ -157,8 +173,11 @@ public class Camera extends LinearOpMode {
             telemetry.addData("Dreapta",v[1] );
             telemetry.addData("Stanga",v[2] );
             telemetry.addData("Mijloc",v[3] );
-            if(nou==OpenCvPipRosu.detectie.Dreapta)telemetry.addLine("Dreapta");
-            else if(nou== OpenCvPipRosu.detectie.Stanga)telemetry.addLine("Stanga");
+            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("y", drive.pose.position.y);
+            telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
+            if(nou==OpenCvPipAlbastru.detectie.Dreapta)telemetry.addLine("Dreapta");
+            else if(nou== OpenCvPipAlbastru.detectie.Stanga)telemetry.addLine("Stanga");
             else telemetry.addLine("Mijloc");
             telemetry.update();
 
@@ -166,13 +185,11 @@ public class Camera extends LinearOpMode {
             Actions.runBlocking(
                     new SequentialAction(
                             pixelToBoardNT,
-                            //board
-                            //mij
+                            exactBoard,
+                            boardToMij,
+                            mijStackPreg,
                             pixelStack,
-
                             pixelToPreg
-
-
 //                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
 //                            new ParallelAction(
 //                                lift.goTarget(2000),
@@ -180,7 +197,6 @@ public class Camera extends LinearOpMode {
 //
 //                                        return false;
 //                                    })
-
 
                     ));
         }
@@ -192,32 +208,13 @@ public class Camera extends LinearOpMode {
         switch (nou){
 
             case Dreapta:
-
                 break;
             case Stanga:
-
                 break;
             case Mijloc:
-
                 break;
-
         }
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private void initOpenCV(Telemetry telemetry) {
 
@@ -231,10 +228,10 @@ public class Camera extends LinearOpMode {
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
 
-        OpenCvPipRosu openCvPipRosu = new OpenCvPipRosu(telemetry);
+        OpenCvPipAlbastru openCvPipAlbastru = new OpenCvPipAlbastru(telemetry);
 
-        controlHubCam.setPipeline(openCvPipRosu);
-//        controlHubCam.openCameraDevice();
+        controlHubCam.setPipeline(openCvPipAlbastru);
+        controlHubCam.openCameraDevice();
 
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }

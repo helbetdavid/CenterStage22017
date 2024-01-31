@@ -15,14 +15,11 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 12.6)
                 .build();
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(61, -61.5, 0))
-//                .waitSeconds(5)
-                .strafeTo(new Vector2d(13,-16))
-                .splineTo(new Vector2d(-54,55),-Math.PI*3/2-0.15)
-                .waitSeconds(4)
-                .splineTo(new Vector2d(-13,-10),0)
-                .splineTo(new Vector2d(52,-38),0)
-//                .waitSeconds(4)
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
+                .splineTo(new Vector2d(-28, 36), -Math.PI/4)
+                .strafeTo(new Vector2d(-38,36))
+                .turnTo(0)
+                .strafeTo(new Vector2d(48,36))
                 .build());
 
 

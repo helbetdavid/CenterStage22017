@@ -186,8 +186,7 @@ public class camera extends LinearOpMode {
         OpenCvPipRosu openCvPipRosu = new OpenCvPipRosu(telemetry);
 
         controlHubCam.setPipeline(openCvPipRosu);
-//        controlHubCam.openCameraDevice();
-
+        controlHubCam.openCameraDevice();
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 }
