@@ -72,7 +72,7 @@ public class Manual1 extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
-        // Mottoare sasiu
+        // Motoare sasiu
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -81,14 +81,14 @@ public class Manual1 extends LinearOpMode {
         //Banda
         DcMotor banda = hardwareMap.get(DcMotorEx.class, "banda");
 
-        // Motors Lift
+        // Motoare lift
         DcMotor rightLift = hardwareMap.get(DcMotorEx.class, "rightLift");
         DcMotor leftLift = hardwareMap.get(DcMotorEx.class, "leftLift");
 
-        // Motors Intake
+        // Motoare Intake
         DcMotor intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        // Servos Intake
+        // Servouri Intake
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
 
@@ -110,11 +110,11 @@ public class Manual1 extends LinearOpMode {
 
 
         //Senzori
-        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
+//        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
+//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
 
-        RevColorSensorV3 colorSensor = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
-        RevColorSensorV3 colorSensor2 = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
+//        RevColorSensorV3 colorSensor = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
+//        RevColorSensorV3 colorSensor2 = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
 
         PullupServo.setPower(-0.05);
         Aveon.setPosition(0.1);
@@ -123,7 +123,7 @@ public class Manual1 extends LinearOpMode {
         rightIntakeSv.setPosition(0.1);
 
         //Pozitie initiala
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(53, 36, 0));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(61, -61.5, 0));
 
 
         waitForStart();
@@ -237,21 +237,18 @@ public class Manual1 extends LinearOpMode {
                 leftRear.setPower(backLeftPower);
                 rightFront.setPower(frontRightPower);
                 rightRear.setPower(backRightPower);
-
             }
 
 
-            if (gamepad1.left_bumper) {
+            if (gamepad1.left_bumper)
                 Aveon.setPosition(0.9);
 
-            }
-
-            if (gamepad1.dpad_left) Aveon.setPosition(0.1);
+            if (gamepad1.dpad_left)
+                Aveon.setPosition(0.1);
 
             if (gamepad1.x) {
                 leftIntakeSv.setPosition(0.5);
                 rightIntakeSv.setPosition(0.5);
-
             }
 
             //SPRE BACKDROP
@@ -269,8 +266,9 @@ public class Manual1 extends LinearOpMode {
 
             if (gamepad1.b) {
                 Actions.runBlocking(drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(-35, -10))
-                        .splineToSplineHeading(new Pose2d(-60, -60, -Math.PI * 3 / 4), -Math.PI * 3 / 4)
+                        .strafeTo(new Vector2d(52,-60))
+                        .strafeTo(new Vector2d(13,-16))
+                        .splineTo(new Vector2d(-54,55),-Math.PI*3/2-0.15)
                         .build()
                 );
 
@@ -313,11 +311,11 @@ public class Manual1 extends LinearOpMode {
 //            }
 
 
-            telemetry.addData("Distance: ", colorSensor.getDistance(DistanceUnit.CM) + " cm");
-            telemetry.addData("Dist", Dist.getDistance(DistanceUnit.CM));
+//            telemetry.addData("Distance: ", colorSensor.getDistance(DistanceUnit.CM) + " cm");
+//            telemetry.addData("Dist", Dist.getDistance(DistanceUnit.CM));
 
-            telemetry.addData("Distance 2: ", colorSensor2.getDistance(DistanceUnit.CM) + " cm");
-            telemetry.addData("Average", (colorSensor.getDistance(DistanceUnit.CM) + colorSensor2.getDistance(DistanceUnit.CM)) / 2);
+//            telemetry.addData("Distance 2: ", colorSensor2.getDistance(DistanceUnit.CM) + " cm");
+//            telemetry.addData("Average", (colorSensor.getDistance(DistanceUnit.CM) + colorSensor2.getDistance(DistanceUnit.CM)) / 2);
             telemetry.addData("Nr pixeli", pixel);
             telemetry.addData("LiftPos ", liftPos);
             telemetry.addData("Target ", target);
@@ -333,6 +331,8 @@ public class Manual1 extends LinearOpMode {
             telemetry.addData("RightRear", rightRear.getCurrentPosition());
             telemetry.addData("LeftFront", leftFront.getCurrentPosition());
             telemetry.addData("LeftRear", leftRear.getCurrentPosition());
+            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("y", drive.pose.position.y);
             telemetry.update();
 
         }
