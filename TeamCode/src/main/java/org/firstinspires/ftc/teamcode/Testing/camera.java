@@ -56,8 +56,6 @@ public class camera extends LinearOpMode {
         DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
-
-
         initOpenCV(telemetry);
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());

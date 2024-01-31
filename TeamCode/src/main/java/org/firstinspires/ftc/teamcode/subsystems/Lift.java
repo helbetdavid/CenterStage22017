@@ -17,7 +17,7 @@ public class Lift extends Mechanism{
     public static int target = 0;
     DcMotorEx rightLift, leftLift;
     public static double relatieP = 0.0006;
-    private PIDFController controller=new PIDFController(p, i, d, f);;
+    private final PIDFController controller=new PIDFController(p, i, d, f);;
     Telemetry tele;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     MultipleTelemetry telemetry;
@@ -60,6 +60,21 @@ public class Lift extends Mechanism{
     }
     public void goTarget(int x){
         target=x;
+        return;
+    }
+
+    public void liftLow(){
+        target  = -30;
+        return;
+    }
+
+    public void liftMid(){
+        target = 1500;
+        return;
+    }
+
+    public void liftHigh(){
+        target = 2200;
         return;
     }
 }
