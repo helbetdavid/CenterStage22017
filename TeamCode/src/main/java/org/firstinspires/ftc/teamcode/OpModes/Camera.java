@@ -1,13 +1,18 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -22,8 +27,25 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-@TeleOp
+@Autonomous
 public class Camera extends LinearOpMode {
+    Pose2d beginPose = new Pose2d(-38, 61, -Math.PI / 2);
+
+//    public class Drive implements Action{
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+//
+//        public boolean run(@NonNull TelemetryPacket packet) {
+//            drive.updatePoseEstimate();
+//            return false;
+//        }
+//
+//
+//    }
+//    public Action panaMea(){
+//        return new Drive();
+//    }
+
+
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
@@ -44,18 +66,21 @@ public class Camera extends LinearOpMode {
 
 
         //albastru dep
-        Pose2d beginPose = new Pose2d(-38, 61, -Math.PI / 2);
+
         Pose2d almostBoard = new Pose2d(48,36,0); Vector2d almostBoardV = new Vector2d(48,36);
         Pose2d boardMij = new Pose2d(53,36,0); Vector2d boardMijV = new Vector2d(53,36);
         Pose2d boardSt = new Pose2d(53,41,0); Vector2d boardStV = new Vector2d(53,41);
         Pose2d boardDr = new Pose2d(53,29,0); Vector2d boardDrV = new Vector2d(53, 29);
-        Pose2d mij = new Pose2d(11,11,0); Vector2d mijV = new Vector2d(11,11);
+        Pose2d mij = new Pose2d(0,11,0); Vector2d mijV = new Vector2d(0,11);
         Pose2d stackFront = new Pose2d(-58,11,0); Vector2d stackFrontV = new Vector2d(-58,11);
         Pose2d stackMid = new Pose2d(-58,23.5,0); Vector2d stackMidV = new Vector2d(-58, 23.5);
         Pose2d stackFar = new Pose2d(-58,35.5,0); Vector2d stackFarV = new Vector2d(-58, 35.5);
         Pose2d stackPreg = new Pose2d(-40,11,0); Vector2d stackPregV = new Vector2d(-40,11);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+
+
 
 
         switch (stackPixel){
@@ -96,7 +121,7 @@ public class Camera extends LinearOpMode {
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
+        lift.init(hardwareMap);
 
 
         initOpenCV(telemetry);
@@ -128,12 +153,16 @@ public class Camera extends LinearOpMode {
                     .turnTo(0)
                     .strafeTo(new Vector2d(48,36))
                     .build();
+//            drive.updatePoseEstimate();
             exactBoard = drive.actionBuilder(almostBoard)
                     .strafeTo(boardDrV)
+//                    .waitSeconds(3)
                     .build();
+//            drive.updatePoseEstimate();
             boardToMij = drive.actionBuilder(boardDr)
                     .strafeTo(mijV)
                     .build();
+//            drive.updatePoseEstimate();
         }
         else if(v[3]>v[1]&& v[3]>v[2]){
             pixelToBoardNT = drive.actionBuilder(beginPose)
@@ -142,12 +171,16 @@ public class Camera extends LinearOpMode {
                     .turnTo(0)
                     .strafeTo(new Vector2d(48,36))
                     .build();
+//            drive.updatePoseEstimate();
             exactBoard = drive.actionBuilder(almostBoard)
                     .strafeTo(boardMijV)
+//                    .waitSeconds(3)
                     .build();
+//            drive.updatePoseEstimate();
             boardToMij = drive.actionBuilder(boardMij)
                     .strafeTo(mijV)
                     .build();
+//            drive.updatePoseEstimate();
         }
         else{
             pixelToBoardNT = drive.actionBuilder(beginPose)
@@ -156,25 +189,31 @@ public class Camera extends LinearOpMode {
                     .turnTo(0)
                     .strafeTo(new Vector2d(48,36))
                     .build();
+//            drive.updatePoseEstimate();
             exactBoard = drive.actionBuilder(almostBoard)
                     .strafeTo(boardStV)
+//                    .waitSeconds(3)
                     .build();
+//            drive.updatePoseEstimate();
             boardToMij = drive.actionBuilder(boardSt)
                     .strafeTo(mijV)
                     .build();
+//            drive.updatePoseEstimate();
         }
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        while (opModeIsActive()) {
+
+        if (opModeIsActive()) {
 
             telemetry.addData("Dreapta",v[1] );
             telemetry.addData("Stanga",v[2] );
             telemetry.addData("Mijloc",v[3] );
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
+//            telemetry.addData("sdfhdfh", drive.updatePoseEstimate());
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
             if(nou==OpenCvPipAlbastru.detectie.Dreapta)telemetry.addLine("Dreapta");
             else if(nou== OpenCvPipAlbastru.detectie.Stanga)telemetry.addLine("Stanga");
@@ -182,23 +221,76 @@ public class Camera extends LinearOpMode {
             telemetry.update();
 
 
+
+
             Actions.runBlocking(
                     new SequentialAction(
-                            pixelToBoardNT,
-                            exactBoard,
-                            boardToMij,
-                            mijStackPreg,
-                            pixelStack,
-                            pixelToPreg
-//                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
+                            new ParallelAction(
+                                    pixelToBoardNT,
+                                    (telemetryPacket) -> {
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+                            new ParallelAction(
+                                    exactBoard,
+                                    (telemetryPacket) -> {
+                                        lift.goTarget(2000);
+                                        lift.update();
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+
+                            new ParallelAction(
+                                    boardToMij,
+                                    (telemetryPacket) -> {
+                                        lift.goTarget(0);
+                                        lift.update();
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    })
 //                            new ParallelAction(
-//                                lift.goTarget(2000),
+//                                    mijStackPreg,
 //                                    (telemetryPacket) -> {
-//
+//                                        telemetry.addData("x", drive.pose.position.x);
+//                                        telemetry.addData("y", drive.pose.position.y);
+//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+//                                        telemetry.update();
+//                                        return false;
+//                                    })
+//                            new ParallelAction(
+//                                    pixelStack,
+//                                    (telemetryPacket) -> {
+//                                        telemetry.addData("x", drive.pose.position.x);
+//                                        telemetry.addData("y", drive.pose.position.y);
+//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+//                                        telemetry.update();
+//                                        return false;
+//                                    })
+//                            new ParallelAction(
+//                                    pixelToPreg,
+//                                    (telemetryPacket) -> {
+//                                        telemetry.addData("x", drive.pose.position.x);
+//                                        telemetry.addData("y", drive.pose.position.y);
+//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+//                                        telemetry.update();
 //                                        return false;
 //                                    })
 
+//                            pixelToPreg
+//                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
+
+
                     ));
+
         }
 //        Actions.runBlocking(drive.actionBuilder( new Pose2d(48, 46, 0))
 //                .strafeTo(new Vector2d(53,36))
