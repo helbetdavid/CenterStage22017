@@ -5,13 +5,16 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.PoseVelocity2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RR.tuning.TuningOpModes;
 
@@ -23,6 +26,11 @@ public class Localizare extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        DistanceSensor DistSpateSt = hardwareMap.get(DistanceSensor.class, "DistSpateSt");
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) DistSpateSt;
+        DistanceSensor DistSpateDr = hardwareMap.get(DistanceSensor.class, "DistSpateDr");
+        Rev2mDistanceSensor sensorTimeOfFlight1 = (Rev2mDistanceSensor) DistSpateDr;
 
         DcMotor banda = hardwareMap.get(DcMotorEx.class, "banda");
         DcMotor intake = hardwareMap.get(DcMotorEx.class, "intake");
@@ -46,7 +54,9 @@ public class Localizare extends LinearOpMode {
 
 
 
-            drive.updatePoseEstimate();
+
+
+
 
             if (gamepad1.a) {
                 Actions.runBlocking(drive.actionBuilder(drive.pose)
@@ -69,6 +79,8 @@ public class Localizare extends LinearOpMode {
 
 
             telemetry.addData("pose", drive.pose);
+            telemetry.addData("DistSt", DistSpateSt.getDistance(DistanceUnit.CM));
+            telemetry.addData("DistDr", DistSpateDr.getDistance(DistanceUnit.CM));
 //                telemetry.addData("y", drive.pose.position.y);
 //                telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
             telemetry.update();

@@ -257,7 +257,7 @@ public class Manual1 extends LinearOpMode {
                 Actions.runBlocking(drive.actionBuilder(drive.pose)
                                 .strafeTo(new Vector2d(-40, -20))
                                 .splineToSplineHeading(new Pose2d(0, 0, 0), 0)
-                                .splineToConstantHeading(new Vector2d(53, 36), 0)                                    .endTrajectory()
+                                .splineToConstantHeading(new Vector2d(53, 36), 0)
                                 .build()
                 );
             }
