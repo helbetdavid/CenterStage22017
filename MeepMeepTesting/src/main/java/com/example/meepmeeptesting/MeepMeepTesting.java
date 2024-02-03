@@ -55,11 +55,26 @@ public class MeepMeepTesting {
 
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(13, -61, Math.PI / 2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, -61, Math.PI / 2))
 //                        .setReversed(true)
 //                .splineToLinearHeading(new Pose2d(11, 11, Math.PI),-3)
 //                        .waitSeconds(3)e
 
+
+//                .strafeTo(new Vector2d(-41,-41))
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(-36,-48,Math.PI/2),-1)
+//                .strafeTo(new Vector2d(-35,-11))
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,-36,0),-1)
+
+                .strafeToLinearHeading(new Vector2d(-48, -16.5),0)
+                .strafeToLinearHeading(new Vector2d(-48, -10),-Math.PI/2)
+                .turnTo(0)
+                .splineToLinearHeading(new Pose2d(48,-36,0),-0.75)
+                .strafeTo(boardMijV)
+                .strafeTo(new Vector2d(42,-56))
+                .strafeTo(new Vector2d(58,-56))
                 //TODO autodreata albastru
 //                .strafeTo(new Vector2d(-41,41))
 //                .setReversed(true)
@@ -191,7 +206,7 @@ public class MeepMeepTesting {
 //                    .setReversed(true)
 //                    .splineToLinearHeading(new Pose2d(48,-36,Math.PI),-1)
 //                    .turnTo(0)
-                .strafeTo(new Vector2d(60,-60))
+//
 
 //                .splineTo(new Vector2d(-32, -36), -Math.PI / 4)
 //                .setReversed(true)
@@ -216,6 +231,24 @@ public class MeepMeepTesting {
 //                        .turnTo(0)
 //                        .strafeTo(new Vector2d(48,-36))
 ////
+//                .strafeToLinearHeading(new Vector2d(31,37 ),-Math.PI+0.25)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(48,36,-Math.PI),-1)
+//                .turnTo(0)
+
+
+//                .strafeToLinearHeading(new Vector2d(30,37 ),-Math.PI/2-0.4)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(45,37,-Math.PI),-1)
+//                .turnTo(0)
+//                .strafeTo(almostBoardV)
+//                .strafeTo(new Vector2d(-41,-41))
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(-36,-48,Math.PI/2),-1)
+//                .strafeTo(new Vector2d(-35,-11))
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,-36,0),-1)
+
 //                .strafeTo(boardMijV)
 //                .strafeTo(new Vector2d(42,-59))
 //                .strafeTo(new Vector2d(58,-59))
@@ -231,6 +264,26 @@ public class MeepMeepTesting {
 //                .splineToLinearHeading(new Pose2d(-50,57,0), 0)
 //                        .strafeTo(new Vector2d(17,57))
 //                .splineToLinearHeading(new Pose2d(50,32,0),0.75)
+//                .strafeTo(new Vector2d(-41,-41))
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(-36,-48,Math.PI/2),-1)
+//                .strafeTo(new Vector2d(-35,-11))
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,-36,0),-1)
+//                .strafeToLinearHeading(new Vector2d(-48, 19),0)
+//                .strafeToLinearHeading(new Vector2d(-48, 11),Math.PI/2)
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
+//                .splineTo(new Vector2d(7,-37),2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(15,-44,Math.PI*3/4),1)
+//
+//                .splineToLinearHeading(new Pose2d(48,-36,0),1)
+
+//                .strafeToLinearHeading(new Vector2d(31,-37 ),Math.PI*3/4-0.1)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(48,-36,Math.PI),-1)
+//                .turnTo(0)
                 .build());
 
 

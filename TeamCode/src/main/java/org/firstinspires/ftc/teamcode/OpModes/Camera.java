@@ -102,8 +102,8 @@ public class Camera extends LinearOpMode {
         Pose2d boardMij = new Pose2d(51.5, 36, 0);
         Vector2d boardMijV = new Vector2d(51.5, 36);
         Pose2d boardSt = new Pose2d(51, 40, 0);
-        Vector2d boardStV = new Vector2d(51, 40);
-        Pose2d boardDr = new Pose2d(51.5, 29, 0);
+        Vector2d boardStV = new Vector2d(52, 40);
+        Pose2d boardDr = new Pose2d(52, 29, 0);
         Vector2d boardDrV = new Vector2d(51.5, 29);
         Pose2d mij = new Pose2d(11, 15, Math.PI);// y era y=17
         Vector2d mijV = new Vector2d(11, 14);
@@ -196,6 +196,9 @@ public class Camera extends LinearOpMode {
             else v[3]++;
             intake.intakePos(0.1);
             telemetry.addData("Detect", nou);
+            telemetry.addData("Dreapta", v[1]);
+            telemetry.addData("Stanga", v[2]);
+            telemetry.addData("Mijloc", v[3]);
             telemetry.update();
         }
         controlHubCam.stopStreaming();
@@ -206,7 +209,7 @@ public class Camera extends LinearOpMode {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
             pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeTo(new Vector2d(-41,41))
+                    .strafeTo(new Vector2d(-52,39))
                     .setReversed(true)
                     .splineToLinearHeading(new Pose2d(-35,45,-Math.PI/2),-1)
                     .strafeTo(new Vector2d(-35,11))
@@ -260,12 +263,12 @@ public class Camera extends LinearOpMode {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
             pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(-32, 36), -Math.PI / 4)
+                    .splineTo(new Vector2d(-30, 36), -Math.PI / 4)
                     .setReversed(true)
                     .splineToLinearHeading(new Pose2d(-36,38,0),0)
                     .strafeTo(new Vector2d(-36,11))
                     .setReversed(false)
-                    .splineToLinearHeading(new Pose2d(45,36,0),1)
+                    .splineToLinearHeading(new Pose2d(48,36,0),1)
                     .build();
 //            drive.updatePoseEstimate();
             exactBoard = drive.actionBuilder(almostBoard)
@@ -320,6 +323,28 @@ public class Camera extends LinearOpMode {
                                     }),
                             new ParallelAction(
                                     exactBoard,
+                                    (telemetryPacket) -> {
+//                                        timer.reset();
+//                                        lift.goTarget(3000);
+//                                        lift.update();
+//
+//                                        while (timer.seconds() < 1.5) {
+//                                            lift.update();
+//                                        }
+//                                        lift.goTarget(0);
+//                                        lift.update();
+//                                        while (timer.seconds() < 3) {
+//                                            lift.update();
+//                                        }
+
+
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+                            new ParallelAction(
                                     (telemetryPacket) -> {
                                         timer.reset();
                                         lift.goTarget(3000);

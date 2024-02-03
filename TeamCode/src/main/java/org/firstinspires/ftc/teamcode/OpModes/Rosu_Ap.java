@@ -228,9 +228,11 @@ public class Rosu_Ap extends LinearOpMode {
 //            drive.updatePoseEstimate();
         } else if (v[3] > v[1] && v[3] > v[2]) {
             pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(7,-37),2)
+                    .strafeToLinearHeading(new Vector2d(23,-30 ),-Math.PI)
                     .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(15,-44,Math.PI*3/4),1)
+                    .splineToLinearHeading(new Pose2d(34,-30,Math.PI),0)
+                    .turnTo(0)
+//                    .strafeTo(new Vector2d(48,-36))
 
                     .splineToLinearHeading(new Pose2d(48,-36,0),1)
                     .build();
@@ -299,73 +301,72 @@ public class Rosu_Ap extends LinearOpMode {
             else if (nou == OpenCvPipRosu.detectie.Stanga) telemetry.addLine("Stanga");
             else telemetry.addLine("Mijloc");
             telemetry.update();
-            Actions.runBlocking(drive.actionBuilder(beginPose)
-                    .strafeTo(new Vector2d(60,-60))
-                    .build());
+//            Actions.runBlocking(drive.actionBuilder(beginPose)
+//                    .strafeTo(new Vector2d(60,-60))
+//                    .build());
 //            Action
-//            Actions.runBlocking(
-//                    new SequentialAction(
-//                            new ParallelAction(
-//                                    pixelToBoardNT,
-//                                    (telemetryPacket) -> {
-//                                        telemetry.addData("x", drive.pose.position.x);
-//                                        telemetry.addData("y", drive.pose.position.y);
-//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-//                                        telemetry.update();
-//                                        return false;
-//                                    }),
-//                            new ParallelAction(
-//                                    exactBoard,
-//                                    (telemetryPacket) -> {
-//                                        timer.reset();
-//                                        lift.goTarget(3000);
-//                                        lift.update();
-//
-//                                        while (timer.seconds() < 1.5) {
-//                                            lift.update();
-//                                        }
-//                                        lift.goTarget(0);
-//                                        lift.update();
-//                                        while (timer.seconds() < 3) {
-//                                            lift.update();
-//                                        }
-//
-//
-//                                        telemetry.addData("x", drive.pose.position.x);
-//                                        telemetry.addData("y", drive.pose.position.y);
-//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-//                                        telemetry.update();
-//                                        return false;
-//                                    }),
-//
-//
-//
-//                            new ParallelAction(
-//                                    parking,
-//                                    (telemetryPacket) -> {
-//                                        intake.intakePos(0);
-//                                        intake.pwrIntake(0);
-//                                        intake.pwrBanda(0);
-//                                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
-//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-//                                        telemetry.update();
-//                                        return false;
-//                                    })
-//                            new ParallelAction(
-//                                    pixelToPreg,
-//                                    (telemetryPacket) -> {
-//                                        telemetry.addData("x", drive.pose.position.x);
-//                                        telemetry.addData("y", drive.pose.position.y);
-//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-//                                        telemetry.update();
-//                                        return false;
-//                                    })
+            Actions.runBlocking(
+                    new SequentialAction(
+                            new ParallelAction(
+                                    pixelToBoardNT,
+                                    (telemetryPacket) -> {
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+                            new ParallelAction(
+                                    exactBoard,
+                                    (telemetryPacket) -> {
+                                        timer.reset();
+                                        lift.goTarget(3000);
+                                        lift.update();
 
-//                            pixelToPreg
-//                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
+                                        while (timer.seconds() < 1.5) {
+                                            lift.update();
+                                        }
+                                        lift.goTarget(0);
+                                        lift.update();
+                                        while (timer.seconds() < 3 ) {
+                                            lift.update();
+                                        }
 
 
-//                    ));
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+
+
+
+                            new ParallelAction(
+                                    parking,
+                                    (telemetryPacket) -> {
+                                        intake.intakePos(0);
+                                        intake.pwrIntake(0);
+                                        intake.pwrBanda(0);
+                                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    }),
+                            new ParallelAction(
+                                    pixelToPreg,
+                                    (telemetryPacket) -> {
+                                        telemetry.addData("x", drive.pose.position.x);
+                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+                                        telemetry.update();
+                                        return false;
+                                    })
+
+
+
+
+                    ));
 
 
 //            Actions.runBlocking(drive.actionBuilder(almostBoard).strafeTo(new Vector2d(40, 10)).build());

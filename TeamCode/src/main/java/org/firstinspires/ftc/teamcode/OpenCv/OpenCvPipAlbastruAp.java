@@ -52,7 +52,7 @@ public class OpenCvPipAlbastruAp extends OpenCvPipeline {
             DREPTUNGHI_3_COLT_STANGA_SUS.x + REGION_WIDTH+40,
             DREPTUNGHI_3_COLT_STANGA_SUS.y + REGION_HEIGHT+40);
 
-    public static double threshold = 50000;
+    public static double threshold = 80000;
 
     public void draw(detectie pozitiecurenta, Mat input, Mat mat, Point sus, Point jos){
         Scalar sum = Core.sumElems(mat);
