@@ -101,8 +101,8 @@ public class Camera extends LinearOpMode {
         Vector2d almostBoardV = new Vector2d(48, 36);
         Pose2d boardMij = new Pose2d(51.5, 36, 0);
         Vector2d boardMijV = new Vector2d(51.5, 36);
-        Pose2d boardSt = new Pose2d(51.5, 41, 0);
-        Vector2d boardStV = new Vector2d(51.5, 41);
+        Pose2d boardSt = new Pose2d(51, 40, 0);
+        Vector2d boardStV = new Vector2d(51, 40);
         Pose2d boardDr = new Pose2d(51.5, 29, 0);
         Vector2d boardDrV = new Vector2d(51.5, 29);
         Pose2d mij = new Pose2d(11, 15, Math.PI);// y era y=17
@@ -260,7 +260,7 @@ public class Camera extends LinearOpMode {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
             pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(-28, 36), -Math.PI / 4)
+                    .splineTo(new Vector2d(-32, 36), -Math.PI / 4)
                     .setReversed(true)
                     .splineToLinearHeading(new Pose2d(-36,38,0),0)
                     .strafeTo(new Vector2d(-36,11))

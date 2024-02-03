@@ -33,9 +33,9 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
     public static int REGION_WIDTH = 125;
     public static int REGION_HEIGHT = 125;
 
-    public static int H=110;
-    public static int S=180;
-    public static int V=85;
+    public static int H=105;
+    public static int S=140;
+    public static int V=90;
     public static int HH=120;
     public static int SH=255;
     public static int VH=255;
@@ -49,7 +49,7 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
             DREPTUNGHI_3_COLT_STANGA_SUS.x + REGION_WIDTH,
             DREPTUNGHI_3_COLT_STANGA_SUS.y + REGION_HEIGHT);
 
-    public static double threshold = 100000;
+    public static double threshold = 50000;
 
     public void draw(detectie pozitiecurenta, Mat input, Mat mat, Point sus, Point jos){
         Scalar sum = Core.sumElems(mat);

@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpenCv;
 
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -9,7 +11,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-
+@Config
 public class OpenCvPipAlbastruAp extends OpenCvPipeline {
 
     Telemetry telemetry;
@@ -34,10 +36,10 @@ public class OpenCvPipAlbastruAp extends OpenCvPipeline {
     public static int REGION_WIDTH = 125;
     public static int REGION_HEIGHT = 125;
 
-    public static int H=110;
-    public static int S=180;
-    public static int V=85;
-    public static int HH=120;
+    public static int H=105;
+    public static int S=140;
+    public static int V=90;
+    public static int HH=125;
     public static int SH=255;
     public static int VH=255;
 
@@ -50,7 +52,7 @@ public class OpenCvPipAlbastruAp extends OpenCvPipeline {
             DREPTUNGHI_3_COLT_STANGA_SUS.x + REGION_WIDTH+40,
             DREPTUNGHI_3_COLT_STANGA_SUS.y + REGION_HEIGHT+40);
 
-    public static double threshold = 100000;
+    public static double threshold = 50000;
 
     public void draw(detectie pozitiecurenta, Mat input, Mat mat, Point sus, Point jos){
         Scalar sum = Core.sumElems(mat);

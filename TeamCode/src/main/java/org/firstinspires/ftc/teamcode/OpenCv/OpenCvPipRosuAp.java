@@ -35,7 +35,7 @@ public class OpenCvPipRosuAp extends OpenCvPipeline {
     public static int REGION_HEIGHT = 125;
 
     public static int H=0;
-    public static int S=100;
+    public static int S=95;
     public static int V=80;
     public static int HH=10;
     public static int SH=255;
