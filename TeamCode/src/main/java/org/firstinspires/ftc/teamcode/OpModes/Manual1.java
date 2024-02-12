@@ -36,10 +36,10 @@ public class Manual1 extends LinearOpMode {
 
 
     private PIDFController controller;
-    public static double p = 0.00377, i = 0.00002, d = 0.0002;
+    public static double p = 0.0035, i = 0.00002, d = 0.0002;
     public static double f = 0.00005;
     public static int target = 0;
-    public static double relatieP = 0.0006;
+    public static double relatieP = 0.0004;
 
 
     public enum RobotState {
@@ -47,7 +47,8 @@ public class Manual1 extends LinearOpMode {
         COLLECTING,
         NEUTRAL,
         SCORRING,
-        RETRACTING
+        RETRACTING,
+        BEFORE_SCORRING
     }
 
     RobotState robotState = RobotState.START;
@@ -61,6 +62,7 @@ public class Manual1 extends LinearOpMode {
     public static double vitBanda = 1;
     public static int pixel = 0;
     public static int ture = 0;
+    public int dom2=1;
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -110,8 +112,8 @@ public class Manual1 extends LinearOpMode {
 
 
         //Senzori
-//        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
-//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
+        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
+        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
 
 //        RevColorSensorV3 colorSensor = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
 //        RevColorSensorV3 colorSensor2 = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
@@ -139,21 +141,19 @@ public class Manual1 extends LinearOpMode {
             double leftLiftPower = pidf - relatieP * motorRelativeError;
             double fixer = Math.max(rightLiftPower, Math.max(leftLiftPower, 1));
 
-            rightLift.setPower(rightLiftPower / fixer / 1.5);
-            leftLift.setPower(leftLiftPower / fixer / 1.5);
+            rightLift.setPower(rightLiftPower / fixer / 1.25);
+            leftLift.setPower(leftLiftPower / fixer / 1.25);
 
 
             switch (robotState) {
                 case START:
                     intake.setPower(0);
-                    target = -70;
+                    target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
 
 
-                    if (gamepad2.x) {
-                        robotState = RobotState.COLLECTING;
-                    }
+
                     break;
                 case COLLECTING:
                     leftIntakeSv.setPosition(IntakeLowSvPos);
@@ -162,36 +162,34 @@ public class Manual1 extends LinearOpMode {
                     intake.setPower(1);
                     banda.setPower(vitBanda);
 
-                    if (gamepad2.y) {
-                        robotState = RobotState.NEUTRAL;
 
-                        timer.reset();
-
-                    }
                     break;
                 case NEUTRAL:
                     intake.setPower(0);
-                    banda.setPower(0);
+//                    banda.setPower(0);
 
                     if (timer.seconds() >= 0.8) {
                         leftIntakeSv.setPosition(IntakeMidSvPos);
                         rightIntakeSv.setPosition(IntakeMidSvPos);
                     }
-                    if (gamepad2.b) {
-                        robotState = RobotState.SCORRING;
-                        banda.setPower(0);
-                        timer.reset();
-                    }
+
                     break;
                 case SCORRING:
-                    target = 2400;
+//                    if(Dist.getDistance(DistanceUnit.CM)< 15){
+//                        dom2 = 4;
+//                    }
+//                    else dom2=1;
+                    target = 3000;
 
 //                    }
-                    if (gamepad2.a) {
-                        target = -70;
-                        robotState = RobotState.RETRACTING;
 
+                    break;
+
+                case BEFORE_SCORRING:
+                    if(Dist.getDistance(DistanceUnit.CM)< 15){
+                        dom2 = 4;
                     }
+                    else dom2=1;
                     break;
                 case RETRACTING:
                     if (liftPos <= 25) {
@@ -206,6 +204,30 @@ public class Manual1 extends LinearOpMode {
                 robotState = RobotState.START;
             }
 
+            if (gamepad2.x) {
+                robotState = RobotState.COLLECTING;
+            }
+
+            if (gamepad2.y) {
+                robotState = RobotState.NEUTRAL;
+
+                timer.reset();
+
+            }
+
+            if (gamepad2.b) {
+                robotState = RobotState.SCORRING;
+                banda.setPower(0);
+                timer.reset();
+            }
+
+            if (gamepad2.a) {
+                target = 0;
+                robotState = RobotState.RETRACTING;
+
+            }
+
+
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -214,10 +236,10 @@ public class Manual1 extends LinearOpMode {
 //            if (Dist.getDistance(DistanceUnit.CM) < minDistnace && y>0) y = 0;
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-            double frontLeftPower = (y + x + rx) / denominator;
-            double backLeftPower = (y - x + rx) / denominator;
-            double frontRightPower = (y - x - rx) / denominator;
-            double backRightPower = (y + x - rx) / denominator;
+            double frontLeftPower = (y + x + rx) / denominator/dom2;
+            double backLeftPower = (y - x + rx) / denominator/dom2;
+            double frontRightPower = (y - x - rx) / denominator/dom2;
+            double backRightPower = (y + x - rx) / denominator/dom2;
 
             //CIPRIAN/VLAD
 
@@ -251,28 +273,39 @@ public class Manual1 extends LinearOpMode {
                 rightIntakeSv.setPosition(0.5);
             }
 
+            if(gamepad2.left_bumper){
+                banda.setPower(0);
+            }
+            if(gamepad2.right_bumper){
+                banda.setPower(1);
+            }
+            if(gamepad2.dpad_up)robotState =RobotState.BEFORE_SCORRING;
+
+
+
+
             //SPRE BACKDROP
 
-            if (gamepad1.y) {
-                Actions.runBlocking(drive.actionBuilder(drive.pose)
-                                .strafeTo(new Vector2d(-40, -20))
-                                .splineToSplineHeading(new Pose2d(0, 0, 0), 0)
-                                .splineToConstantHeading(new Vector2d(53, 36), 0)
-                                .build()
-                );
-            }
+//            if (gamepad1.y) {
+//                Actions.runBlocking(drive.actionBuilder(drive.pose)
+//                                .strafeTo(new Vector2d(-40, -20))
+//                                .splineToSplineHeading(new Pose2d(0, 0, 0), 0)
+//                                .splineToConstantHeading(new Vector2d(53, 36), 0)
+//                                .build()
+//                );
+//            }
 
             //SPRE WING
 
-            if (gamepad1.b) {
-                Actions.runBlocking(drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(52,-60))
-                        .strafeTo(new Vector2d(13,-16))
-                        .splineTo(new Vector2d(-54,55),-Math.PI*3/2-0.15)
-                        .build()
-                );
-
-            }
+//            if (gamepad1.b) {
+//                Actions.runBlocking(drive.actionBuilder(drive.pose)
+//                        .strafeTo(new Vector2d(52,-60))
+//                        .strafeTo(new Vector2d(13,-16))
+//                        .splineTo(new Vector2d(-54,55),-Math.PI*3/2-0.15)
+//                        .build()
+//                );
+//
+//            }
 
 
             //
@@ -321,6 +354,7 @@ public class Manual1 extends LinearOpMode {
             telemetry.addData("Target ", target);
             telemetry.addData("Nr pixeli", pixel);
             telemetry.addData("Stadiu Robot", robotState);
+            telemetry.addData("Dist fata", Dist.getDistance(DistanceUnit.CM));
 //            telemetry.addData("target ", target);
 //            telemetry.addData("pos ", liftPos);
 //            telemetry.addData("leftPos", leftLift.getCurrentPosition());

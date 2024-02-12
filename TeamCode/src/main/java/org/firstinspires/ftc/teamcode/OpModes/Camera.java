@@ -106,7 +106,7 @@ public class Camera extends LinearOpMode {
         Pose2d boardDr = new Pose2d(53, 29, 0);
         Vector2d boardDrV = new Vector2d(53, 29);
         Pose2d mij = new Pose2d(0, 11, 0);
-        Vector2d mijV = new Vector2d(0, 11);
+        Vector2d mijV = new Vector2d(11, 11);
         Pose2d stackFront = new Pose2d(-58, 11, 0);
         Vector2d stackFrontV = new Vector2d(-58, 11);
         Pose2d stackMid = new Pose2d(-58, 23.5, 0);
@@ -118,7 +118,7 @@ public class Camera extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        goToMij = drive.actionBuilder(boardMij).strafeTo(new Vector2d(40, 12)).build();
+        goToMij = drive.actionBuilder(boardMij).strafeTo(new Vector2d(11, 11)).turnTo(Math.toRadians(180)).build();
 
 
         switch (stackPixel) {
@@ -223,6 +223,7 @@ public class Camera extends LinearOpMode {
 //            drive.updatePoseEstimate();
             boardToMij = drive.actionBuilder(boardMij)
                     .strafeTo(mijV)
+                    .turnTo(Math.toRadians(180))
                     .build();
 //            drive.updatePoseEstimate();
         } else {
@@ -302,7 +303,7 @@ public class Camera extends LinearOpMode {
 
 
                             new ParallelAction(
-                                    goToMij,
+                                    boardToMij,
                                     (telemetryPacket) -> {
                                         telemetry.addData("x", drive.pose.position.x);
                                         telemetry.addData("y", drive.pose.position.y);
@@ -339,18 +340,18 @@ public class Camera extends LinearOpMode {
 
 
 
-            while (DistSpateSt.getDistance(DistanceUnit.CM) > 15 && DistSpateDr.getDistance(DistanceUnit.CM) > 15) {
-                double unghi = 90 - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-                leftFront.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
-                leftRear.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
-                rightRear.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
-                rightFront.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
-
-                telemetry.addData("SenzorDr", DistSpateDr.getDistance(DistanceUnit.CM));
-                telemetry.addData("SenzorSt", DistSpateSt.getDistance(DistanceUnit.CM));
-                telemetry.update();
-            }
-            movement.forward(0);
+//            while (DistSpateSt.getDistance(DistanceUnit.CM) > 15 && DistSpateDr.getDistance(DistanceUnit.CM) > 15) {
+//                double unghi = 90 - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+//                leftFront.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
+//                leftRear.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
+//                rightRear.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
+//                rightFront.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
+//
+//                telemetry.addData("SenzorDr", DistSpateDr.getDistance(DistanceUnit.CM));
+//                telemetry.addData("SenzorSt", DistSpateSt.getDistance(DistanceUnit.CM));
+//                telemetry.update();
+//            }
+//            movement.forward(0);
 
 
         }

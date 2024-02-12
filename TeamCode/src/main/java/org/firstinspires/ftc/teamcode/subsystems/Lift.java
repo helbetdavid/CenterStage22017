@@ -12,11 +12,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Lift extends Mechanism{
 
-    public static double p = 0.00377, i = 0.00002, d = 0.0002;
+    public static double p = 0.0035, i = 0.00002, d = 0.0002;
     public static double f = 0.00005;
     public static int target = 0;
     DcMotorEx rightLift, leftLift;
-    public static double relatieP = 0.0006;
+    public static double relatieP = 0.0004  ;
     private final PIDFController controller=new PIDFController(p, i, d, f);;
     Telemetry tele;
     FtcDashboard dashboard = FtcDashboard.getInstance();
