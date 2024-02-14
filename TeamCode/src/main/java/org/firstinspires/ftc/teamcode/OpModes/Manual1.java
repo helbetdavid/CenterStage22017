@@ -65,6 +65,7 @@ public class Manual1 extends LinearOpMode {
     public int dom2=1;
 
     ElapsedTime timer = new ElapsedTime();
+    ElapsedTime aveon = new ElapsedTime();
 
 
     @Override
@@ -98,7 +99,7 @@ public class Manual1 extends LinearOpMode {
         CRServo PullupServo = hardwareMap.get(CRServo.class, "PullupServo");
         AnalogInput PullUpEncoder = hardwareMap.get(AnalogInput.class, "PullUpEncoder");
 
-        Servo Aveon = hardwareMap.get(Servo.class, "Aveon");
+        CRServo Aveon = hardwareMap.get(CRServo.class, "Aveon");
 
 
         // Reverse Motors
@@ -119,7 +120,7 @@ public class Manual1 extends LinearOpMode {
 //        RevColorSensorV3 colorSensor2 = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
 
         PullupServo.setPower(-0.05);
-        Aveon.setPosition(0.1);
+//        Aveon.setPosition(0.1);
 
         leftIntakeSv.setPosition(0.1);
         rightIntakeSv.setPosition(0.1);
@@ -148,6 +149,7 @@ public class Manual1 extends LinearOpMode {
             switch (robotState) {
                 case START:
                     intake.setPower(0);
+                    banda.setPower(0);
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
@@ -166,7 +168,7 @@ public class Manual1 extends LinearOpMode {
                     break;
                 case NEUTRAL:
                     intake.setPower(0);
-//                    banda.setPower(0);
+                    banda.setPower(0);
 
                     if (timer.seconds() >= 0.8) {
                         leftIntakeSv.setPosition(IntakeMidSvPos);
@@ -262,23 +264,25 @@ public class Manual1 extends LinearOpMode {
             }
 
 
-            if (gamepad1.left_bumper)
-                Aveon.setPosition(0.9);
-
-            if (gamepad1.dpad_left)
-                Aveon.setPosition(0.1);
+            if (gamepad1.left_bumper){
+                aveon.reset();
+                Aveon.setPower(1);
+            }
+            if(aveon.seconds()>1.8){
+                Aveon.setPower(0);
+            }
 
             if (gamepad1.x) {
                 leftIntakeSv.setPosition(0.5);
                 rightIntakeSv.setPosition(0.5);
             }
 
-            if(gamepad2.left_bumper){
-                banda.setPower(0);
-            }
-            if(gamepad2.right_bumper){
-                banda.setPower(1);
-            }
+//            if(gamepad2.left_bumper){
+//                banda.setPower(0);
+//            }
+//            if(gamepad2.right_bumper){
+//                banda.setPower(1);
+//            }
             if(gamepad2.dpad_up)robotState =RobotState.BEFORE_SCORRING;
 
 

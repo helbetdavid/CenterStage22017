@@ -44,8 +44,8 @@ public class Lift extends Mechanism{
         if(liftPos<=target-30){
             isReached=true;
         }
-        rightLift.setPower(rightLiftPower / fixer / 1.5);
-        leftLift.setPower(leftLiftPower / fixer / 1.5);
+        rightLift.setPower(rightLiftPower / fixer );
+        leftLift.setPower(leftLiftPower / fixer );
 
     }
     public int getPositionLeft(){
