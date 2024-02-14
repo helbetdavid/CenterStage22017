@@ -99,8 +99,9 @@ public class Manual1 extends LinearOpMode {
         CRServo PullupServo = hardwareMap.get(CRServo.class, "PullupServo");
         AnalogInput PullUpEncoder = hardwareMap.get(AnalogInput.class, "PullUpEncoder");
 
-        CRServo Aveon = hardwareMap.get(CRServo.class, "Aveon");
+//        CRServo Aveon = hardwareMap.get(CRServo.class, "Aveon");
 
+        CRServo Usa = hardwareMap.get(CRServo.class, "Usa");
 
         // Reverse Motors
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -181,7 +182,12 @@ public class Manual1 extends LinearOpMode {
 //                        dom2 = 4;
 //                    }
 //                    else dom2=1;
-                    target = 3000;
+                    target = 2000;
+//                    while(liftPos < 2000){
+//                        Usa.setPower(0.8);
+//                        liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
+//                    }
+//                    Usa.setPower(0);
 
 //                    }
 
@@ -266,10 +272,10 @@ public class Manual1 extends LinearOpMode {
 
             if (gamepad1.left_bumper){
                 aveon.reset();
-                Aveon.setPower(1);
+//                Aveon.setPower(1);
             }
             if(aveon.seconds()>1.8){
-                Aveon.setPower(0);
+//                Aveon.setPower(0);
             }
 
             if (gamepad1.x) {

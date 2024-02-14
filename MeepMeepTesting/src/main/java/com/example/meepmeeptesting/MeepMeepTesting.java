@@ -55,7 +55,10 @@ public class MeepMeepTesting {
 
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, -61, Math.PI / 2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(0, 0, Math.PI / 2))
+                .splineTo(new Vector2d(30, 30), Math.PI / 2)
+                .splineTo(new Vector2d(0, 60), Math.PI)
+                .build());
 //                        .setReversed(true)
 //                .splineToLinearHeading(new Pose2d(11, 11, Math.PI),-3)
 //                        .waitSeconds(3)e
@@ -68,13 +71,13 @@ public class MeepMeepTesting {
 //                .turnTo(0)
 //                .splineToLinearHeading(new Pose2d(48,-36,0),-1)
 
-                .strafeToLinearHeading(new Vector2d(-48, -16.5),0)
-                .strafeToLinearHeading(new Vector2d(-48, -10),-Math.PI/2)
-                .turnTo(0)
-                .splineToLinearHeading(new Pose2d(48,-36,0),-0.75)
-                .strafeTo(boardMijV)
-                .strafeTo(new Vector2d(42,-56))
-                .strafeTo(new Vector2d(58,-56))
+//                .strafeToLinearHeading(new Vector2d(-48, -16.5),0)
+//                .strafeToLinearHeading(new Vector2d(-48, -10),-Math.PI/2)
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,-36,0),-0.75)
+//                .strafeTo(boardMijV)
+//                .strafeTo(new Vector2d(42,-56))
+//                .strafeTo(new Vector2d(58,-56))
                 //TODO autodreata albastru
 //                .strafeTo(new Vector2d(-41,41))
 //                .setReversed(true)
@@ -284,7 +287,7 @@ public class MeepMeepTesting {
 //                .setReversed(true)
 //                .splineToLinearHeading(new Pose2d(48,-36,Math.PI),-1)
 //                .turnTo(0)
-                .build());
+//                .build());
 
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)

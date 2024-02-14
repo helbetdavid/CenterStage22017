@@ -51,6 +51,12 @@ public class Localizare extends LinearOpMode {
                     ),
                     -gamepad1.right_stick_x
             ));
+            drive.updatePoseEstimate();
+
+            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("y", drive.pose.position.y);
+            telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+            telemetry.update();
 
 
 
@@ -58,24 +64,24 @@ public class Localizare extends LinearOpMode {
 
 
 
-            if (gamepad1.a) {
-                Actions.runBlocking(drive.actionBuilder(drive.pose)
-                        .strafeTo(new Vector2d(15, 0))
-                        .build()
-                );
-            }
-
-            if (gamepad1.x) {
-                rightIntakeSv.setPosition(lowSvPos);
-                leftIntakeSv.setPosition(lowSvPos);
-                intake.setPower(vit);
-                banda.setPower(vit);
-
-            }
-            if(gamepad1.y){
-                intake.setPower(0);
-                banda.setPower(0);
-            }
+//            if (gamepad1.a) {
+//                Actions.runBlocking(drive.actionBuilder(drive.pose)
+//                        .strafeTo(new Vector2d(15, 0))
+//                        .build()
+//                );
+//            }
+//
+//            if (gamepad1.x) {
+//                rightIntakeSv.setPosition(lowSvPos);
+//                leftIntakeSv.setPosition(lowSvPos);
+//                intake.setPower(vit);
+//                banda.setPower(vit);
+//
+//            }
+//            if(gamepad1.y){
+//                intake.setPower(0);
+//                banda.setPower(0);
+//            }
 
 
             telemetry.addData("pose", drive.pose);
