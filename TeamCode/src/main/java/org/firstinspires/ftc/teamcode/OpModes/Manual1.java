@@ -133,7 +133,7 @@ public class Manual1 extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
 
             controller.setPIDF(p, i, d, f);
             double liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
