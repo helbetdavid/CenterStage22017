@@ -154,43 +154,36 @@ public class Manual1 extends LinearOpMode {
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
-
-
-
+                    Usa.setPower(fixer * 0.5);
                     break;
                 case COLLECTING:
                     leftIntakeSv.setPosition(IntakeLowSvPos);
                     rightIntakeSv.setPosition(IntakeLowSvPos);
-
                     intake.setPower(1);
                     banda.setPower(vitBanda);
-
-
                     break;
                 case NEUTRAL:
                     intake.setPower(0);
                     banda.setPower(0);
-
                     if (timer.seconds() >= 0.8) {
                         leftIntakeSv.setPosition(IntakeMidSvPos);
                         rightIntakeSv.setPosition(IntakeMidSvPos);
                     }
-
                     break;
+
                 case SCORRING:
 //                    if(Dist.getDistance(DistanceUnit.CM)< 15){
 //                        dom2 = 4;
 //                    }
 //                    else dom2=1;
                     target = 2000;
+                    Usa.setPower(fixer * 0.5);
 //                    while(liftPos < 2000){
 //                        Usa.setPower(0.8);
 //                        liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
 //                    }
 //                    Usa.setPower(0);
-
 //                    }
-
                     break;
 
                 case BEFORE_SCORRING:
