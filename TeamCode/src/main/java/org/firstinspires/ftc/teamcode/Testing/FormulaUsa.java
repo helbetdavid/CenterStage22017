@@ -17,10 +17,10 @@ public class FormulaUsa extends LinearOpMode {
     public double rotatii = 0;
     public double rotatii2 = 0;
     private PIDFController controller;
-    public static double p = 0.0035, i = 0.00002, d = 0.0002;
-    public static double f = 0.00005;
+    public static double p = 0.003, i = 0.000077, d = 0.000065;
+    public static double f = 0.000002;
     public static int target = 0;
-    public static double relatieP = 0.0004;
+    public static double relatieP = 0.00275;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -46,6 +46,8 @@ public class FormulaUsa extends LinearOpMode {
             double leftLiftPower = pidf - relatieP * motorRelativeError;
             double fixer = Math.max(rightLiftPower, Math.max(leftLiftPower, 1));
 
+            double bucEncoder = UsaEncoder.getVoltage() / 3.3 * 360;
+
             rightLift.setPower(rightLiftPower / fixer / 1.25);
             leftLift.setPower(leftLiftPower / fixer / 1.25);
 
@@ -56,13 +58,15 @@ public class FormulaUsa extends LinearOpMode {
                     rotatii++;
                     while(UsaEncoder.getVoltage() / 3.3 * 360 > 10){}
                 }
+                bucEncoder = Math.abs(bucEncoder);
 
             } else if (gamepad1.x) {
                 Usa.setPower(-0.2);
                 if(UsaEncoder.getVoltage() / 3.3 * 360 <= 10){
-                    rotatii2--;
+                    rotatii--;
                     while(UsaEncoder.getVoltage() / 3.3 * 360 <350){}
                 }
+                bucEncoder = -bucEncoder;
 
             } else if(gamepad1.b) Usa.setPower(0);
 
@@ -74,9 +78,8 @@ public class FormulaUsa extends LinearOpMode {
 
 
             telemetry.addData("Pos", liftPos );
-            telemetry.addData("Tickuri Servo", UsaEncoder.getVoltage() / 3.3 * 360 + Math.abs(rotatii -rotatii2)* 360);
-            telemetry.addData("Tickuri Servo 2", -UsaEncoder.getVoltage() / 3.3 * 360 + Math.abs(rotatii -rotatii2) * 360);
-            telemetry.addData("Voltaj ", UsaEncoder.getVoltage());
+            telemetry.addData("Tickuri Servo", bucEncoder+ rotatii* 360);
+
             telemetry.update();
 
 

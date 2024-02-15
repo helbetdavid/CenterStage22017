@@ -36,10 +36,10 @@ public class Manual1 extends LinearOpMode {
 
 
     private PIDFController controller;
-    public static double p = 0.0035, i = 0.00002, d = 0.0002;
-    public static double f = 0.00005;
+    public static double p = 0.003, i = 0.000077, d = 0.000065;
+    public static double f = 0.000002;
     public static int target = 0;
-    public static double relatieP = 0.0004;
+    public static double relatieP = 0.00275;
 
 
     public enum RobotState {
@@ -154,7 +154,7 @@ public class Manual1 extends LinearOpMode {
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
-                    Usa.setPower(fixer * 0.5);
+                    Usa.setPower(leftLiftPower / fixer / 1.25 * 0.5);
                     break;
                 case COLLECTING:
                     leftIntakeSv.setPosition(IntakeLowSvPos);
@@ -177,7 +177,7 @@ public class Manual1 extends LinearOpMode {
 //                    }
 //                    else dom2=1;
                     target = 2000;
-                    Usa.setPower(fixer * 0.5);
+                    Usa.setPower(leftLiftPower / fixer / 1.25);
 //                    while(liftPos < 2000){
 //                        Usa.setPower(0.8);
 //                        liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
