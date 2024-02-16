@@ -184,7 +184,7 @@ public class Camera extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         FtcDashboard.getInstance().startCameraStream(controlHubCam, 30);
 
-        int v[] = new int[4];
+        int[] v = new int[4];
         v[1] = 0;
         v[2] = 0;
         v[3] = 0;

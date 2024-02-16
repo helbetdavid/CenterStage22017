@@ -34,25 +34,22 @@ public class Manual1 extends LinearOpMode {
     Gamepad previousGamepad1 = new Gamepad();
     Gamepad previousGamepad2 = new Gamepad();
 
-
     private PIDFController controller;
     public static double p = 0.003, i = 0.000077, d = 0.000065;
     public static double f = 0.000002;
     public static int target = 0;
     public static double relatieP = 0.00275;
 
-
     public enum RobotState {
         START,
         COLLECTING,
         NEUTRAL,
-        SCORRING,
+        SCORING,
         RETRACTING,
-        BEFORE_SCORRING
+        BEFORE_SCORING
     }
 
     RobotState robotState = RobotState.START;
-
 
     public static double IntakeLowSvPos = 0.56;
     public static double IntakeMidSvPos = 0.35;
@@ -67,13 +64,11 @@ public class Manual1 extends LinearOpMode {
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime aveon = new ElapsedTime();
 
-
     @Override
     public void runOpMode() throws InterruptedException {
 
         controller = new PIDFController(p, i, d, f);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
 
         // Motoare sasiu
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -112,7 +107,6 @@ public class Manual1 extends LinearOpMode {
         rightRear.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         //Senzori
         DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
@@ -136,7 +130,7 @@ public class Manual1 extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
 
             controller.setPIDF(p, i, d, f);
-            double liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
+            double liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2.0;
             double pidf = controller.calculate(liftPos, target);
             double motorRelativeError = Math.abs(leftLift.getCurrentPosition() - rightLift.getCurrentPosition()) > 10 ? leftLift.getCurrentPosition() - rightLift.getCurrentPosition() : 0;
             double rightLiftPower = pidf + relatieP * motorRelativeError;
@@ -146,7 +140,6 @@ public class Manual1 extends LinearOpMode {
             rightLift.setPower(rightLiftPower / fixer / 1.25);
             leftLift.setPower(leftLiftPower / fixer / 1.25);
 
-
             switch (robotState) {
                 case START:
                     intake.setPower(0);
@@ -154,7 +147,10 @@ public class Manual1 extends LinearOpMode {
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
-                    Usa.setPower(leftLiftPower / fixer / 1.25 * 0.5);
+                    if(Math.abs(target - leftLift.getCurrentPosition()) > 10
+                            || Math.abs(target - rightLift.getCurrentPosition()) > 10)
+                        Usa.setPower(leftLiftPower / fixer / 1.25 * 0.5);
+                        else Usa.setPower(0);
                     break;
                 case COLLECTING:
                     leftIntakeSv.setPosition(IntakeLowSvPos);
@@ -171,13 +167,17 @@ public class Manual1 extends LinearOpMode {
                     }
                     break;
 
-                case SCORRING:
+                case SCORING:
 //                    if(Dist.getDistance(DistanceUnit.CM)< 15){
 //                        dom2 = 4;
 //                    }
 //                    else dom2=1;
                     target = 2000;
-                    Usa.setPower(leftLiftPower / fixer / 1.25);
+                    if(Math.abs(target - leftLift.getCurrentPosition()) > 10
+                            || Math.abs(target - rightLift.getCurrentPosition()) > 10)
+                        Usa.setPower(leftLiftPower / fixer / 1.25);
+                        else Usa.setPower(0);
+
 //                    while(liftPos < 2000){
 //                        Usa.setPower(0.8);
 //                        liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
@@ -186,7 +186,7 @@ public class Manual1 extends LinearOpMode {
 //                    }
                     break;
 
-                case BEFORE_SCORRING:
+                case BEFORE_SCORING:
                     if(Dist.getDistance(DistanceUnit.CM)< 15){
                         dom2 = 4;
                     }
@@ -211,13 +211,11 @@ public class Manual1 extends LinearOpMode {
 
             if (gamepad2.y) {
                 robotState = RobotState.NEUTRAL;
-
                 timer.reset();
-
             }
 
             if (gamepad2.b) {
-                robotState = RobotState.SCORRING;
+                robotState = RobotState.SCORING;
                 banda.setPower(0);
                 timer.reset();
             }
@@ -225,10 +223,7 @@ public class Manual1 extends LinearOpMode {
             if (gamepad2.a) {
                 target = 0;
                 robotState = RobotState.RETRACTING;
-
             }
-
-
 
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
@@ -248,8 +243,8 @@ public class Manual1 extends LinearOpMode {
             PullupServo.setPower(ServVit);
 
 
-
 // MIHNEA
+
             if (gamepad1.right_bumper) {
                 leftFront.setPower(frontLeftPower / 4);
                 leftRear.setPower(backLeftPower / 4);
@@ -261,7 +256,6 @@ public class Manual1 extends LinearOpMode {
                 rightFront.setPower(frontRightPower);
                 rightRear.setPower(backRightPower);
             }
-
 
             if (gamepad1.left_bumper){
                 aveon.reset();
@@ -282,9 +276,8 @@ public class Manual1 extends LinearOpMode {
 //            if(gamepad2.right_bumper){
 //                banda.setPower(1);
 //            }
-            if(gamepad2.dpad_up)robotState =RobotState.BEFORE_SCORRING;
-
-
+            if(gamepad2.dpad_up)
+                robotState = RobotState.BEFORE_SCORING;
 
 
             //SPRE BACKDROP
