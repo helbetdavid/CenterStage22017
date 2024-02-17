@@ -105,16 +105,16 @@ public class Camera extends LinearOpMode {
         Vector2d boardStV = new Vector2d(52, 40);
         Pose2d boardDr = new Pose2d(52, 29, 0);
         Vector2d boardDrV = new Vector2d(51.5, 29);
-        Pose2d mij = new Pose2d(11, 15, Math.PI);// y era y=17
+        Pose2d mij = new Pose2d(11, 12, Math.PI);// y era y=17
         Vector2d mijV = new Vector2d(11, 14);
-        Pose2d stackFront = new Pose2d(-60, 14, 0);
-        Vector2d stackFrontV = new Vector2d(-59.5, 14);
+        Pose2d stackFront = new Pose2d(-58, 12, 0);
+        Vector2d stackFrontV = new Vector2d(-58, 12);
         Pose2d stackMid = new Pose2d(-58, 23.5, 0);
         Vector2d stackMidV = new Vector2d(-58, 23.5);
         Pose2d stackFar = new Pose2d(-58, 35.5, 0);
         Vector2d stackFarV = new Vector2d(-58, 35.5);
-        Pose2d stackPreg = new Pose2d(-40, 14, 0);
-        Vector2d stackPregV = new Vector2d(-40, 14);
+        Pose2d stackPreg = new Pose2d(-40, 12, 0);
+        Vector2d stackPregV = new Vector2d(-40, 12);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -392,7 +392,8 @@ public class Camera extends LinearOpMode {
                                         intake.intakePos(0.40);
                                         intake.pwrIntake(1);
                                         intake.pwrBanda(1);
-                                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("x", drive.pose.position.x);//
+                                        telemetry.addData("y", drive.pose.position.y);//                                    telemetry.addData("y", drive.pose.position.y);
                                         telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
                                         telemetry.update();
                                         return false;
@@ -410,7 +411,8 @@ public class Camera extends LinearOpMode {
                         while(timer.seconds()<1.2)intake.intakePos(0.52);
 
 
-                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
+                        telemetry.addData("x", drive.pose.position.x);//
+                        telemetry.addData("y", drive.pose.position.y);//                                   telemetry.addData("y", drive.pose.position.y);
                         telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
                         telemetry.update();
                         return false;
@@ -422,7 +424,8 @@ public class Camera extends LinearOpMode {
                         intake.intakePos(0.2);
                         intake.pwrIntake(0);
                         intake.pwrBanda(0.7);
-                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
+                        telemetry.addData("x", drive.pose.position.x);//
+                        telemetry.addData("y", drive.pose.position.y);//                                     telemetry.addData("y", drive.pose.position.y);
                         telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
                         telemetry.update();
                         return false;
@@ -456,7 +459,8 @@ public class Camera extends LinearOpMode {
                                         intake.intakePos(0);
                                         intake.pwrIntake(0);
                                         intake.pwrBanda(0);
-                                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
+                                        telemetry.addData("x", drive.pose.position.x);//
+                                        telemetry.addData("y", drive.pose.position.y);//                                     telemetry.addData("y", drive.pose.position.y);
                                         telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
                                         telemetry.update();
                                         return false;

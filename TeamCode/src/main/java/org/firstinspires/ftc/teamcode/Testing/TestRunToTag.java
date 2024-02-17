@@ -27,28 +27,26 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.robotcontroller.external.samples;
-
-import android.util.Size;
+package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -92,35 +90,34 @@ import java.util.concurrent.TimeUnit;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  *
  */
-
-@TeleOp(name="Omni Drive To AprilTag", group = "Concept")
+@Config
+@TeleOp(name="Custom Drive to AprilTag", group = "Concept")
 //@Disabled
-public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
+public class TestRunToTag extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
-    final double DESIRED_DISTANCE = 15.0; //  this is how close the camera should get to the target (inches)
+    public static double DESIRED_DISTANCE = 15.0; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
     //  applied to the drive motors to correct the error.
     //  Drive = Error * Gain    Make these values smaller for smoother control, or larger for a more aggressive response.
-    final double SPEED_GAIN  =  0.04  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
-    final double STRAFE_GAIN =  0.03 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
-    final double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
+    public static double SPEED_GAIN  =  0.04  ;   //  Forward Speed Control "Gain". eg: Ramp up to 50% power at a 25 inch error.   (0.50 / 25.0)
+    public static double STRAFE_GAIN =  0.03 ;   //  Strafe Speed Control "Gain".  eg: Ramp up to 25% power at a 25 degree Yaw error.   (0.25 / 25.0)
+    public static double TURN_GAIN   =  0.02  ;   //  Turn Control "Gain".  eg: Ramp up to 25% power at a 25 degree error. (0.25 / 25.0)
 
-    final double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
-    final double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
+    public static double MAX_AUTO_SPEED = 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
+    public static double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
+    public static double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
 
     private DcMotor leftFrontDrive   = null;  //  Used to control the left front drive wheel
     private DcMotor rightFrontDrive  = null;  //  Used to control the right front drive wheel
     private DcMotor leftBackDrive    = null;  //  Used to control the left back drive wheel
     private DcMotor rightBackDrive   = null;  //  Used to control the right back drive wheel
 
-    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    private static final int DESIRED_TAG_ID = 8;     // Choose the tag you want to approach or set to -1 for ANY tag.
-    private VisionPortal visionPortal;               // Used to manage the video source.
-
     private OpenCvCamera controlHubCam;
+    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
+    public static int DESIRED_TAG_ID = 8;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
 
@@ -133,10 +130,12 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
 
         // Initialize the Apriltag Detection process
         initAprilTag();
-
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
-        FtcDashboard.getInstance().startCameraStream(controlHubCam, 30);
+
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        OpenCvWebcam camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        FtcDashboard.getInstance().startCameraStream(camera, 30);
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
@@ -270,24 +269,7 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
      */
     private void initAprilTag() {
         // Create the AprilTag processor by using a builder.
-        aprilTag = new AprilTagProcessor.Builder()
-
-                // The following default settings are available to un-comment and edit as needed.
-                .setDrawAxes(false)
-                .setDrawCubeProjection(false)
-                .setDrawTagOutline(true)
-                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-
-                // == CAMERA CALIBRATION ==
-                // If you do not manually specify calibration parameters, the SDK will attempt
-                // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-                .setLensIntrinsics( 1412.38, 1412.38, 654.15, 355.152)
-                // ... these parameters are fx, fy, cx, cy.
-
-                .build();
+        aprilTag = new AprilTagProcessor.Builder().build();
 
         // Adjust Image Decimation to trade-off detection-range for detection-rate.
         // eg: Some typical detection data using a Logitech C920 WebCam
@@ -302,9 +284,6 @@ public class RobotAutoDriveToAprilTagOmni extends LinearOpMode
         if (USE_WEBCAM) {
             visionPortal = new VisionPortal.Builder()
                     .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                    .setCameraResolution(new Size(1280, 720))
-                    .enableLiveView(true)
-                    .setStreamFormat(VisionPortal.StreamFormat.YUY2)
                     .addProcessor(aprilTag)
                     .build();
         } else {

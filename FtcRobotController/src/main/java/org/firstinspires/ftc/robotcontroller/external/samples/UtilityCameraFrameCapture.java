@@ -34,12 +34,18 @@
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import android.util.Size;
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
 
 import java.util.Locale;
 
@@ -58,16 +64,17 @@ import java.util.Locale;
  */
 
 @TeleOp(name = "Utility: Camera Frame Capture", group = "Utility")
-@Disabled
+//@Disabled
 public class UtilityCameraFrameCapture extends LinearOpMode
 {
     /*
      * EDIT THESE PARAMETERS AS NEEDED
      */
-    final boolean USING_WEBCAM = false;
+    final boolean USING_WEBCAM = true;
     final BuiltinCameraDirection INTERNAL_CAM_DIR = BuiltinCameraDirection.BACK;
-    final int RESOLUTION_WIDTH = 640;
-    final int RESOLUTION_HEIGHT = 480;
+    final int RESOLUTION_WIDTH = 1280;
+    final int RESOLUTION_HEIGHT = 720;
+    private OpenCvCamera controlHubCam;
 
     // Internal state
     boolean lastX;
@@ -77,6 +84,16 @@ public class UtilityCameraFrameCapture extends LinearOpMode
     @Override
     public void runOpMode()
     {
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+//                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//
+//        controlHubCam = OpenCvCameraFactory.getInstance().createWebcam(
+//                hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+//        controlHubCam.openCameraDevice();
+//        controlHubCam.startStreaming(RESOLUTION_WIDTH,RESOLUTION_HEIGHT, OpenCvCameraRotation.UPRIGHT);
+//        FtcDashboard dashboard = FtcDashboard.getInstance();
+//        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+//        FtcDashboard.getInstance().startCameraStream(controlHubCam, 30);
         VisionPortal portal;
 
         if (USING_WEBCAM)
@@ -110,6 +127,7 @@ public class UtilityCameraFrameCapture extends LinearOpMode
             telemetry.addLine(String.format(Locale.US, " > Resolution: %dx%d", RESOLUTION_WIDTH, RESOLUTION_HEIGHT));
             telemetry.addLine(" > Press X (or Square) to capture a frame");
             telemetry.addData(" > Camera Status", portal.getCameraState());
+            telemetry.addData(" Frame Count ",frameCount);
 
             if (capReqTime != 0)
             {

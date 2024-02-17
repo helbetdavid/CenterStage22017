@@ -55,12 +55,12 @@ public class MeepMeepTesting {
 
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-34.12, 24.48, Math.PI / 2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11, 11, Math.PI / 2))
 
 
 
-                .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                .splineTo(new Vector2d(0, 60), Math.PI)
+                .splineTo(new Vector2d(11, 12), Math.PI / 2)
+                        .waitSeconds(5)
                 .build());
 ////                        .setReversed(true)
 //                .splineToLinearHeading(new Pose2d(11, 11, Math.PI),-3)

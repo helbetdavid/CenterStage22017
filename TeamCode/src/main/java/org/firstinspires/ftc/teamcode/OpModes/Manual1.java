@@ -90,6 +90,8 @@ public class Manual1 extends LinearOpMode {
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
 
+//        Servo aveon = hardwareMap.get(Servo.class, "aveon");
+
         //Agatat
         CRServo PullupServo = hardwareMap.get(CRServo.class, "PullupServo");
         AnalogInput PullUpEncoder = hardwareMap.get(AnalogInput.class, "PullUpEncoder");
