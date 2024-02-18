@@ -36,12 +36,12 @@ public class MeepMeepTesting {
         Pose2d almostBoard = new Pose2d(48, 36, 0);
         Vector2d almostBoardV = new Vector2d(48, 36);
         Pose2d boardMij = new Pose2d(53, 36, 0);
-        Vector2d boardMijV = new Vector2d(53, -36);
+        Vector2d boardMijV = new Vector2d(51.5, 36);
         Pose2d boardSt = new Pose2d(53, -41, 0);
         Vector2d boardStV = new Vector2d(53, -41);
         Pose2d boardDr = new Pose2d(53, 29, 0);
         Vector2d boardDrV = new Vector2d(53, 29);
-        Pose2d mij = new Pose2d(11, 11, Math.PI);
+        Pose2d mij = new Pose2d(11, 12, Math.PI);
         Vector2d mijV = new Vector2d(11, 11);
         Pose2d stackFront = new Pose2d(-58, 11, 0);
         Vector2d stackFrontV = new Vector2d(-58, 11.25);
@@ -55,12 +55,24 @@ public class MeepMeepTesting {
 
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(11, 11, Math.PI / 2))
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
 
 
 
-                .splineTo(new Vector2d(11, 12), Math.PI / 2)
-                        .waitSeconds(5)
+//                .strafeToLinearHeading(new Vector2d(-48, 19),0)
+//                .strafeToLinearHeading(new Vector2d(-48, 11),Math.PI/2)
+//                .turnTo(0)
+//                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
+                .strafeTo(boardMijV)
+
+                .setReversed(true)
+                .splineToLinearHeading(mij,-3)
+                .strafeTo(stackPregV)
+                .turnTo(0)
+                .strafeTo(stackFrontV)
+                        .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
+                .strafeTo(boardMijV)
                 .build());
 ////                        .setReversed(true)
 //                .splineToLinearHeading(new Pose2d(11, 11, Math.PI),-3)

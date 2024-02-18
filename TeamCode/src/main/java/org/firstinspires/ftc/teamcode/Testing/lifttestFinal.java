@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Config
 @TeleOp
@@ -19,13 +20,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 public class lifttestFinal extends LinearOpMode {
     private PIDFController controller;
 
-    public static double inmServo = 0.5;
-    public static double inmGlisiere = 0.5;
+    public static double inmServo = 0.253;
+    public static double inmGlisiere = 1;
+    public static double adaos = 1;
+    public static double timp = 0.35;
 
-    public static double p = 0.0061, i = 0.00012 , d = 0.00005;
-    public static double f = 0.00003;
+    public static double p = 0.0052, i = 0.000135 , d = 0.000055;
+    public static double f = 0.000035;
     public static int target = 0;
-    public static double relatieP = 0.0053;
+    public static double relatieP = 0.0062;
 
 
     @Override
@@ -43,7 +46,8 @@ public class lifttestFinal extends LinearOpMode {
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
 
         CRServo Usa = hardwareMap.get(CRServo.class, "Usa");
-
+        boolean liftjos = false;
+        ElapsedTime timer = new ElapsedTime();
         waitForStart();
         if (isStopRequested()) return;
 
@@ -63,11 +67,19 @@ public class lifttestFinal extends LinearOpMode {
             leftLift.setPower(leftLiftPower/denom* inmGlisiere);
             if(Math.abs(target-liftPos) > 20) {
                 if (leftLiftPower > 0)
-                    Usa.setPower(1);
-                else if (leftLiftPower < 0)
-                    Usa.setPower(-1);
+                    Usa.setPower(-inmServo);
+                else if (leftLiftPower < 0) {
+                    timer.reset();
+                    liftjos=true;
+                    Usa.setPower(inmServo + adaos);
+                }
                 else Usa.setPower(0);
             }
+            else if(timer.seconds()<timp && liftjos){
+                Usa.setPower(inmServo + adaos);
+            }
+            else {liftjos = false; Usa.setPower(0);}
+//            else Usa.setPower(0);
 
             telemetry.addData("target ", target);
             telemetry.addData("pos ", liftPos);

@@ -28,8 +28,8 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
     static final Scalar Green = new Scalar(0, 255, 0);
 
     //Colturile din stanga sus ale dreptunghiurilor
-    public static Point DREPTUNGHI_2_COLT_STANGA_SUS = new Point(440, 275);
-    public static Point DREPTUNGHI_3_COLT_STANGA_SUS = new Point(950, 300);
+    public static Point DREPTUNGHI_2_COLT_STANGA_SUS = new Point(440, 475);
+    public static Point DREPTUNGHI_3_COLT_STANGA_SUS = new Point(950, 500);
     public static int REGION_WIDTH = 125;
     public static int REGION_HEIGHT = 125;
 
