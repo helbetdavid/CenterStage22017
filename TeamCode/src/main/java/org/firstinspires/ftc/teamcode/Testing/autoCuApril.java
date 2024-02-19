@@ -48,21 +48,6 @@ public class autoCuApril extends LinearOpMode {
     Pose2d beginPose = new Pose2d(-38, 61, -Math.PI / 2);
     IMU imu;
 
-//    public class Drive implements Action{
-//        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-//
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            drive.updatePoseEstimate();
-//            return false;
-//        }
-//
-//
-//    }
-//    public Action panaMea(){
-//        return new Drive();
-//    }
-
-
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
 
@@ -115,6 +100,8 @@ public class autoCuApril extends LinearOpMode {
         Vector2d stackFarV = new Vector2d(-58, 35.5);
         Pose2d stackPreg = new Pose2d(-40, 12, 0);
         Vector2d stackPregV = new Vector2d(-40, 16);
+
+
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Action caseMijloc = drive.actionBuilder(beginPose)

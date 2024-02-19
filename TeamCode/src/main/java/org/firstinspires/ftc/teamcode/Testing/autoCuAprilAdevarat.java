@@ -38,6 +38,12 @@ import java.util.List;
 
 public class autoCuAprilAdevarat extends LinearOpMode {
 
+    public boolean targetFound = false;
+    public double aprilDrive = 0;
+    public double strafe = 0;
+    public double turn = 0;
+
+
     public static double DESIRED_DISTANCE = 10; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
@@ -79,7 +85,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         pixelStackFar
     }
 
-    public autoCuApril.StackPixel stackPixel;
+    public StackPixel stackPixel;
 
     private static volatile OpenCvPipAlbastru.detectie nou;
 
@@ -90,6 +96,10 @@ public class autoCuAprilAdevarat extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        stackPixel = StackPixel.pixelStackFront;
+
+        //SubSystems pt lift si alea alea
+
         Lift lift = new Lift();
         Movement movement = new Movement();
         Intake intake = new Intake();
@@ -98,43 +108,29 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         movement.init(hardwareMap);
         intake.init(hardwareMap);
 
-        boolean targetFound = false;    // Set to true when an AprilTag target is detected
-        double aprilDrive = 0;        // Desired forward power/speed (-1 to +1)
-        double strafe = 0;        // Desired strafe power/speed (-1 to +1)
-        double turn = 0;        // Desired turning power/speed (-1 to +1)
+        //April Tag
+
 
         // Initialize the Apriltag Detection process
         initAprilTag();
-        FtcDashboard dashboard = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
+        FtcDashboard dashboardApril = FtcDashboard.getInstance();
+        telemetry = new MultipleTelemetry(telemetry, dashboardApril.getTelemetry());
 
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-//        OpenCvWebcam camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-//        FtcDashboard.getInstance().startCameraStream(camera, 30);
-
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must match the names assigned during the robot configuration.
-        // step (using the FTC Robot Controller app on the phone).
+        //Motoare AprilTag
         leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFront");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftRear");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightRear");
 
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-//        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-
-        // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
 //        telemetry.update();
 
-        stackPixel = autoCuApril.StackPixel.pixelStackFront;
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -170,13 +166,57 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                 .build();
 
 
-//        Lift lift = new Lift();
-//        Movement movement = new Movement();
-//        Intake intake = new Intake();
-        DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-        DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-        DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        goToMij = drive.actionBuilder(drive.pose).strafeTo(new Vector2d(40, 12)).build();
+        boardToMijCorrected = drive.actionBuilder(drive.pose)
+                .strafeTo(new Vector2d(53, 36))
+                .build();
+        stackToMijBetter = drive.actionBuilder(drive.pose)
+                .splineToLinearHeading(new Pose2d(48, 36, 0), 0.75)
+                .build();
+
+        mijStackPreg = drive.actionBuilder(drive.pose)
+                .strafeTo(stackPregV)
+                .turnTo(0)
+                .build();
+
+        switch (stackPixel) {
+            case pixelStackFar:
+                pixelStack = drive.actionBuilder(drive.pose)
+                        .setReversed(true)
+                        .splineToLinearHeading(stackFar, 3)
+                        .build();
+                pixelToPreg = drive.actionBuilder(drive.pose)
+                        .strafeTo(stackPregV)
+                        .build();
+                break;
+
+            case pixelStackMid:
+                pixelStack = drive.actionBuilder(drive.pose)
+                        .setReversed(true)
+                        .splineToLinearHeading(stackMid, 3)
+                        .build();
+                pixelToPreg = drive.actionBuilder(drive.pose)
+                        .strafeTo(stackPregV)
+                        .build();
+                break;
+
+            case pixelStackFront:
+                pixelStack = drive.actionBuilder(drive.pose)
+//                        .turn(Math.PI)
+                        .strafeTo(stackFrontV)
+                        .build();
+                pixelToPreg = drive.actionBuilder(drive.pose)
+                        .strafeTo(stackPregV)
+                        .build();
+                break;
+        }
+
+
+//
+//        DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+//        DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+//        DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+//        DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
 
         lift.init(hardwareMap);
@@ -185,7 +225,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
         initOpenCV(telemetry);
-//        FtcDashboard dashboard = FtcDashboard.getInstance();
+        FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
         FtcDashboard.getInstance().startCameraStream(controlHubCam, 30);
 
@@ -194,12 +234,16 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         v[2] = 0;
         v[3] = 0;
 
+
+//INITIALIZARE
         while (opModeInInit() && !isStopRequested()) {
+
             nou = OpenCvPipAlbastru.getLocugasit();
             if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
             else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
             else v[3]++;
             intake.intakePos(0.1);
+
             telemetry.addData("Detect", nou);
             telemetry.addData("Dreapta", v[1]);
             telemetry.addData("Stanga", v[2]);
@@ -212,106 +256,105 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
             //DREAPTA
-//            pixelToBoardNT = drive.actionBuilder(beginPose)
-//            exactBoard = drive.actionBuilder(drive.pose)
-//            boardToMij = drive.actionBuilder(drive.pose)
-//            parking = drive.actionBuilder(drive.pose)
+
+            pixelToBoardNT = drive.actionBuilder(beginPose)
+                    .strafeTo(new Vector2d(-52, 39))
+                    .setReversed(true)
+                    .splineToLinearHeading(new Pose2d(-35, 45, -Math.PI / 2), -1)
+                    .strafeTo(new Vector2d(-35, 11))
+                    .turnTo(0)
+                    .splineToLinearHeading(new Pose2d(48, 36, 0), 1)
+//                    .strafeToLinearHeading(new Vector2d(-40,36),0)
+//                    .strafeTo(new Vector2d(48, 36))
+                    .build();
+//            drive.updatePoseEstimate();
+            exactBoard = drive.actionBuilder(drive.pose)
+                    .strafeTo(boardDrV)
+//                    .waitSeconds(3)
+                    .build();
+//            drive.updatePoseEstimate();
+            boardToMij = drive.actionBuilder(drive.pose)
+                    .setReversed(true)
+                    .splineToLinearHeading(mij, -3)
+                    .build();
+            parking = drive.actionBuilder(drive.pose)
+                    .strafeTo(new Vector2d(48, 16))
+                    .strafeTo(new Vector2d(56, 16))
+                    .build();
+//
 
         } else if (v[3] > v[1] && v[3] > v[2]) {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
             //MIJLOC
-            double finalAprilDrive = aprilDrive;
-            double finalStrafe = strafe;
-            double finalTurn = turn;
-            Actions.runBlocking(
-                    new SequentialAction(caseMijloc,
-                            new ParallelAction(
-                                    (telemetryPacket) -> {
-                                        moveRobot(finalAprilDrive, finalStrafe, finalTurn);
-                                        lift.goTarget(2000);
-                                        lift.update();
-                                        return false;
-                                    }
 
-                            )));
+            pixelToBoardNT = drive.actionBuilder(beginPose)
+//                    .strafeTo(new Vector2d(-38, 32))
+//                    .strafeTo(new Vector2d(-38, 36))
+//                    .turnTo(0)
+//                    .strafeTo(new Vector2d(48, 36))
+                    .strafeToLinearHeading(new Vector2d(-48, 19), 0)
+                    .strafeToLinearHeading(new Vector2d(-48, 11), Math.PI / 2)
+                    .turnTo(0)
+                    .splineToLinearHeading(new Pose2d(48, 36, 0), 0.75)
+                    .build();
+            parking = drive.actionBuilder(drive.pose)
+                    .strafeTo(new Vector2d(48, 16))
+                    .strafeTo(new Vector2d(56, 16))
+                    .build();
+//            drive.updatePoseEstimate();
+            exactBoard = drive.actionBuilder(drive.pose)
+                    .strafeTo(boardMijV)
+//                    .waitSeconds(3)
+                    .build();
+//            drive.updatePoseEstimate();
+            boardToMij = drive.actionBuilder(drive.pose)
+                    .setReversed(true)
+                    .splineToLinearHeading(mij, -3)
+                    .build();
 
-//            pixelToBoardNT = drive.actionBuilder(beginPose)
-//            parking = drive.actionBuilder(drive.pose)
-//            exactBoard = drive.actionBuilder(drive.pose)
-//            boardToMij = drive.actionBuilder(drive.pose)
         } else {
             telemetry.addLine("am ajuns aici");
 //            telemetry.update();
             //STANGA
-//            pixelToBoardNT = drive.actionBuilder(beginPose)
-//            exactBoard = drive.actionBuilder(drive.pose)
-//            boardToMij = drive.actionBuilder(drive.pose)
-//            parking = drive.actionBuilder(drive.pose)
+
+            pixelToBoardNT = drive.actionBuilder(beginPose)
+                    .splineTo(new Vector2d(-30, 36), -Math.PI / 4)
+                    .setReversed(true)
+                    .splineToLinearHeading(new Pose2d(-36, 38, 0), 0)
+                    .strafeTo(new Vector2d(-36, 11))
+                    .setReversed(false)
+                    .splineToLinearHeading(new Pose2d(48, 36, 0), 1)
+                    .build();
+//            drive.updatePoseEstimate();
+            exactBoard = drive.actionBuilder(drive.pose)
+                    .strafeTo(boardStV)
+//                    .waitSeconds(3)
+                    .build();
+//            drive.updatePoseEstimate();
+            boardToMij = drive.actionBuilder(drive.pose)
+                    .setReversed(true)
+                    .splineToLinearHeading(mij, -3)
+                    .build();
+            parking = drive.actionBuilder(drive.pose)
+                    .strafeTo(new Vector2d(48, 16))
+                    .strafeTo(new Vector2d(56, 16))
+                    .build();
+//
         }
 
         waitForStart();
+
         while (opModeIsActive() && !isStopRequested()) {
-            targetFound = false;
-            desiredTag = null;
+            //Adauga intai cod de rr pana sa ajungi la pozitia aia in care esti la 42 de grade de
+            //backdrop si dupa apeleaza functia aia intr-un parallel action sau ceva (scuze daca am scris gresit)
+            //ca sa ridici glisierele in timp ce te apropii de backdrop
 
-            // Step through the list of detected tags and look for a matching tag
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for (AprilTagDetection detection : currentDetections) {
-                // Look to see if we have size info on this tag.
-                if (detection.metadata != null) {
-                    //  Check to see if we want to track towards this tag.
-                    if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                        // Yes, we want to use this tag.
-                        targetFound = true;
-                        desiredTag = detection;
-                        break;  // don't look any further.
-                    } else {
-                        // This tag is in the library, but we do not want to track it right now.
-                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                    }
-                } else {
-                    // This tag is NOT in the library, so we don't have enough information to track to it.
-                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-                }
-            }
+            //Nu uita de valorile alea pentru cazuri, chiar daca acum lucram numa pt mijloc
 
-            // Tell the driver what we see, and what to do.
-            if (targetFound) {
-                telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
-                telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-                telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
-                telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-                telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
-            } else {
-                telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
-            }
 
-            // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-            if (targetFound) {
 
-                // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-                double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-                double headingError = desiredTag.ftcPose.bearing;
-                double yawError = desiredTag.ftcPose.yaw;
 
-                // Use the speed and turn "gains" to calculate how we want the robot to move.
-                aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-                turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-                strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
-                telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            } else {
-
-                // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-                aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-                strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
-                turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-                telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            }
-            telemetry.update();
-
-            // Apply desired axes motions to the drivetrain.
         }
     }
 
@@ -392,4 +435,70 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
+
+    public void detectAprilTag() {
+        targetFound = false;
+        desiredTag = null;
+
+
+        // Step through the list of detected tags and look for a matching tag
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                    // Yes, we want to use this tag.
+                    targetFound = true;
+                    desiredTag = detection;
+                    break;  // don't look any further.
+                } else {
+                    // This tag is in the library, but we do not want to track it right now.
+                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                }
+            } else {
+                // This tag is NOT in the library, so we don't have enough information to track to it.
+                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+            }
+        }
+
+        // Tell the driver what we see, and what to do.
+        if (targetFound) {
+            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+            telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+            telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+        } else {
+            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+        }
+
+        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+        if (targetFound) {
+
+            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+            double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+            double headingError = desiredTag.ftcPose.bearing;
+            double yawError = desiredTag.ftcPose.yaw;
+
+            // Use the speed and turn "gains" to calculate how we want the robot to move.
+            aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
+        } else {
+
+            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
+            aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+            strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+            turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+
+            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
+        }
+        telemetry.update();
+
+    }
+
+
 }
