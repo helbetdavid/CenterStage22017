@@ -42,8 +42,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
     public double aprilDrive = 0;
     public double strafe = 0;
     public double turn = 0;
-
-
     public static double DESIRED_DISTANCE = 10; //  this is how close the camera should get to the target (inches)
 
     //  Set the GAIN constants to control the relationship between the measured position error, and how much power is
@@ -89,7 +87,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
     private static volatile OpenCvPipAlbastru.detectie nou;
 
-    Action pixelToBoardNT, boardToMij, exactBoard, pixelStack, pixelToPreg, mijStackPreg, goToMij, stackToMijBetter, parking, boardToMijCorrected;
+    Action pixelToBoardNT, boardToMij, exactBoard, pixelStack, pixelToPreg, mijStackPreg, goToMij, stackToMijBetter, parking, boardToMijCorrected;      //balane sa iti dau la muie cu actionurile tale si cu denumirile lor cu tot
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -110,7 +108,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         //April Tag
 
-
         // Initialize the Apriltag Detection process
         initAprilTag();
         FtcDashboard dashboardApril = FtcDashboard.getInstance();
@@ -129,8 +126,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
-//        telemetry.update();
-
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -165,18 +160,17 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                 .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build();
 
-
-        goToMij = drive.actionBuilder(drive.pose).strafeTo(new Vector2d(40, 12)).build();
-        boardToMijCorrected = drive.actionBuilder(drive.pose)
-                .strafeTo(new Vector2d(53, 36))
-                .build();
-        stackToMijBetter = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(48, 36, 0), 0.75)
+        Action caseDreapta = drive.actionBuilder(beginPose)
+                .strafeToLinearHeading(new Vector2d(-54, 20), 0)
+                .strafeToLinearHeading(stackMidV, 0)
+                .strafeTo(new Vector2d(-54, 12))
+                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build();
 
-        mijStackPreg = drive.actionBuilder(drive.pose)
-                .strafeTo(stackPregV)
-                .turnTo(0)
+        Action caseStanga = drive.actionBuilder(beginPose)
+                .strafeToSplineHeading(new Vector2d(-34, 26), Math.toRadians(-30))
+                .strafeToLinearHeading(stackFrontV, 0)
+                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build();
 
         switch (stackPixel) {
@@ -211,18 +205,14 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                 break;
         }
 
-
-//
-//        DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-//        DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
-//        DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
-//        DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-
+        DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
+        DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
+        DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
+        DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
 
         lift.init(hardwareMap);
         movement.init(hardwareMap);
         intake.init(hardwareMap);
-
 
         initOpenCV(telemetry);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -234,8 +224,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         v[2] = 0;
         v[3] = 0;
 
-
-//INITIALIZARE
         while (opModeInInit() && !isStopRequested()) {
 
             nou = OpenCvPipAlbastru.getLocugasit();
@@ -251,110 +239,47 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.update();
         }
 
-
-        if (v[1] > v[2] && v[1] > v[3]) {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            //DREAPTA
-
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeTo(new Vector2d(-52, 39))
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(-35, 45, -Math.PI / 2), -1)
-                    .strafeTo(new Vector2d(-35, 11))
-                    .turnTo(0)
-                    .splineToLinearHeading(new Pose2d(48, 36, 0), 1)
-//                    .strafeToLinearHeading(new Vector2d(-40,36),0)
-//                    .strafeTo(new Vector2d(48, 36))
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(drive.pose)
-                    .strafeTo(boardDrV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(drive.pose)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij, -3)
-                    .build();
-            parking = drive.actionBuilder(drive.pose)
-                    .strafeTo(new Vector2d(48, 16))
-                    .strafeTo(new Vector2d(56, 16))
-                    .build();
-//
-
-        } else if (v[3] > v[1] && v[3] > v[2]) {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            //MIJLOC
-
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-//                    .strafeTo(new Vector2d(-38, 32))
-//                    .strafeTo(new Vector2d(-38, 36))
-//                    .turnTo(0)
-//                    .strafeTo(new Vector2d(48, 36))
-                    .strafeToLinearHeading(new Vector2d(-48, 19), 0)
-                    .strafeToLinearHeading(new Vector2d(-48, 11), Math.PI / 2)
-                    .turnTo(0)
-                    .splineToLinearHeading(new Pose2d(48, 36, 0), 0.75)
-                    .build();
-            parking = drive.actionBuilder(drive.pose)
-                    .strafeTo(new Vector2d(48, 16))
-                    .strafeTo(new Vector2d(56, 16))
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(drive.pose)
-                    .strafeTo(boardMijV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(drive.pose)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij, -3)
-                    .build();
-
-        } else {
-            telemetry.addLine("am ajuns aici");
-//            telemetry.update();
-            //STANGA
-
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(-30, 36), -Math.PI / 4)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(-36, 38, 0), 0)
-                    .strafeTo(new Vector2d(-36, 11))
-                    .setReversed(false)
-                    .splineToLinearHeading(new Pose2d(48, 36, 0), 1)
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(drive.pose)
-                    .strafeTo(boardStV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(drive.pose)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij, -3)
-                    .build();
-            parking = drive.actionBuilder(drive.pose)
-                    .strafeTo(new Vector2d(48, 16))
-                    .strafeTo(new Vector2d(56, 16))
-                    .build();
-//
-        }
-
         waitForStart();
 
         while (opModeIsActive() && !isStopRequested()) {
-            //Adauga intai cod de rr pana sa ajungi la pozitia aia in care esti la 42 de grade de
-            //backdrop si dupa apeleaza functia aia intr-un parallel action sau ceva (scuze daca am scris gresit)
-            //ca sa ridici glisierele in timp ce te apropii de backdrop
+            // am incercat o susta
+            // nu stiu daca merge
 
-            //Nu uita de valorile alea pentru cazuri, chiar daca acum lucram numa pt mijloc
+            if (v[1] > v[2] && v[1] > v[3]) {
+                telemetry.addLine("am ajuns aici");
+                telemetry.update();
+                //DREAPTA
+                Actions.runBlocking(
+                        new SequentialAction(caseDreapta,
+                                new ParallelAction(
+                                        (telemetryPacket) -> {
 
+                                        }
+                                )));
+            } else if (v[3] > v[1] && v[3] > v[2]) {
+                telemetry.addLine("am ajuns aici");
+                telemetry.update();
+                //MIJLOC
+                Actions.runBlocking(
+                        new SequentialAction(caseMijloc,
+                                new ParallelAction(
+                                        (telemetryPacket) -> {
 
+                                        }
+                                )));
 
+            } else {
+                telemetry.addLine("am ajuns aici");
+                telemetry.update();
+                //STANGA
+                Actions.runBlocking(
+                        new SequentialAction(caseStanga,
+                                new ParallelAction(
+                                        (telemetryPacket) -> {
 
+                                        }
+                                )));
+            }
         }
     }
 
