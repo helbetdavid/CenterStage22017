@@ -345,9 +345,8 @@ public class autoCuApril extends LinearOpMode {
                     drive.actionBuilder(drive.pose)
 
                     .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(11, 16, Math.PI),-3)
+                    .splineToLinearHeading(new Pose2d(11, 16, 0),-3)
                     .strafeTo(stackPregV)
-                    .turnTo(0)
                     .strafeTo(stackFrontV)
                     .build(),
                             (telemetryPacket) -> {
@@ -371,6 +370,8 @@ public class autoCuApril extends LinearOpMode {
             while(timer.seconds()<0.8&& !isStopRequested())intake.intakePos(0.48);
             while(timer.seconds()<1&& !isStopRequested())intake.intakePos(0.50);
             while(timer.seconds()<1.2&& !isStopRequested())intake.intakePos(0.52);
+            intake.pwrIntake(0);
+            intake.pwrBanda(0);
 
             Actions.runBlocking(drive.actionBuilder(drive.pose)
                     .splineToLinearHeading(new Pose2d(48,43,0),0.75)

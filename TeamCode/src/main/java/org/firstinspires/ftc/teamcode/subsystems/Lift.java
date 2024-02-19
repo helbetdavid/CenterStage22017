@@ -41,7 +41,7 @@ public class Lift extends Mechanism{
         fixer = Math.max(rightLiftPower, Math.max(leftLiftPower, 1));
 
 
-        if(liftPos<=target-30){
+        if(liftPos>=target-50){
             isReached=true;
         }
         rightLift.setPower(rightLiftPower / fixer );
