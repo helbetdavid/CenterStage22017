@@ -42,6 +42,8 @@ public class FormulaUsa extends LinearOpMode {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
+
+
         waitForStart();
         while(opModeIsActive() && !isStopRequested()){
             controller.setPIDF(p, i, d, f);
@@ -57,7 +59,7 @@ public class FormulaUsa extends LinearOpMode {
 
 
 
-            rightLift.setPower(rightLiftPower / fixer / 1.25);
+            rightLift.setPower(rightLiftPower / fixer / 1.250);
             leftLift.setPower(leftLiftPower / fixer / 1.25);
 
 
@@ -73,12 +75,13 @@ public class FormulaUsa extends LinearOpMode {
 
                 LastBucEncoder = CurrentbucEncoder;
 
-                telemetry.addData("Tickuri Servo",   ForTelemetry + rotatii/2* 360);
-                telemetry.addData("rotatii", rotatii);
+                telemetry.addData("Tickuri Servo",   ForTelemetry + (int)rotatii/88* 360);
+                telemetry.addData("rotatii", (int)rotatii/88);
+                telemetry.addData("Servo", UsaEncoder.getVoltage() / 3.3 * 360);
                 telemetry.update();
 
             }
-             Usa.setPower(0);
+            Usa.setPower(0);
 
 
             while (gamepad1.x) {
@@ -92,8 +95,9 @@ public class FormulaUsa extends LinearOpMode {
                 if(LastBucEncoder < CurrentbucEncoder) rotatii--;
                 LastBucEncoder = CurrentbucEncoder;
 
-                telemetry.addData("Tickuri Servo",   ForTelemetry + rotatii/2* 360);
-                telemetry.addData("rotatii", rotatii);
+                telemetry.addData("Tickuri Servo",   ForTelemetry + ((int)rotatii/88 -1)* 360);
+                telemetry.addData("rotatii", (int)rotatii/88);
+                telemetry.addData("Servo", UsaEncoder.getVoltage() / 3.3 * 360);
                 telemetry.update();
 
 //                telemetry.addData("Tickuri Servo", CurrentbucEncoder + rotatii* 360);
