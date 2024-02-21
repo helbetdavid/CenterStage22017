@@ -56,10 +56,17 @@ public class MeepMeepTesting {
 
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
-                .strafeToSplineHeading(new Vector2d(-34, 26), Math.toRadians(-30))
+//                .strafeToSplineHeading(new Vector2d(-34, 26), Math.toRadians(-30))
+//                .strafeToLinearHeading(stackFrontV, 0)
+//                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
+//                .build());
+                .strafeToLinearHeading(new Vector2d(-46, 19), 0)
+                .strafeToLinearHeading(new Vector2d(-46, 11), Math.PI / 2)
                 .strafeToLinearHeading(stackFrontV, 0)
-                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
+                .strafeToSplineHeading(new Vector2d(12, 12), Math.toRadians(0))
+                .turnTo(Math.toRadians(25))
                 .build());
+
 
 
 

@@ -65,21 +65,21 @@ public class lifttestFinal extends LinearOpMode {
 
             rightLift.setPower(rightLiftPower/denom * inmGlisiere);
             leftLift.setPower(leftLiftPower/denom* inmGlisiere);
-            if(Math.abs(target-liftPos) > 20) {
-                if (leftLiftPower > 0)
-                    Usa.setPower(-inmServo);
-                else if (leftLiftPower < 0) {
-                    timer.reset();
-                    liftjos=true;
-                    Usa.setPower(inmServo + adaos);
-                }
-                else Usa.setPower(0);
-            }
-            else if(timer.seconds()<timp && liftjos){
-                Usa.setPower(inmServo + adaos);
-            }
-            else {liftjos = false; Usa.setPower(0);}
-//            else Usa.setPower(0);
+//            if(Math.abs(target-liftPos) > 20) {
+//                if (leftLiftPower > 0)
+//                    Usa.setPower(-inmServo);
+//                else if (leftLiftPower < 0) {
+//                    timer.reset();
+//                    liftjos=true;
+//                    Usa.setPower(inmServo + adaos);
+//                }
+//                else Usa.setPower(0);
+//            }
+//            else if(timer.seconds()<timp && liftjos){
+//                Usa.setPower(inmServo + adaos);
+//            }
+//            else {liftjos = false; Usa.setPower(0);}
+////            else Usa.setPower(0);
 
             telemetry.addData("target ", target);
             telemetry.addData("pos ", liftPos);

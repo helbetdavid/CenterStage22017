@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -22,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDir
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipAlbastru;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.AprilTag;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Movement;
@@ -62,7 +64,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
     private OpenCvCamera controlHubCam;
     private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
-    public static int DESIRED_TAG_ID = 8;     // Choose the tag you want to approach or set to -1 for ANY tag.
+    public static int DESIRED_TAG_ID;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
@@ -87,7 +89,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
     private static volatile OpenCvPipAlbastru.detectie nou;
 
-    Action pixelToBoardNT, boardToMij, exactBoard, pixelStack, pixelToPreg, mijStackPreg, goToMij, stackToMijBetter, parking, boardToMijCorrected;      //balane sa iti dau la muie cu actionurile tale si cu denumirile lor cu tot
+    Action pixelToBoardNT, boardToMij, exactBoard, pixelStack, pixelToPreg, mijStackPreg, goToMij, stackToMijBetter, parking, boardToMijCorrected, mergi;      //balane sa iti dau la muie cu actionurile tale si cu denumirile lor cu tot
+
 
     ElapsedTime timer = new ElapsedTime();
 
@@ -95,6 +98,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         stackPixel = StackPixel.pixelStackFront;
+
+        AprilTag aprilTag = new AprilTag(hardwareMap);
 
         //SubSystems pt lift si alea alea
 
@@ -109,7 +114,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         //April Tag
 
         // Initialize the Apriltag Detection process
-        initAprilTag();
+
         FtcDashboard dashboardApril = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboardApril.getTelemetry());
 
@@ -143,7 +148,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         Pose2d mij = new Pose2d(11, 12, Math.PI);// y era y=17
         Vector2d mijV = new Vector2d(11, 14);
         Pose2d stackFront = new Pose2d(-58, 12, 0);
-        Vector2d stackFrontV = new Vector2d(-58, 16);
+        Vector2d stackFrontV = new Vector2d(-60, 15);
         Pose2d stackMid = new Pose2d(-59, 23.5, 0);
         Vector2d stackMidV = new Vector2d(-58, 23.5);
         Pose2d stackFar = new Pose2d(-58, 35.5, 0);
@@ -153,57 +158,37 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        Action caseMijloc = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-46, 19), 0)
-                .strafeToLinearHeading(new Vector2d(-46, 11), Math.PI / 2)
-                .strafeToLinearHeading(stackFrontV, 0)
-                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
-                .build();
-
-        Action caseDreapta = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-54, 20), 0)
-                .strafeToLinearHeading(stackMidV, 0)
-                .strafeTo(new Vector2d(-54, 12))
-                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
-                .build();
-
-        Action caseStanga = drive.actionBuilder(beginPose)
-                .strafeToSplineHeading(new Vector2d(-34, 26), Math.toRadians(-30))
-                .strafeToLinearHeading(stackFrontV, 0)
-                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
-                .build();
-
-        switch (stackPixel) {
-            case pixelStackFar:
-                pixelStack = drive.actionBuilder(drive.pose)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackFar, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(drive.pose)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackMid:
-                pixelStack = drive.actionBuilder(drive.pose)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackMid, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(drive.pose)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackFront:
-                pixelStack = drive.actionBuilder(drive.pose)
-//                        .turn(Math.PI)
-                        .strafeTo(stackFrontV)
-                        .build();
-                pixelToPreg = drive.actionBuilder(drive.pose)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-        }
+//        switch (stackPixel) {
+//            case pixelStackFar:
+//                pixelStack = drive.actionBuilder(drive.pose)
+//                        .setReversed(true)
+//                        .splineToLinearHeading(stackFar, 3)
+//                        .build();
+//                pixelToPreg = drive.actionBuilder(drive.pose)
+//                        .strafeTo(stackPregV)
+//                        .build();
+//                break;
+//
+//            case pixelStackMid:
+//                pixelStack = drive.actionBuilder(drive.pose)
+//                        .setReversed(true)
+//                        .splineToLinearHeading(stackMid, 3)
+//                        .build();
+//                pixelToPreg = drive.actionBuilder(drive.pose)
+//                        .strafeTo(stackPregV)
+//                        .build();
+//                break;
+//
+//            case pixelStackFront:
+//                pixelStack = drive.actionBuilder(drive.pose)
+////                        .turn(Math.PI)
+//                        .strafeTo(stackFrontV)
+//                        .build();
+//                pixelToPreg = drive.actionBuilder(drive.pose)
+//                        .strafeTo(stackPregV)
+//                        .build();
+//                break;
+//        }
 
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -239,80 +224,147 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.update();
         }
 
+
+        if (v[1] > v[2] && v[1] > v[3]) {
+            telemetry.addLine("am ajuns aici");
+            telemetry.update();
+            //DREAPTA
+
+            DESIRED_TAG_ID = 3;
+
+            MAX_AUTO_SPEED = 0.43;
+            MAX_AUTO_STRAFE = 0.34;
+            MAX_AUTO_TURN = 0.3;
+            SPEED_GAIN = 0.054;
+            STRAFE_GAIN = 0.025;
+            TURN_GAIN = 0.024;
+
+            mergi = drive.actionBuilder(beginPose)
+                    .strafeToLinearHeading(new Vector2d(-54, 20), 0)
+                    .strafeToLinearHeading(stackMidV, 0)
+                    .strafeTo(new Vector2d(-54, 12))
+                    .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(30.5))
+                    .build();
+
+        } else if (v[3] > v[1] && v[3] > v[2]) {
+            telemetry.addLine("am ajuns aici");
+            telemetry.update();
+            //MIJLOC
+
+            DESIRED_TAG_ID = 2;
+
+            MAX_AUTO_SPEED = 0.4;
+            MAX_AUTO_STRAFE = 0.3;
+            MAX_AUTO_TURN = 0.25;
+            SPEED_GAIN = 0.052;
+            STRAFE_GAIN = 0.03;
+            TURN_GAIN = 0.0207;
+
+            mergi = drive.actionBuilder(beginPose)
+                    .strafeToLinearHeading(new Vector2d(-46, 19), 0)
+                    .strafeToLinearHeading(new Vector2d(-46, 11), Math.PI / 2)
+                    .strafeToLinearHeading(stackFrontV, 0)
+                    .strafeToSplineHeading(new Vector2d(12, 12), Math.toRadians(0))
+                    .turnTo(Math.toRadians(25))
+                    .build();
+
+
+        } else {
+            telemetry.addLine("am ajuns aici");
+            telemetry.update();
+            //STANGA
+
+            DESIRED_TAG_ID = 1;
+
+            MAX_AUTO_SPEED = 0.42;
+            MAX_AUTO_STRAFE = 0.34;
+            MAX_AUTO_TURN = 0.3;
+            SPEED_GAIN = 0.054;
+            STRAFE_GAIN = 0.027;
+            TURN_GAIN = 0.03;
+
+            mergi = drive.actionBuilder(beginPose)
+                    .strafeToSplineHeading(new Vector2d(-34, 26), Math.toRadians(-30))
+                    .strafeToLinearHeading(stackFrontV, 0)
+                    .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(31))
+                    .build();
+
+        }
+
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()) {
+        if(opModeIsActive() && !isStopRequested()) {
             // am incercat o susta
             // nu stiu daca merge
+            telemetry.addData("Dreapta", v[1]);
+            telemetry.addData("Stanga", v[2]);
+            telemetry.addData("Mijloc", v[3]);
+            telemetry.addData("x", drive.pose.position.x);
+            telemetry.addData("y", drive.pose.position.y);
+//            telemetry.addData("sdfhdfh", drive.updatePoseEstimate());
+            telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
+            if (nou == OpenCvPipAlbastru.detectie.Dreapta) telemetry.addLine("Dreapta");
+            else if (nou == OpenCvPipAlbastru.detectie.Stanga) telemetry.addLine("Stanga");
+            else telemetry.addLine("Mijloc");
+            telemetry.update();
 
-            if (v[1] > v[2] && v[1] > v[3]) {
-                telemetry.addLine("am ajuns aici");
-                telemetry.update();
-                //DREAPTA
-                Actions.runBlocking(
-                        new SequentialAction(caseDreapta,
-                                new ParallelAction(
-                                        (telemetryPacket) -> {
+            controlHubCam.stopStreaming();
+            controlHubCam.closeCameraDevice();
 
-                                        }
-                                )));
-            } else if (v[3] > v[1] && v[3] > v[2]) {
-                telemetry.addLine("am ajuns aici");
-                telemetry.update();
-                //MIJLOC
-                Actions.runBlocking(
-                        new SequentialAction(caseMijloc,
-                                new ParallelAction(
-                                        (telemetryPacket) -> {
+            initAprilTag();
 
-                                        }
-                                )));
+//            controlHubCam.openCameraDevice();
 
-            } else {
-                telemetry.addLine("am ajuns aici");
-                telemetry.update();
-                //STANGA
-                Actions.runBlocking(
-                        new SequentialAction(caseStanga,
-                                new ParallelAction(
-                                        (telemetryPacket) -> {
 
-                                        }
-                                )));
-            }
+            Actions.runBlocking(
+                    new SequentialAction(
+                            mergi,
+                            aprilTag.detectAprilTag(),
+                            new SleepAction(0.5),
+                            aprilTag.goToAprilTag()
+                    )
+            );
+
+
+
+
+
+
+
         }
     }
 
-    public void moveRobot(double x, double y, double yaw) {
-        // Calculate wheel powers.
-        double leftFrontPower = x - y - yaw;
-        double rightFrontPower = x + y + yaw;
-        double leftBackPower = x + y - yaw;
-        double rightBackPower = x - y + yaw;
 
-        // Normalize wheel powers to be less than 1.0
-        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
-
-        if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
-        }
-
-        // Send powers to the wheels.
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
-    }
+//    public void moveRobot(double x, double y, double yaw) {
+//        // Calculate wheel powers.
+//        double leftFrontPower = x - y - yaw;
+//        double rightFrontPower = x + y + yaw;
+//        double leftBackPower = x + y - yaw;
+//        double rightBackPower = x - y + yaw;
+//
+//        // Normalize wheel powers to be less than 1.0
+//        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+//        max = Math.max(max, Math.abs(leftBackPower));
+//        max = Math.max(max, Math.abs(rightBackPower));
+//
+//        if (max > 1.0) {
+//            leftFrontPower /= max;
+//            rightFrontPower /= max;
+//            leftBackPower /= max;
+//            rightBackPower /= max;
+//        }
+//
+//        // Send powers to the wheels.
+//        leftFrontDrive.setPower(leftFrontPower);
+//        rightFrontDrive.setPower(rightFrontPower);
+//        leftBackDrive.setPower(leftBackPower);
+//        rightBackDrive.setPower(rightBackPower);
+//    }
 
     /**
      * Initialize the AprilTag processor.
      */
-    private void initAprilTag() {
+    public void initAprilTag() {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();
 
@@ -361,69 +413,76 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
-    public void detectAprilTag() {
-        targetFound = false;
-        desiredTag = null;
+//    public void detectAprilTag(int DESIRED_TAG_ID) {
+//        targetFound = false;
+//        desiredTag = null;
+//
+//
+//        // Step through the list of detected tags and look for a matching tag
+//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+//        for (AprilTagDetection detection : currentDetections) {
+//            // Look to see if we have size info on this tag.
+//            if (detection.metadata != null) {
+//                //  Check to see if we want to track towards this tag.
+//                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+//                    // Yes, we want to use this tag.
+//                    targetFound = true;
+//                    desiredTag = detection;
+//                    break;  // don't look any further.
+//                } else {
+//                    // This tag is in the library, but we do not want to track it right now.
+//                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+//                }
+//            } else {
+//                // This tag is NOT in the library, so we don't have enough information to track to it.
+//                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+//            }
+//        }
+//
+//        // Tell the driver what we see, and what to do.
+//        if (targetFound) {
+//            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+//            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+//            telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+//            telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+//            telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+//        } else {
+//            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+//        }
+//
+//        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+//        if (targetFound) {
+//
+//            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+//            double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+//            double headingError = desiredTag.ftcPose.bearing;
+//            double yawError = desiredTag.ftcPose.yaw;
+//
+//            // Use the speed and turn "gains" to calculate how we want the robot to move.
+//            aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+//            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+//            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+//
+//
+//
+//            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
+//        }
 
 
-        // Step through the list of detected tags and look for a matching tag
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        for (AprilTagDetection detection : currentDetections) {
-            // Look to see if we have size info on this tag.
-            if (detection.metadata != null) {
-                //  Check to see if we want to track towards this tag.
-                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                    // Yes, we want to use this tag.
-                    targetFound = true;
-                    desiredTag = detection;
-                    break;  // don't look any further.
-                } else {
-                    // This tag is in the library, but we do not want to track it right now.
-                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-                }
-            } else {
-                // This tag is NOT in the library, so we don't have enough information to track to it.
-                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-            }
-        }
 
-        // Tell the driver what we see, and what to do.
-        if (targetFound) {
-            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
-            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
-            telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-            telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
-        } else {
-            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
-        }
 
-        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-        if (targetFound) {
-
-            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-            double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-            double headingError = desiredTag.ftcPose.bearing;
-            double yawError = desiredTag.ftcPose.yaw;
-
-            // Use the speed and turn "gains" to calculate how we want the robot to move.
-            aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
-            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
-        } else {
-
-            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-            aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-            strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
-            turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-
-            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
-        }
-        telemetry.update();
+//        else {
+//
+//            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
+//            aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+//            strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+//            turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+//
+//            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
+//        }
+//        telemetry.update();
 
     }
 
 
-}
+
