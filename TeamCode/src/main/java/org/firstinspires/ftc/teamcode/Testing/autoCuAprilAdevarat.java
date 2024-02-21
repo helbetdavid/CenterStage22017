@@ -316,14 +316,14 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 //            controlHubCam.openCameraDevice();
 
 
-            Actions.runBlocking(
-                    new SequentialAction(
-                            mergi,
-                            aprilTag.detectAprilTag(),
-                            new SleepAction(0.5),
-                            aprilTag.goToAprilTag()
-                    )
-            );
+            Actions.runBlocking(mergi);
+
+            while(desiredTag.ftcPose.range >= DESIRED_DISTANCE){
+                detectAprilTag(DESIRED_TAG_ID);
+                moveRobot(aprilDrive,strafe,turn);
+                sleep(10);
+            }
+
 
 
 
@@ -335,31 +335,31 @@ public class autoCuAprilAdevarat extends LinearOpMode {
     }
 
 
-//    public void moveRobot(double x, double y, double yaw) {
-//        // Calculate wheel powers.
-//        double leftFrontPower = x - y - yaw;
-//        double rightFrontPower = x + y + yaw;
-//        double leftBackPower = x + y - yaw;
-//        double rightBackPower = x - y + yaw;
-//
-//        // Normalize wheel powers to be less than 1.0
-//        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-//        max = Math.max(max, Math.abs(leftBackPower));
-//        max = Math.max(max, Math.abs(rightBackPower));
-//
-//        if (max > 1.0) {
-//            leftFrontPower /= max;
-//            rightFrontPower /= max;
-//            leftBackPower /= max;
-//            rightBackPower /= max;
-//        }
-//
-//        // Send powers to the wheels.
-//        leftFrontDrive.setPower(leftFrontPower);
-//        rightFrontDrive.setPower(rightFrontPower);
-//        leftBackDrive.setPower(leftBackPower);
-//        rightBackDrive.setPower(rightBackPower);
-//    }
+    public void moveRobot(double x, double y, double yaw) {
+        // Calculate wheel powers.
+        double leftFrontPower = x - y - yaw;
+        double rightFrontPower = x + y + yaw;
+        double leftBackPower = x + y - yaw;
+        double rightBackPower = x - y + yaw;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        leftFrontDrive.setPower(leftFrontPower);
+        rightFrontDrive.setPower(rightFrontPower);
+        leftBackDrive.setPower(leftBackPower);
+        rightBackDrive.setPower(rightBackPower);
+    }
 
     /**
      * Initialize the AprilTag processor.
@@ -413,76 +413,65 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
-//    public void detectAprilTag(int DESIRED_TAG_ID) {
-//        targetFound = false;
-//        desiredTag = null;
-//
-//
-//        // Step through the list of detected tags and look for a matching tag
-//        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-//        for (AprilTagDetection detection : currentDetections) {
-//            // Look to see if we have size info on this tag.
-//            if (detection.metadata != null) {
-//                //  Check to see if we want to track towards this tag.
-//                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-//                    // Yes, we want to use this tag.
-//                    targetFound = true;
-//                    desiredTag = detection;
-//                    break;  // don't look any further.
-//                } else {
-//                    // This tag is in the library, but we do not want to track it right now.
-//                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
-//                }
-//            } else {
-//                // This tag is NOT in the library, so we don't have enough information to track to it.
-//                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
-//            }
-//        }
-//
-//        // Tell the driver what we see, and what to do.
-//        if (targetFound) {
-//            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
-//            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-//            telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
-//            telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
-//            telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
-//        } else {
-//            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
-//        }
-//
-//        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
-//        if (targetFound) {
-//
-//            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
-//            double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
-//            double headingError = desiredTag.ftcPose.bearing;
-//            double yawError = desiredTag.ftcPose.yaw;
-//
-//            // Use the speed and turn "gains" to calculate how we want the robot to move.
-//            aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
-//            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
-//            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-//
-//
-//
-//            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
-//        }
+    public void detectAprilTag(int DESIRED_TAG_ID) {
+        targetFound = false;
+        desiredTag = null;
+
+
+        // Step through the list of detected tags and look for a matching tag
+        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+        for (AprilTagDetection detection : currentDetections) {
+            // Look to see if we have size info on this tag.
+            if (detection.metadata != null) {
+                //  Check to see if we want to track towards this tag.
+                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                    // Yes, we want to use this tag.
+                    targetFound = true;
+                    desiredTag = detection;
+                    break;  // don't look any further.
+                } else {
+                    // This tag is in the library, but we do not want to track it right now.
+                    telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                }
+            } else {
+                // This tag is NOT in the library, so we don't have enough information to track to it.
+                telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+            }
+        }
+
+        // Tell the driver what we see, and what to do.
+        if (targetFound) {
+            telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+            telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+            telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+            telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+            telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+        } else {
+            telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+        }
+
+        // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+        if (targetFound) {
+
+            // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+            double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+            double headingError = desiredTag.ftcPose.bearing;
+            double yawError = desiredTag.ftcPose.yaw;
+
+            // Use the speed and turn "gains" to calculate how we want the robot to move.
+            aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+            turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+            strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
 
 
+            telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
+        }
 
-//        else {
-//
-//            // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
-//            aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
-//            strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
-//            turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
-//
-//            telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
-//        }
-//        telemetry.update();
+        telemetry.update();
 
     }
+}
 
 
 
