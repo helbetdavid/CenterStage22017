@@ -269,7 +269,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .turnTo(Math.toRadians(25))
                     .build();
 
-
         } else {
             telemetry.addLine("am ajuns aici");
             telemetry.update();
@@ -291,7 +290,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .build();
 
         }
-ElapsedTime timer = new ElapsedTime();
+
+//ElapsedTime timer = new ElapsedTime();
         waitForStart();
 
         if(opModeIsActive() && !isStopRequested()) {
@@ -320,9 +320,7 @@ ElapsedTime timer = new ElapsedTime();
             Actions.runBlocking(mergi);
 
 
-        }
-
-        while(!isStopRequested()) {
+            while(!isStopRequested()) {
 //            detectAprilTag(DESIRED_TAG_ID);
                 targetFound = false;
 
@@ -390,6 +388,10 @@ ElapsedTime timer = new ElapsedTime();
             }
 
         }
+
+    }
+
+
 
 
 
