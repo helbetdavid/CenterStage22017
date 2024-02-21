@@ -99,7 +99,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         stackPixel = StackPixel.pixelStackFront;
 
-        AprilTag aprilTag = new AprilTag(hardwareMap);
+//        AprilTag aprilTag = new AprilTag(hardwareMap);
 
         //SubSystems pt lift si alea alea
 
@@ -291,7 +291,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .build();
 
         }
- ElapsedTime timer = new ElapsedTime();
+ElapsedTime timer = new ElapsedTime();
         waitForStart();
 
         if(opModeIsActive() && !isStopRequested()) {
@@ -318,24 +318,79 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
             Actions.runBlocking(mergi);
-            detectAprilTag(DESIRED_TAG_ID);
-            telemetry.addLine("am vazut o data");
-            telemetry.update();
-            while(true) {
-                detectAprilTag(DESIRED_TAG_ID);
-                telemetry.addLine("am vazut de mai multe dati");
-                telemetry.update();
-            }
-
-
-
-
-
-
 
 
         }
-    }
+
+        while(!isStopRequested()) {
+//            detectAprilTag(DESIRED_TAG_ID);
+                targetFound = false;
+
+                desiredTag = null;
+
+                // Step through the list of detected tags and look for a matching tag
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
+                    } else {
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                    }
+                }
+
+                // Tell the driver what we see, and what to do.
+                if (targetFound) {
+                    telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
+                    telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                    telemetry.addData("Range", "%5.1f inches", desiredTag.ftcPose.range);
+                    telemetry.addData("Bearing", "%3.0f degrees", desiredTag.ftcPose.bearing);
+                    telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
+                } else {
+                    telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+                }
+
+                // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
+                if (gamepad1.left_bumper && targetFound) {
+
+                    // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+                    double rangeError = (desiredTag.ftcPose.range - DESIRED_DISTANCE);
+                    double headingError = desiredTag.ftcPose.bearing;
+                    double yawError = desiredTag.ftcPose.yaw;
+
+                    // Use the speed and turn "gains" to calculate how we want the robot to move.
+                    aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
+                    turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
+                    strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
+
+                    telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+                } else {
+
+                    // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
+                    aprilDrive = -gamepad1.left_stick_y / 2.0;  // Reduce drive rate to 50%.
+                    strafe = -gamepad1.left_stick_x / 2.0;  // Reduce strafe rate to 50%.
+                    turn = -gamepad1.right_stick_x / 3.0;  // Reduce turn rate to 33%.
+                    telemetry.addData("Manual", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+                }
+                telemetry.update();
+
+                // Apply desired axes motions to the drivetrain.
+                moveRobot(aprilDrive, strafe, turn);
+                sleep(10);
+            }
+
+        }
+
 
 
     public void moveRobot(double x, double y, double yaw) {
@@ -451,6 +506,10 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.addData("Yaw", "%3.0f degrees", desiredTag.ftcPose.yaw);
         } else {
             telemetry.addData("\n>", "Drive using joysticks to find valid target\n");
+            aprilDrive = 0;
+            strafe = 0;
+            turn = 0;
+
         }
 
         // If Left Bumper is being pressed, AND we have found the desired target, Drive to target Automatically .
@@ -465,7 +524,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             aprilDrive = Range.clip(rangeError * SPEED_GAIN, -MAX_AUTO_SPEED, MAX_AUTO_SPEED);
             turn = Range.clip(headingError * TURN_GAIN, -MAX_AUTO_TURN, MAX_AUTO_TURN);
             strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
-
+            telemetry.update();
+            moveRobot(aprilDrive,strafe,turn);
 
 
             telemetry.addData("Auto", "Drive %5.2f, Strafe %5.2f, Turn %5.2f ", aprilDrive, strafe, turn);
