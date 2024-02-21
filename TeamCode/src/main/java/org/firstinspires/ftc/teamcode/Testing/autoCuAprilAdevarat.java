@@ -264,7 +264,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .strafeToLinearHeading(new Vector2d(-46, 19), 0)
                     .strafeToLinearHeading(new Vector2d(-46, 11), Math.PI / 2)
                     .strafeToLinearHeading(stackFrontV, 0)
-                    .strafeToSplineHeading(new Vector2d(12, 12), Math.toRadians(0))
+                    .strafeToSplineHeading(new Vector2d(20, 10), Math.toRadians(0))
+                    .strafeTo(new Vector2d(20, 16))
                     .turnTo(Math.toRadians(25))
                     .build();
 
@@ -290,7 +291,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .build();
 
         }
-
+ ElapsedTime timer = new ElapsedTime();
         waitForStart();
 
         if(opModeIsActive() && !isStopRequested()) {
@@ -317,11 +318,13 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
             Actions.runBlocking(mergi);
-
-            while(desiredTag.ftcPose.range >= DESIRED_DISTANCE){
+            detectAprilTag(DESIRED_TAG_ID);
+            telemetry.addLine("am vazut o data");
+            telemetry.update();
+            while(true) {
                 detectAprilTag(DESIRED_TAG_ID);
-                moveRobot(aprilDrive,strafe,turn);
-                sleep(10);
+                telemetry.addLine("am vazut de mai multe dati");
+                telemetry.update();
             }
 
 
@@ -337,7 +340,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
     public void moveRobot(double x, double y, double yaw) {
         // Calculate wheel powers.
-        double leftFrontPower = x - y - yaw;
+        double  leftFrontPower = x - y - yaw;
         double rightFrontPower = x + y + yaw;
         double leftBackPower = x + y - yaw;
         double rightBackPower = x - y + yaw;
@@ -413,7 +416,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
     }
 
-    public void detectAprilTag(int DESIRED_TAG_ID) {
+    public void detectAprilTag(int desiredTagId) {
         targetFound = false;
         desiredTag = null;
 
@@ -424,7 +427,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             // Look to see if we have size info on this tag.
             if (detection.metadata != null) {
                 //  Check to see if we want to track towards this tag.
-                if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                if ((desiredTagId < 0) || (detection.id == desiredTagId)) {
                     // Yes, we want to use this tag.
                     targetFound = true;
                     desiredTag = detection;
@@ -469,7 +472,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         }
 
         telemetry.update();
-
+        moveRobot(aprilDrive,strafe,turn);
+        sleep(10);
     }
 }
 
