@@ -33,9 +33,7 @@ public class TestingActions extends LinearOpMode {
                             aprilTag.goToAprilTag()
                     )
                     );
-
         }
-
 
     }
     public void initAprilTag() {
