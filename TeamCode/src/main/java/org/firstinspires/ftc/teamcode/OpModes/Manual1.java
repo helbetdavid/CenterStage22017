@@ -227,11 +227,13 @@ public class Manual1 extends LinearOpMode {
                 robotState = RobotState.RETRACTING;
             }
 
+            //            if (Dist.getDistance(DistanceUnit.CM) < minDistnace && y>0) y = 0;
+
             double y = -gamepad1.left_stick_y; // Remember, Y stick value is reversed
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
 
-//            if (Dist.getDistance(DistanceUnit.CM) < minDistnace && y>0) y = 0;
+
 
             double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
             double frontLeftPower = (y + x + rx) / denominator/dom2;
