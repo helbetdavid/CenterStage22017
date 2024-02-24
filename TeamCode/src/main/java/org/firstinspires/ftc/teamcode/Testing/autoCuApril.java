@@ -105,11 +105,10 @@ public class autoCuApril extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
         Action caseMijloc = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-48, 19),0)
-                .strafeToLinearHeading(new Vector2d(-48, 11),Math.PI/2)
-                .turnTo(0)
-                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
-                .strafeTo(boardMijV)
+                .strafeToLinearHeading(new Vector2d(-46, 19),0)
+                .strafeToLinearHeading(new Vector2d(-46, 11),Math.PI/2)
+                .strafeToLinearHeading(stackFrontV, 0)
+                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build();
         goToMij = drive.actionBuilder(drive.pose).strafeTo(new Vector2d(40, 12)).build();
         boardToMijCorrected = drive.actionBuilder(drive.pose)

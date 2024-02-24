@@ -193,11 +193,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         initAprilTag();
 
 
-        //Dashboard pentru AprilTag
-        FtcDashboard dashboardApril = FtcDashboard.getInstance();
-        telemetry = new MultipleTelemetry(telemetry, dashboardApril.getTelemetry());
-
-
         if (v[1] > v[2] && v[1] > v[3]) {
             telemetry.addLine("am ajuns aici");
             telemetry.update();

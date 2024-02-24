@@ -40,13 +40,16 @@ import java.util.concurrent.TimeUnit;
 @Config
 public class Localizare extends LinearOpMode {
 
-    public static final double distBoardWall = 9.8425; // inch - arpox 25 centimetri
-    public static final double distCamGrob = 6.2992; // inch - arpox 25 centimetri
+    public static final double distBoardWallX = 9.8425; // inch - arpox 25 centimetri
+    public static final double distBoardWallY = 34; // inch - arpox 25 centimetri
+    public static final double distCamGrob = 6.2992; // inch - arpox 16 centimetri
 
     public static double correctdX = NULL;
     public static double correctdY = NULL;
     public static double correctdDist = NULL;
     public static double correctdYaw = NULL;
+    public static double prelungireY = NULL;
+    public static double prelungireX = NULL;
 
     public static int DESIRED_TAG_ID = 2;
     boolean targetFound = false;
@@ -65,6 +68,7 @@ public class Localizare extends LinearOpMode {
      * The variable to store our instance of the vision portal.
      */
     private VisionPortal visionPortal;
+    MecanumDrive drive;
 
 
     @Override
@@ -84,7 +88,7 @@ public class Localizare extends LinearOpMode {
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
 
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
+        drive = new MecanumDrive(hardwareMap, new Pose2d(0, 0, 0));
         initAprilTag();
 
         if (USE_WEBCAM)
@@ -156,12 +160,12 @@ public class Localizare extends LinearOpMode {
 //                banda.setPower(0);
 //            }
 
-            telemetry.addData("\npose ", drive.pose);
-            telemetry.addData("\nDistS t", DistSpateSt.getDistance(DistanceUnit.CM));
-            telemetry.addData("\nDistDr ", DistSpateDr.getDistance(DistanceUnit.CM));
+            telemetry.addData("pose ", drive.pose);
+            telemetry.addData("DistS t", DistSpateSt.getDistance(DistanceUnit.CM));
+            telemetry.addData("DistDr ", DistSpateDr.getDistance(DistanceUnit.CM));
             telemetry.addData("\ny ", drive.pose.position.y);
-            telemetry.addData("\nx ", drive.pose.position.x);
-            telemetry.addData("\nheading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
+            telemetry.addData("x ", drive.pose.position.x);
+            telemetry.addData("heading (deg)", drive.pose.heading.toDouble());
 //                telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
 
             telemetryAprilTag();
@@ -181,24 +185,33 @@ public class Localizare extends LinearOpMode {
         if (targetFound) {
             telemetry.addData("\n>", "HOLD Left-Bumper to Drive to Target\n");
             telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
-            telemetry.addData("\nDist ", desiredTag.ftcPose.range);
-            telemetry.addData("\nfield postion?  ", desiredTag.metadata.fieldPosition);
-            telemetry.addData("\nposition? ", desiredTag.ftcPose);
+            telemetry.addData("Dist ", desiredTag.ftcPose.range);
+            telemetry.addData("field postion?  ", desiredTag.metadata.fieldPosition);
+            telemetry.addData("position? ", desiredTag.ftcPose);
             telemetry.addData("\nBearing", desiredTag.ftcPose.bearing);
-            telemetry.addData("\nYaw ", desiredTag.ftcPose.yaw);
+            telemetry.addData("Yaw ", desiredTag.ftcPose.yaw);
 
             correctdDist = desiredTag.ftcPose.range;
-            correctdYaw = desiredTag.ftcPose.yaw;
+            correctdYaw = Math.toRadians(desiredTag.ftcPose.bearing) + drive.pose.heading.toDouble();
 
-            correctdY = 38 - Math.cos(correctdYaw) * (correctdDist + distCamGrob);
+            prelungireX = Math.cos(Math.abs(drive.pose.heading.toDouble())) * distCamGrob;
+            prelungireY = Math.sin(Math.abs(drive.pose.heading.toDouble())) * distCamGrob;
 
-            correctdX = 72 - (distBoardWall + (correctdDist + distCamGrob) * Math.sin(correctdYaw));
+            correctdY = 70 - (Math.sin(correctdYaw) * (correctdDist) + distBoardWallY + prelungireY);
 
-            telemetry.addData("\nCosinus ", Math.cos(desiredTag.ftcPose.yaw));
-            telemetry.addData("\nSinus ", Math.sin(desiredTag.ftcPose.yaw));
-            telemetry.addData("\nDist Arpil -MijRobot  ", desiredTag.ftcPose.y + distCamGrob);
-            telemetry.addData("\nCorrectedX ", correctdX);
-            telemetry.addData("\nCorrectedY ", correctdY);
+            correctdX = 70 - (distBoardWallX + (correctdDist) * Math.cos(correctdYaw)+ prelungireX);
+
+            telemetry.addData("\nCosinus ", Math.cos(correctdYaw));
+            telemetry.addData("\nCosinus 30 ", Math.cos(30));
+            telemetry.addData("Sinus ", Math.sin(correctdYaw));
+            telemetry.addData("Unghi Corectat ", correctdYaw);
+            telemetry.addData("Unghi Corectat v2", desiredTag.ftcPose.bearing + Math.toDegrees(drive.pose.heading.toDouble()));
+            telemetry.addData("Dist Arpil ", desiredTag.ftcPose.range);
+
+            telemetry.addData("\nPrelungireX ", prelungireX);
+            telemetry.addData("PrelungireY ", prelungireY);
+            telemetry.addData("CorrectedX ", correctdX);
+            telemetry.addData("CorrectedY ", correctdY);
             telemetry.addLine("\n");
 
         } else telemetry.addLine("\nNU\n");
@@ -321,5 +334,3 @@ public class Localizare extends LinearOpMode {
         }
     }
 }
-
-

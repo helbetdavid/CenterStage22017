@@ -10,7 +10,7 @@ public class AveonTest extends LinearOpMode {
     public  static double vit = 0.5;
     @Override
     public void runOpMode() throws InterruptedException {
-        Servo aveon = hardwareMap.get(Servo.class, "aveon");
+        Servo aveon = hardwareMap.get(Servo.class, "leftIntakeSv");
 
         waitForStart();
         while(opModeIsActive()){

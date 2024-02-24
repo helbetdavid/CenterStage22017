@@ -4,10 +4,11 @@ import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.RR.TankDrive;
-
+@TeleOp
 public final class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,8 +22,9 @@ public final class SplineTest extends LinearOpMode {
                 drive.actionBuilder(beginPose)
 //                        .lineToX(60)
 //                        .lineToX(0)
-                        .splineTo(new Vector2d(30, 30), Math.PI / 2)
-                        .splineTo(new Vector2d(0, 60), Math.PI)
+                        .splineTo(new Vector2d(30, -30), -Math.PI / 2)
+                        .splineTo(new Vector2d(0, -60), -Math.PI)
+
                         .build());
         } else if (TuningOpModes.DRIVE_CLASS.equals(TankDrive.class)) {
             TankDrive drive = new TankDrive(hardwareMap, beginPose);

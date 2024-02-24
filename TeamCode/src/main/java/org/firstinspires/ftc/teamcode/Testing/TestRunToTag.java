@@ -109,13 +109,12 @@ public class TestRunToTag extends LinearOpMode
     public static double MAX_AUTO_STRAFE= 0.6;   //  Clip the approach speed to this max value (adjust for your robot)
     public static double MAX_AUTO_TURN  = 0.4;   //  Clip the turn speed to this max value (adjust for your robot)
 
-    private DcMotor leftFrontDrive   = null;  //  Used to control the left front drive wheel
-    private DcMotor rightFrontDrive  = null;  //  Used to control the right front drive wheel
-    private DcMotor leftBackDrive    = null;  //  Used to control the left back drive wheel
-    private DcMotor rightBackDrive   = null;  //  Used to control the right back drive wheel
+    private DcMotor leftFront   = null;  //  Used to control the left front drive wheel
+    private DcMotor rightFront  = null;  //  Used to control the right front drive wheel
+    private DcMotor leftRear    = null;  //  Used to control the left back drive wheel
+    private DcMotor rightRear   = null;  //  Used to control the right back drive wheel
 
     private OpenCvCamera controlHubCam;
-    private static final boolean USE_WEBCAM = true;  // Set true to use a webcam, or false for a phone camera
     public static int DESIRED_TAG_ID = 8;     // Choose the tag you want to approach or set to -1 for ANY tag.
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
@@ -140,21 +139,19 @@ public class TestRunToTag extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftRear");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightRear");
+        leftFront  = hardwareMap.get(DcMotor.class, "leftFront");
+        rightFront = hardwareMap.get(DcMotor.class, "rightFront");
+        leftRear  = hardwareMap.get(DcMotor.class, "leftRear");
+        rightRear = hardwareMap.get(DcMotor.class, "rightRear");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
         // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-//        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+//        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        rightFront.setDirection(DcMotor.Direction.FORWARD);
+        rightRear.setDirection(DcMotor.Direction.FORWARD);
 
-        if (USE_WEBCAM)
-            setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
         // Wait for driver to press start
         telemetry.addData("Camera preview on/off", "3 dots, Camera Stream");
@@ -258,10 +255,10 @@ public class TestRunToTag extends LinearOpMode
         }
 
         // Send powers to the wheels.
-        leftFrontDrive.setPower(leftFrontPower);
-        rightFrontDrive.setPower(rightFrontPower);
-        leftBackDrive.setPower(leftBackPower);
-        rightBackDrive.setPower(rightBackPower);
+        leftFront.setPower(leftFrontPower);
+        rightFront.setPower(rightFrontPower);
+        leftRear.setPower(leftBackPower);
+        rightRear.setPower(rightBackPower);
     }
 
     /**
@@ -281,25 +278,18 @@ public class TestRunToTag extends LinearOpMode
         aprilTag.setDecimation(2);
 
         // Create the vision portal by using a builder.
-        if (USE_WEBCAM) {
-            visionPortal = new VisionPortal.Builder()
-                    .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                    .addProcessor(aprilTag)
-                    .build();
-        } else {
-            visionPortal = new VisionPortal.Builder()
-                    .setCamera(BuiltinCameraDirection.BACK)
-                    .addProcessor(aprilTag)
-                    .build();
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(BuiltinCameraDirection.BACK)
+                .addProcessor(aprilTag)
+                .build();
         }
 
-    }
 
     /*
      Manually set the camera gain and exposure.
      This can only be called AFTER calling initAprilTag(), and only works for Webcams;
     */
-    private void    setManualExposure(int exposureMS, int gain) {
+    private void setManualExposure(int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
 
         if (visionPortal == null) {
