@@ -205,13 +205,15 @@ public class TestReloc extends LinearOpMode {
             while(timer.seconds() <= 8){
                 idle();
             }
+
             drive.updatePoseEstimate();
 
             targetFound = false;
             desiredTag = null;
 
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            while (timer.seconds() <= 11)
+//            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+            while (timer.seconds() <= 11){
+                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
                 // Step through the list of detected tags and look for a matching tag
                 for (AprilTagDetection detection : currentDetections) {
                     // Look to see if we have size info on this tag.
@@ -232,6 +234,7 @@ public class TestReloc extends LinearOpMode {
                         telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                     }
                 }
+            }
 
             telemetry.addData("pose ", drive.pose);
             telemetry.addData("\ny ", drive.pose.position.y);
@@ -276,7 +279,7 @@ public class TestReloc extends LinearOpMode {
     }
 
 
-    public void telemetryAprilTag() {
+    private void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
