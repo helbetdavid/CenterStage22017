@@ -167,7 +167,7 @@ public class TestReloc extends LinearOpMode {
                     .strafeToLinearHeading(stackFrontV, 0)
                     .strafeToSplineHeading(new Vector2d(22, 10), Math.toRadians(0))
                     .strafeTo(new Vector2d(22, 30))
-                    .waitSeconds(2)
+                    .waitSeconds(0.5)
                     .build();
 
         } else {
@@ -191,7 +191,7 @@ public class TestReloc extends LinearOpMode {
 
         waitForStart();
 
-        if(opModeIsActive() && !isStopRequested()) {
+        if (opModeIsActive() && !isStopRequested()) {
             initAprilTag();
             telemetry.addData("Dreapta", v[1]);
             telemetry.addData("Stanga", v[2]);
@@ -199,33 +199,39 @@ public class TestReloc extends LinearOpMode {
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
+            ElapsedTime timer = new ElapsedTime();
 
             Actions.runBlocking(mergi);
+            while(timer.seconds() <= 8){
+                idle();
+            }
             drive.updatePoseEstimate();
 
             targetFound = false;
             desiredTag = null;
 
-            // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for (AprilTagDetection detection : currentDetections) {
-                // Look to see if we have size info on this tag.
-                if (detection.metadata != null) {
-                    //  Check to see if we want to track towards this tag.
-                    if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
-                        // Yes, we want to use this tag.
-                        targetFound = true;
-                        desiredTag = detection;
-                        break;  // don't look any further.
+            while (timer.seconds() <= 11)
+                // Step through the list of detected tags and look for a matching tag
+                for (AprilTagDetection detection : currentDetections) {
+                    // Look to see if we have size info on this tag.
+                    if (detection.metadata != null) {
+                        //  Check to see if we want to track towards this tag.
+                        if ((DESIRED_TAG_ID < 0) || (detection.id == DESIRED_TAG_ID)) {
+                            // Yes, we want to use this tag.
+                            targetFound = true;
+                            desiredTag = detection;
+                            telemetryAprilTag();
+                            break;  // don't look any further.
+                        } else {
+                            // This tag is in the library, but we do not want to track it right now.
+                            telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        }
                     } else {
-                        // This tag is in the library, but we do not want to track it right now.
-                        telemetry.addData("Skipping", "Tag ID %d is not desired", detection.id);
+                        // This tag is NOT in the library, so we don't have enough information to track to it.
+                        telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                     }
-                } else {
-                    // This tag is NOT in the library, so we don't have enough information to track to it.
-                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                 }
-            }
 
             telemetry.addData("pose ", drive.pose);
             telemetry.addData("\ny ", drive.pose.position.y);
@@ -237,12 +243,9 @@ public class TestReloc extends LinearOpMode {
             telemetry.addData("jhcgtfuy7yugjhv hgki", reloc);
             telemetry.update();
 
-            telemetryAprilTag();
-
             Action merji2 = drive.actionBuilder(reloc)
-                    .waitSeconds(0.5)
                     .strafeToLinearHeading(new Vector2d(50, 36), 0)
-                    .waitSeconds(5)
+                    .waitSeconds(10)
                     .build();
 
             Actions.runBlocking(merji2);
@@ -273,7 +276,7 @@ public class TestReloc extends LinearOpMode {
     }
 
 
-    public Pose2d telemetryAprilTag() {
+    public void telemetryAprilTag() {
 
         List<AprilTagDetection> currentDetections = aprilTag.getDetections();
         telemetry.addData("# AprilTags Detected", currentDetections.size());
@@ -296,7 +299,7 @@ public class TestReloc extends LinearOpMode {
 
             correctdY = 70 - (Math.sin(correctdYaw) * (correctdDist) + distBoardWallY + prelungireY);
 
-            correctdX = 70 - (distBoardWallX + (correctdDist) * Math.cos(correctdYaw)+ prelungireX);
+            correctdX = 70 - (distBoardWallX + (correctdDist) * Math.cos(correctdYaw) + prelungireX);
 
             telemetry.addData("\nCosinus ", Math.cos(correctdYaw));
             telemetry.addData("\nCosinus 30 ", Math.cos(30));
@@ -330,7 +333,7 @@ public class TestReloc extends LinearOpMode {
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
-        return new Pose2d(correctdX, correctdY, drive.pose.heading.toDouble());
+//        return new Pose2d(correctdX, correctdY, drive.pose.heading.toDouble());
     }
 
     private void initAprilTag() {
