@@ -45,6 +45,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
     //OpenCv
     private OpenCvCamera controlHubCam;
     private static final boolean USE_WEBCAM = true;
+    boolean initializare = false;
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
@@ -119,10 +120,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
         //IMU
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                logoFacingDirection, usbFacingDirection));
-        imu.initialize(parameters);
+
 
 
         //RR
@@ -166,8 +164,8 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
         //INIȚIALIZARE OPENCV
-
-        while (opModeInInit() && !isStopRequested()) {
+        ElapsedTime inita = new ElapsedTime();
+        while (opModeInInit() && !isStopRequested() && inita.seconds()<5) {
 
             nou = OpenCvPipAlbastru.getLocugasit();
             if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
@@ -190,11 +188,10 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
 
         //INIȚIALIZARE APRILTAG
-        initAprilTag();
 
 
         if (v[1] > v[2] && v[1] > v[3]) {
-            telemetry.addLine("am ajuns aici");
+            telemetry.addLine("sunt pe dreapta");
             telemetry.update();
             //DREAPTA
 
@@ -215,7 +212,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .build();
 
         } else if (v[3] > v[1] && v[3] > v[2]) {
-            telemetry.addLine("am ajuns aici");
+            telemetry.addLine("sunt pe mijloc");
             telemetry.update();
 
             //MIJLOC
@@ -239,7 +236,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .build();
 
         } else {
-            telemetry.addLine("am ajuns aici");
+            telemetry.addLine("sunt pe stanga");
             telemetry.update();
 
             //STANGA
@@ -264,9 +261,13 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         // Tot pentru AprilTag
         // Ajuta la claritatea camerei
+//        if (USE_WEBCAM) setManualExposure(6, 250);
+
+        initAprilTag();
         if (USE_WEBCAM) setManualExposure(6, 250);
-
-
+//        sleep(2000);
+        telemetry.addLine("Am facut initializare la camera");
+        telemetry.update();
 
         waitForStart();
 
@@ -279,21 +280,19 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.addData("y", drive.pose.position.y);
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
 
-            if (nou == OpenCvPipAlbastru.detectie.Dreapta) telemetry.addLine("Dreapta");
-            else if (nou == OpenCvPipAlbastru.detectie.Stanga) telemetry.addLine("Stanga");
-            else telemetry.addLine("Mijloc");
-            telemetry.update();
-
-
-
-
             Actions.runBlocking(mergi);
+//            Actions.runBlocking(new SequentialAction(mergi, (telemetryPacket) -> {
+                while(!isStopRequested() && desiredTag.ftcPose.range> DESIRED_DISTANCE) {
+                    telemetry.addLine("am ajuns aici");
+                    telemetry.update();
 
+                    detectAprilTag(DESIRED_TAG_ID);
+                    moveRobot(aprilDrive, strafe, turn);
+                    sleep(10);
+                }
+//                return false;
+//            }));
 
-            while(!isStopRequested() && desiredTag.ftcPose.range> DESIRED_DISTANCE) {
-                detectAprilTag(DESIRED_TAG_ID);
-                moveRobot(aprilDrive, strafe, turn);
-            }
 
         }
 
@@ -347,7 +346,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
                     .addProcessor(aprilTag)
                     .build();
         }
-
+        initializare = true;
     }
 
 

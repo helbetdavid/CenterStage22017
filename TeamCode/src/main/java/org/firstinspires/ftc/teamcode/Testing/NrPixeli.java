@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
@@ -36,20 +40,21 @@ public class NrPixeli extends LinearOpMode {
     Servo leftIntakeSv, rightIntakeSv;
 
     //TO DO 2 :)
-    static double currentThreshold = 0;
+    public static double currentThreshold = 3.5;
 
-    static double downSvPos = 0.5;
-    static double upSvPos = 0.1;
+    public static double downSvPos = 0.55;
+    public static double upSvPos = 0.1;
 
-    static double pwr = 1;
-    static double pwr2 = 1;
-    static double pwrNull = 0;
-    double reversePwr;
+    public static double pwr = 1;
+    public static double pwr2 = 1;
+    public static double pwrNull = 0;
+    public double reversePwr;
 
-    double pixeli = 0;
+    public double pixeli = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         //Declarare motoare sasiu
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -76,113 +81,70 @@ public class NrPixeli extends LinearOpMode {
         //Setare pozitie initiala servo-uri intake
         leftIntakeSv.setPosition(upSvPos);
         rightIntakeSv.setPosition(upSvPos);
+        pixeli = 0;
+
+        ElapsedTime timer = new ElapsedTime();
 
         waitForStart();
 
 
         while (opModeIsActive() && !isStopRequested()) {
-
-
-            //TO DO 1 (dupa ce ai terminat, comentezi codul asta)
-
-            intake.setPower(pwr);
-            if(gamepad1.x)  // gamepad1.x inseamna patrat pe controllerul nostru
-                pwr = 0;
-
-            if(gamepad1.y) // gamepad1.y inseamna triunghi pe controllerul nostru
-                pwr = 1;
-
-            telemetry.addData("Amps", intake.getCurrent(CurrentUnit.AMPS));
-            telemetry.update();
-
-
-
-            //TO DO 3 (dupa ce ai terminat, comentezi codul asta)
-
-
-//            intake.setPower(pwr);
-//
-//            if (intake.getCurrent(CurrentUnit.AMPS) > currentThreshold) {
-//                pixeli++;
-//            }
-//
-//            if(pixeli == 2){
-//                pwr =0;
-//            }
-//
-//            if(gamepad1.y) { // gamepad1.y inseamna triunghi pe controllerul nostru
-//                pixeli = 0;
-//                pwr = 1;
-//
-//            }
-
-//            if(gamepad1.x)  // gamepad1.x inseamna patrat pe controllerul nostru
-//                pwr = 0;  // in caz ca vrei sa opresti intake din oarecare motiv
-
-//            telemetry.addData("pixeli", pixeli);
-//            telemetry.addData("Amps",intake.getCurrent(CurrentUnit.AMPS));
-//            telemetry.update();
-
-
-
-            //TO DO 4
-
 //            leftIntakeSv.setPosition(downSvPos);
 //            rightIntakeSv.setPosition(downSvPos);
-//
-//            banda.setPower(pwr2);
-//            intake.setPower(pwr);
-//
-//            if (intake.getCurrent(CurrentUnit.AMPS) > currentThreshold) {
-//                pixeli++;
-//            }
-//
-//            if(pixeli == 2){
-//                pwr =0;
-//                pwr2 = 0;
-//                downSvPos = 0.1;
-//
-//            }
-//
-//            if(gamepad1.y) {
-//                pixeli = 0;
-//                pwr = 1;
-//                pwr2 = 1;
-//                downSvPos = 0.5;
-//            }
-
-//            if(gamepad1.x) { // gamepad1.x inseamna patrat pe controllerul nostru
-//                pwr = 0;
-//                pwr2 =0;
-//            }
 
 
-//            if(gamepad1.right_bumper){
-//                leftIntakeSv.setPosition(0.4);
-//                rightIntakeSv.setPosition(0.4);
-//            }
 //
-//            double y = -gamepad1.left_stick_y;
-//            double x = gamepad1.left_stick_x * 1.1;
-//            double rx = gamepad1.right_stick_x;
-//
-//
-//            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-//            double frontLeftPower = (y + x + rx) / denominator;
-//            double backLeftPower = (y - x + rx) / denominator;
-//            double frontRightPower = (y - x - rx) / denominator;
-//            double backRightPower = (y + x - rx) / denominator;
-//
-//            leftFront.setPower(frontLeftPower);
-//            leftRear.setPower(backLeftPower);
-//            rightFront.setPower(frontRightPower);
-//            rightRear.setPower(backRightPower);
+            intake.setPower(pwr);
+            if (gamepad1.x)  // gamepad1.x inseamna patrat pe controllerul nostru
+                pwr = 0;
 
-//            telemetry.addData("pixeli", pixeli);
-//            telemetry.addData("Amps",intake.getCurrent(CurrentUnit.AMPS));
-//            telemetry.update();
+            if (gamepad1.y) // gamepad1.y inseamna triunghi pe controllerul nostru
+                pwr = 1;
+
+            timer.reset();
+            if (intake.getCurrent(CurrentUnit.AMPS) > currentThreshold) {
+                pixeli++;
+                while(timer.milliseconds()< 300){}
+
+            }
+
+            double intakePos = Range.clip(gamepad1.left_trigger/1.8, 0.2, 0.5);
 
 
+
+
+
+            rightIntakeSv.setPosition(intakePos);
+            leftIntakeSv.setPosition(intakePos );
+
+//
+            telemetry.addData("Amps", intake.getCurrent(CurrentUnit.AMPS));
+
+            telemetry.addData("pixeli", pixeli - 1);
+            telemetry.update();
+
+//
+            double y = -gamepad1.left_stick_y;
+            double x = gamepad1.left_stick_x * 1.1;
+            double rx = gamepad1.right_stick_x;
+
+
+            double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+            double frontLeftPower = (y + x + rx) / denominator;
+            double backLeftPower = (y - x + rx) / denominator;
+            double frontRightPower = (y - x - rx) / denominator;
+            double backRightPower = (y + x - rx) / denominator;
+
+            leftFront.setPower(frontLeftPower);
+            leftRear.setPower(backLeftPower);
+            rightFront.setPower(frontRightPower);
+            rightRear.setPower(backRightPower);
+
+            telemetry.addData("pixeli", pixeli);
+            telemetry.addData("Velocity", intake.getVelocity());
+            telemetry.addData("Amps",intake.getCurrent(CurrentUnit.AMPS));
+            telemetry.update();
+//
 
 
         }
