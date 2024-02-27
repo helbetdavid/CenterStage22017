@@ -14,18 +14,12 @@ import org.openftc.easyopencv.OpenCvPipeline;
 @Config
 public class OpenCvPipAlbastruAp extends OpenCvPipeline {
 
-    Telemetry telemetry;
     private static volatile detectie locugasit;
-    public OpenCvPipAlbastruAp(Telemetry tele){
-        this.telemetry = tele;
-    }
     public enum detectie{
         Stanga,
         Dreapta,
         Mijloc
     }
-
-
 
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
@@ -94,14 +88,9 @@ public class OpenCvPipAlbastruAp extends OpenCvPipeline {
         draw(detectie.Mijloc, output, input.submat(new Rect(DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS)), DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS);
         draw(detectie.Stanga, output, input.submat(new Rect(DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS)), DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS);
 
-
-
-
-        telemetry.addData("pozitie", locugasit);
-        telemetry.update();
         return output ;
     }
-    public static detectie getLocugasit() {
+    public detectie getAnalysis(){
         return locugasit;
     }
 }
