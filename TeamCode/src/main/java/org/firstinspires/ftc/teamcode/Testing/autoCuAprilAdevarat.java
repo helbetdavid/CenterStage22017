@@ -263,7 +263,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         // Ajuta la claritatea camerei
 //        if (USE_WEBCAM) setManualExposure(6, 250);
 
-        initAprilTag();
+//        initAprilTag();
         if (USE_WEBCAM) setManualExposure(6, 250);
 //        sleep(2000);
         telemetry.addLine("Am facut initializare la camera");
@@ -271,8 +271,10 @@ public class autoCuAprilAdevarat extends LinearOpMode {
 
         waitForStart();
 
+        ElapsedTime timer = new ElapsedTime();
         if(opModeIsActive() && !isStopRequested()) {
 
+            initAprilTag();
             telemetry.addData("Dreapta", v[1]);
             telemetry.addData("Stanga", v[2]);
             telemetry.addData("Mijloc", v[3]);
@@ -281,17 +283,16 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(mergi);
-//            Actions.runBlocking(new SequentialAction(mergi, (telemetryPacket) -> {
-                while(!isStopRequested() && desiredTag.ftcPose.range> DESIRED_DISTANCE) {
-                    telemetry.addLine("am ajuns aici");
-                    telemetry.update();
+            while(timer.milliseconds() < 10000)
+                detectAprilTag(DESIRED_TAG_ID);
+            while(!isStopRequested() && desiredTag.ftcPose.range > DESIRED_DISTANCE) {
+                telemetry.addLine("am ajuns aici");
+                telemetry.update();
+                detectAprilTag(DESIRED_TAG_ID);
+                moveRobot(aprilDrive, strafe, turn);
+                sleep(10);
+            }
 
-                    detectAprilTag(DESIRED_TAG_ID);
-                    moveRobot(aprilDrive, strafe, turn);
-                    sleep(10);
-                }
-//                return false;
-//            }));
 
 
         }
@@ -433,7 +434,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         }
         telemetry.update();
     }
-
 
 
     public void moveRobot(double x, double y, double yaw) {

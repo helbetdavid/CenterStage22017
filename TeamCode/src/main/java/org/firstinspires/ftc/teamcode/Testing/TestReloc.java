@@ -192,7 +192,7 @@ public class TestReloc extends LinearOpMode {
         waitForStart();
 
         if (opModeIsActive() && !isStopRequested()) {
-            initAprilTag();
+//            initAprilTag();
             telemetry.addData("Dreapta", v[1]);
             telemetry.addData("Stanga", v[2]);
             telemetry.addData("Mijloc", v[3]);
@@ -202,7 +202,7 @@ public class TestReloc extends LinearOpMode {
             ElapsedTime timer = new ElapsedTime();
 
             Actions.runBlocking(mergi);
-            while(timer.seconds() <= 8){
+            while (timer.seconds() <= 8) {
                 idle();
             }
 
@@ -256,19 +256,15 @@ public class TestReloc extends LinearOpMode {
         }
         visionPortal.close();
 
-
     }
 
     private void initOpenCV(Telemetry telemetry) {
 
-
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-
         controlHubCam = OpenCvCameraFactory.getInstance().createWebcam(
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-
 
         OpenCvPipAlbastru openCvPipAlbastru = new OpenCvPipAlbastru(telemetry);
 
@@ -295,10 +291,10 @@ public class TestReloc extends LinearOpMode {
             telemetry.addData("Yaw ", desiredTag.ftcPose.yaw);
 
             correctdDist = desiredTag.ftcPose.range;
-            correctdYaw = Math.toRadians(desiredTag.ftcPose.bearing) + Math.toRadians(drive.pose.heading.toDouble());
+            correctdYaw = desiredTag.ftcPose.bearing + drive.pose.heading.toDouble();
 
-            prelungireX = Math.cos(Math.abs(Math.toRadians(drive.pose.heading.toDouble()))) * distCamGrob;
-            prelungireY = Math.sin(Math.abs(Math.toRadians(drive.pose.heading.toDouble()))) * distCamGrob;
+            prelungireX = Math.cos(Math.abs(drive.pose.heading.toDouble())) * distCamGrob;
+            prelungireY = Math.sin(Math.abs(drive.pose.heading.toDouble())) * distCamGrob;
 
             correctdY = 70 - (Math.sin(correctdYaw) * (correctdDist) + distBoardWallY + prelungireY);
 
