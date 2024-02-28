@@ -270,7 +270,6 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-
         ElapsedTime timer = new ElapsedTime();
         if(opModeIsActive() && !isStopRequested()) {
 
@@ -285,9 +284,10 @@ public class autoCuAprilAdevarat extends LinearOpMode {
             Actions.runBlocking(mergi);
             while(timer.milliseconds() < 10000)
                 detectAprilTag(DESIRED_TAG_ID);
-            while(!isStopRequested() && desiredTag.ftcPose.range > DESIRED_DISTANCE) {
+            while(!isStopRequested() && desiredTag.ftcPose.range> DESIRED_DISTANCE) {
                 telemetry.addLine("am ajuns aici");
                 telemetry.update();
+
                 detectAprilTag(DESIRED_TAG_ID);
                 moveRobot(aprilDrive, strafe, turn);
                 sleep(10);
@@ -434,6 +434,7 @@ public class autoCuAprilAdevarat extends LinearOpMode {
         }
         telemetry.update();
     }
+
 
 
     public void moveRobot(double x, double y, double yaw) {
