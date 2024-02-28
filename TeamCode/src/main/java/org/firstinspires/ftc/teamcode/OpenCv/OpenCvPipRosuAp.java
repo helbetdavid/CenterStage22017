@@ -13,18 +13,11 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class OpenCvPipRosuAp extends OpenCvPipeline {
 
     private static volatile detectie locugasit;
-    Telemetry telemetry;
-
-    public OpenCvPipRosuAp(Telemetry tele){
-        this.telemetry = tele;
-    }
     public enum detectie{
         Stanga,
         Dreapta,
         Mijloc
     }
-
-
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
 
@@ -80,26 +73,17 @@ public class OpenCvPipRosuAp extends OpenCvPipeline {
 
         Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2HSV);
 
-
         Scalar lowHSV = new Scalar(H, S, V);
         Scalar highHSV = new Scalar(HH, SH, VH);
-
-
-
 
         Core.inRange(input,lowHSV,highHSV,input);
 
         draw(detectie.Mijloc, output, input.submat(new Rect(DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS)), DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS);
         draw(detectie.Stanga, output, input.submat(new Rect(DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS)), DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS);
 
-
-
-
-        telemetry.addData("pozitie", locugasit);
-        telemetry.update();
         return output ;
     }
-    public static detectie getLocugasit() {
+    public detectie getAnalysis(){
         return locugasit;
     }
 }

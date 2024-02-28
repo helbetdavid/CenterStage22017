@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpenCv;
 
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -10,118 +8,8 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
-public class
+public class OpenCvPipRosu extends OpenCvPipeline {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-OpenCvPipRosu extends OpenCvPipeline {
-
-
-    Telemetry telemetry;
-
-    public OpenCvPipRosu(Telemetry tele){
-
-        this.telemetry = tele;
-    }
     public enum detectie{
         Stanga,
         Dreapta,
@@ -189,21 +77,14 @@ OpenCvPipRosu extends OpenCvPipeline {
         Scalar highHSV = new Scalar(HH, SH, VH);
 
 
-
-
         Core.inRange(input,lowHSV,highHSV,input);
 
         draw(detectie.Mijloc, output, input.submat(new Rect(DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS)), DREPTUNGHI_2_COLT_STANGA_SUS, DREPTUNGHI_2_COLT_DREAPTA_JOS);
         draw(detectie.Dreapta, output, input.submat(new Rect(DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS)), DREPTUNGHI_3_COLT_STANGA_SUS, DREPTUNGHI_3_COLT_DREAPTA_JOS);
 
-
-
-
-        telemetry.addData("pozitie", locugasit);
-        telemetry.update();
         return output ;
     }
-    public static detectie getLocugasit() {
+    public detectie getAnalysis(){
         return locugasit;
     }
 }

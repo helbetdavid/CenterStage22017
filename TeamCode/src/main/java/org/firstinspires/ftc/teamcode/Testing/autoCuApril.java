@@ -331,7 +331,7 @@ public class autoCuApril extends LinearOpMode {
                     drive.actionBuilder(drive.pose)
 
                     .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(11, 16, 0),-3)
+                    .splineToLinearHeading(new Pose2d(11, 18, 0),-3)
                     .strafeTo(stackPregV)
                     .strafeTo(stackFrontV)
                     .build(),

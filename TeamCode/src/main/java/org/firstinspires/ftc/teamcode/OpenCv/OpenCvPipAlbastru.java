@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.OpenCv;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -12,17 +13,12 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 public class OpenCvPipAlbastru extends OpenCvPipeline {
 
-    Telemetry telemetry;
     private static volatile detectie locugasit;
-    public OpenCvPipAlbastru(Telemetry tele){
-        this.telemetry = tele;
-    }
     public enum detectie{
         Stanga,
         Dreapta,
         Mijloc
     }
-
 
     static final Scalar Black = new Scalar(0, 0, 0);
     static final Scalar Green = new Scalar(0, 255, 0);
@@ -93,12 +89,9 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
 
 
 
-
-        telemetry.addData("pozitie", locugasit);
-        telemetry.update();
         return output ;
     }
-    public static detectie getLocugasit() {
+    public detectie getAnalysis(){
         return locugasit;
     }
 }
