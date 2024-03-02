@@ -40,7 +40,7 @@ public class Distractie extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.addData("Detect", OpenCvPipAlbastruAp.getLocugasit());
+            telemetry.addData("Detect", OpenCvPipAlbastruAp.getAnalysis());
             telemetry.update();
         }
         controlHubCam.stopStreaming();

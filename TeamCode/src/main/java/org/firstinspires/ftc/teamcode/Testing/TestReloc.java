@@ -122,7 +122,7 @@ public class TestReloc extends LinearOpMode {
         ElapsedTime inita = new ElapsedTime();
         while (opModeInInit() && !isStopRequested() && inita.seconds() < 5) {
 
-            nou = OpenCvPipAlbastru.getLocugasit();
+            nou = OpenCvPipAlbastru.getAnalysis();
             if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
             else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
             else v[3]++;

@@ -13,6 +13,7 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -84,6 +85,11 @@ public class AutonomAlbDep extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
+        Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
+        Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
+
         Lift lift = new Lift();
         Movement movement = new Movement();
         Intake intake = new Intake();
@@ -112,7 +118,7 @@ public class AutonomAlbDep extends LinearOpMode {
         ElapsedTime inita = new ElapsedTime();
         while (opModeInInit() && !isStopRequested() && inita.seconds() < 5) {
 
-            nou = OpenCvPipAlbastru.getLocugasit();
+            nou = OpenCvPipAlbastru.getAnalysis();
             if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
             else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
             else v[3]++;

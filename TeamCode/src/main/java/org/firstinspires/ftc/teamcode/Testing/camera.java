@@ -45,7 +45,7 @@ public class camera extends LinearOpMode {
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
 
-        OpenCvPipAlbastru openCvPipAlbastru = new OpenCvPipAlbastru();
+        OpenCvPipAlbastru openCvPipAlbastru = new OpenCvPipAlbastru(telemetry);
 
         webcam.setPipeline(openCvPipAlbastru);
         webcam.openCameraDevice();

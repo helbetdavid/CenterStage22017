@@ -110,8 +110,8 @@ public class Manual1 extends LinearOpMode {
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Senzori
-        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
-        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
+//        DistanceSensor Dist = hardwareMap.get(DistanceSensor.class, "Dist");
+//        Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) Dist; //CONFIGURATIE!!
 
 //        RevColorSensorV3 colorSensor = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
 //        RevColorSensorV3 colorSensor2 = (RevColorSensorV3) hardwareMap.colorSensor.get("colorSensor");
@@ -189,10 +189,10 @@ public class Manual1 extends LinearOpMode {
                     break;
 
                 case BEFORE_SCORING:
-                    if(Dist.getDistance(DistanceUnit.CM)< 15){
-                        dom2 = 4;
-                    }
-                    else dom2=1;
+//                    if(Dist.getDistance(DistanceUnit.CM)< 15){
+//                        dom2 = 4;
+//                    }
+//                    else dom2=1;
                     break;
                 case RETRACTING:
                     if (liftPos <= 25) {
@@ -354,7 +354,7 @@ public class Manual1 extends LinearOpMode {
             telemetry.addData("Target ", target);
             telemetry.addData("Nr pixeli", pixel);
             telemetry.addData("Stadiu Robot", robotState);
-            telemetry.addData("Dist fata", Dist.getDistance(DistanceUnit.CM));
+//            telemetry.addData("Dist fata", Dist.getDistance(DistanceUnit.CM));
 //            telemetry.addData("target ", target);
 //            telemetry.addData("pos ", liftPos);
 //            telemetry.addData("leftPos", leftLift.getCurrentPosition());

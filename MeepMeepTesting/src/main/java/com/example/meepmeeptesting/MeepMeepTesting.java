@@ -27,9 +27,9 @@ public class MeepMeepTesting {
         Pose2d stackFront = new Pose2d(-58, 11, 0);
         Vector2d stackFrontV = new Vector2d(-58, 11.25);
 //        Pose2d stackMid = new Pose2d(-58, 23.5, 0);
-//        Vector2d stackMidV = new Vector2d(-58, 23.5);
-//        Pose2d stackFar = new Pose2d(-58, 42, Math.PI/9);
-//        Vector2d stackFarV = new Vector2d(-58, 35.5);
+        Vector2d stackMidV = new Vector2d(-58, 23.5);
+        Pose2d stackFar = new Pose2d(-58, 42, Math.PI/9);
+        Vector2d stackFarV = new Vector2d(-58, 35.5);
 //        Pose2d stackPreg = new Pose2d(-40, 11, 0);
 //        Vector2d stackPregV = new Vector2d(-40, 11.25);
 
@@ -38,11 +38,21 @@ public class MeepMeepTesting {
 
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
-                .strafeToLinearHeading(new Vector2d(-46, 19), 0)
-                .strafeToLinearHeading(new Vector2d(-46, 11), Math.PI / 2)
-                .strafeToLinearHeading(stackFrontV, 0)
-                .strafeToSplineHeading(new Vector2d(20, 10), Math.toRadians(0))
-                .strafeTo(new Vector2d(53,36))
+                .strafeToLinearHeading(stackFarV,0)
+//                        .waitSeconds(2)
+//                                .splineToLinearHeading(new Pose2d(-36,11,0),0.5)
+//                .splineTo(new Vector2d(-26.95, 11.41), Math.toRadians(-35.28))
+//                        .splineTo(new Vector2d(-45,11),Math.PI/4)
+//                                .strafeToLinearHeading(new Vector2d(-45,),0)
+                                .strafeToLinearHeading(new Vector2d(-48,20),0)
+                .splineToLinearHeading(new Pose2d(-36,11,0),0)
+                .splineToLinearHeading(new Pose2d(48,36,0),0.9)
+
+
+
+//                .strafeToLinearHeading(new Vector2d(-46, 11),Math.PI/2)
+//                .strafeToLinearHeading(stackFrontV, 0)
+//                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build());
 
 

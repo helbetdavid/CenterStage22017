@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class lifttestFinal extends LinearOpMode {
     private PIDFController controller;
 
-    public static double inmServo = 0.253;
+    public static double inmServo =  0.253;
     public static double inmGlisiere = 1;
     public static double adaos = 1;
     public static double timp = 0.35;

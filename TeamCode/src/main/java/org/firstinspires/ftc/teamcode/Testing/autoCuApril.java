@@ -182,7 +182,7 @@ public class autoCuApril extends LinearOpMode {
         v[3] = 0;
 
         while (opModeInInit() && !isStopRequested()) {
-            nou = OpenCvPipAlbastru.getLocugasit();
+            nou = OpenCvPipAlbastru.getAnalysis();
             if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
             else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
             else v[3]++;

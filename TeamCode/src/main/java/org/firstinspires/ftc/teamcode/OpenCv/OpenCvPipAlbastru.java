@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.OpenCv;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -14,6 +15,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class OpenCvPipAlbastru extends OpenCvPipeline {
 
     private static volatile detectie locugasit;
+
+    public OpenCvPipAlbastru(Telemetry telemetry) {
+    }
+
     public enum detectie{
         Stanga,
         Dreapta,
@@ -91,7 +96,7 @@ public class OpenCvPipAlbastru extends OpenCvPipeline {
 
         return output ;
     }
-    public detectie getAnalysis(){
+    public static detectie getAnalysis(){
         return locugasit;
     }
 }

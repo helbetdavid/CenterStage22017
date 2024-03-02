@@ -190,7 +190,7 @@ public class Rosu_Ap extends LinearOpMode {
         v[3] = 0;
 
         while (opModeInInit() && !isStopRequested()) {
-            nou = OpenCvPipRosu.getLocugasit();
+            nou = OpenCvPipRosu.getAnalysis();
             if (nou == OpenCvPipRosu.detectie.Dreapta) v[1]++;
             else if (nou == OpenCvPipRosu.detectie.Stanga) v[2]++;
             else v[3]++;

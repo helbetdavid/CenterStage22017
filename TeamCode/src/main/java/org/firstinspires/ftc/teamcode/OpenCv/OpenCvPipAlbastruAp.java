@@ -15,6 +15,10 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class OpenCvPipAlbastruAp extends OpenCvPipeline {
 
     private static volatile detectie locugasit;
+
+    public OpenCvPipAlbastruAp(Telemetry telemetry) {
+    }
+
     public enum detectie{
         Stanga,
         Dreapta,
@@ -90,7 +94,7 @@ public class OpenCvPipAlbastruAp extends OpenCvPipeline {
 
         return output ;
     }
-    public detectie getAnalysis(){
+    public static detectie getAnalysis(){
         return locugasit;
     }
 }
