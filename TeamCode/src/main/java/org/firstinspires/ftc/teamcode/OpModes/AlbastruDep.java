@@ -69,6 +69,7 @@ public class AlbastruDep extends LinearOpMode {
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
     public static double servo_pixel_start = 1;
+    public static boolean dat_dru=false;
     //maxim 0.5= pozitia sus 1=pozitia jos
 
     public enum StackPixel {
@@ -130,7 +131,7 @@ public class AlbastruDep extends LinearOpMode {
         Pose2d stackMid = new Pose2d(-58, 23.5, 0);
         Vector2d stackMidV = new Vector2d(-58, 23.5);
         Pose2d stackFar = new Pose2d(-58, 35.5, 0);
-        Vector2d stackFarV = new Vector2d(-57, 35.5);
+        Vector2d stackFarV = new Vector2d(-59, 35.5);
         Pose2d stackPreg = new Pose2d(-40, 14, 0);
         Vector2d stackPregV = new Vector2d(-40, 14);
 
@@ -208,14 +209,18 @@ public class AlbastruDep extends LinearOpMode {
         v[1] = 0;
         v[2] = 0;
         v[3] = 0;
-
+        ElapsedTime pixel = new ElapsedTime();
+        pixel.startTime();
         while (opModeInInit() && !isStopRequested()) {
-            nou = OpenCvPipAlbastru.getAnalysis();
-            if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
-            else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
-            else v[3]++;
+            if(pixel.seconds()>1) {
+                nou = OpenCvPipAlbastru.getAnalysis();
+                if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
+                else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
+                else v[3]++;
+                pixel.reset();
+            }
             pixelInit.setPosition(servo_pixel_start);
-            intake.intakePos(1);
+            intake.intakePos(0.1);
             telemetry.addData("Detect", nou);
             telemetry.update();
         }
@@ -223,82 +228,9 @@ public class AlbastruDep extends LinearOpMode {
 
 
 
-        if (v[1] > v[2] && v[1] > v[3]) {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(5.5,34.5), -Math.PI*3/4)
 
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(20,41,Math.PI),0)
-                    .turnTo(0)
-                    .setReversed(false)
-                    .splineTo(new Vector2d(48,36),0)
-                    .build();
 //            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardDrV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardDr)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardDr)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-        } else if (v[3] > v[1] && v[3] > v[2]) {
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeToLinearHeading(new Vector2d(22,21 ),-Math.PI*3/4-0.1)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(34,30,Math.PI),0)
-                    .turnTo(0)
-                    .strafeTo(new Vector2d(48,36))
-                    .build();
-            parking = drive.actionBuilder(boardMij)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardMijV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardMij)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-//            drive.updatePoseEstimate();
-        } else {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeToLinearHeading(new Vector2d(28,36 ),-Math.PI/2-0.4)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(45,37,-Math.PI),-1)
-                    .turnTo(0)
-                    .strafeTo(almostBoardV)
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardStV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardSt)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardSt)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-        }
+
 
 
 
@@ -329,18 +261,21 @@ public class AlbastruDep extends LinearOpMode {
                             .strafeToLinearHeading(stackFarV,0)
                             .waitSeconds(2)
                             .strafeToLinearHeading(new Vector2d(-48,20),0)
-                            .splineToLinearHeading(new Pose2d(-36,12,0),0)
+                            .splineToLinearHeading(new Pose2d(-25,10,0),0)
+                            .splineToLinearHeading(new Pose2d(15,10,0),0)
+//                .strafeToLinearHeading(new Vector2d(36,11),0)
                             .splineToLinearHeading(new Pose2d(48,36,0),0.9)
                             .build()
                         ,
                             (telemetryPacket )->{
-                                if(drive.pose.position.x>=-36 &&drive.pose.position.y<=20 && drive.pose.position.x<=-20 &&drive.pose.position.y>=15){lift.goTarget(1200);pixelInit.setPosition(servo_pixel_start);}
-
+                               // if(drive.pose.position.x>=-36 &&drive.pose.position.y<=20 && drive.pose.position.x<=-20 &&drive.pose.position.y>=15){lift.goTarget(1200);pixelInit.setPosition(servo_pixel_start);dat_dru=false;}
+                               // if(drive.pose.position.x>=-36 &&drive.pose.position.y<=25){pixelInit.setPosition(servo_pixel_start);dat_dru=false;}
                                 lift.update();
-
+                                if(drive.pose.position.y<34)dat_dru=true;
 
 
                                 telemetry.addData("x", drive.pose.position.x);
+                                telemetry.addData("s-a dat", dat_dru  );
                                 telemetry.addData("y", drive.pose.position.y);
                                 telemetry.addData("Lift Posiion Right", lift.getPositionRight());
                                 telemetry.addData("Lift Posiion Left", lift.getPositionLeft());

@@ -39,13 +39,11 @@ public class MeepMeepTesting {
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
                 .strafeToLinearHeading(stackFarV,0)
-//                        .waitSeconds(2)
-//                                .splineToLinearHeading(new Pose2d(-36,11,0),0.5)
-//                .splineTo(new Vector2d(-26.95, 11.41), Math.toRadians(-35.28))
-//                        .splineTo(new Vector2d(-45,11),Math.PI/4)
-//                                .strafeToLinearHeading(new Vector2d(-45,),0)
-                                .strafeToLinearHeading(new Vector2d(-48,20),0)
-                .splineToLinearHeading(new Pose2d(-36,11,0),0)
+                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(-48,20),0)
+                .splineToLinearHeading(new Pose2d(-25,10,0),0)
+                .splineToLinearHeading(new Pose2d(15,10,0),0)
+//                .strafeToLinearHeading(new Vector2d(36,11),0)
                 .splineToLinearHeading(new Pose2d(48,36,0),0.9)
 
 
