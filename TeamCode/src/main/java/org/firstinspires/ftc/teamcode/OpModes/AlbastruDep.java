@@ -270,7 +270,7 @@ public class AlbastruDep extends LinearOpMode {
                             .strafeToLinearHeading(new Vector2d(-50,20),0)
                             .splineToLinearHeading(new Pose2d(-25,10,0),0)
                             .splineToLinearHeading(new Pose2d(15,10,0),0)
-                            .splineToLinearHeading(new Pose2d(50,36,0),0.9) // AL DOILEA PIXEL
+                            .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
                             .waitSeconds(2)
                             .setReversed(true)
                             .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
@@ -287,8 +287,29 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
                     );
-                drive.pose = new Pose2d(-57.5,drive.pose.position.y,Math.toRadians(drive.pose.heading.toDouble()));
+                drive.pose = new Pose2d(-56.5,drive.pose.position.y,Math.toRadians(drive.pose.heading.toDouble()));
 
+            Actions.runBlocking(
+                    new ParallelAction(
+                            drive.actionBuilder(drive.pose)
+                                    .splineToLinearHeading(new Pose2d(15,13,0),0)
+                                    .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+                                    .waitSeconds(2)
+                                    .setReversed(true)
+                                    .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
+                                    .splineToLinearHeading(new Pose2d(-42 ,12,0),new Rotation2d(0,0))//x adevarat este -57.5
+                                    .waitSeconds(2)
+                                    .build()
+                            ,new InstantAction(() -> {
+
+                    }),
+                            (telemetryPacket )->{
+
+                                telemetry.update();
+                                return false;
+                            }
+                    )
+            );
 //            Actions.runBlocking(drive.actionBuilder(almostBoard).strafeTo(new Vector2d(40, 10)).build());
 
 
