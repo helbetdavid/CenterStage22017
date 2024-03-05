@@ -1,6 +1,7 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
@@ -43,8 +44,20 @@ public class MeepMeepTesting {
                 .strafeToLinearHeading(new Vector2d(-48,20),0)
                 .splineToLinearHeading(new Pose2d(-25,10,0),0)
                 .splineToLinearHeading(new Pose2d(15,10,0),0)
-//                .strafeToLinearHeading(new Vector2d(36,11),0)
                 .splineToLinearHeading(new Pose2d(48,36,0),0.9)
+                .waitSeconds(2)
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
+                .splineToLinearHeading(new Pose2d(-50,10,0),new Rotation2d(0,0))
+                .waitSeconds(2)
+//                .strafeTo(new Vector2d(-35,10))
+//                        .splineTo(new Vector2d(15,10),1)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(-35,10,0),0)
+//                .splineToLinearHeading(new Pose2d(-58,12,0),0)
+//                .splineToLinearHeading(new Pose2d(20,10,0),1)
+//                .splineToLinearHeading(new Pose2d(15,10,0),-0.75)
+//                .splineToLinearHeading(new Pose2d(-58,12,0),0)
 
 
 

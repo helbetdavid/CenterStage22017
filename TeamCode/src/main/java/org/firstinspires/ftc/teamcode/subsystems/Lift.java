@@ -46,7 +46,7 @@ public class Lift extends Mechanism{
         }
         rightLift.setPower(rightLiftPower / fixer );
         leftLift.setPower(leftLiftPower / fixer );
-
+        return;
     }
     public int getPositionLeft(){
         return leftLift.getCurrentPosition();

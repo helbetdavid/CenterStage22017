@@ -8,8 +8,10 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.InstantAction;
 import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
@@ -68,7 +70,9 @@ public class AlbastruDep extends LinearOpMode {
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
-    public static double servo_pixel_start = 1;
+    public static double servo_pixel_sus= 1;
+    public static int numaratoare= 0;
+    public static double servo_pixel_jos = 0.5;
     public static boolean dat_dru=false;
     //maxim 0.5= pozitia sus 1=pozitia jos
 
@@ -88,6 +92,7 @@ public class AlbastruDep extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+
         stackPixel = StackPixel.pixelStackFront;
 
         Lift lift = new Lift();
@@ -107,6 +112,8 @@ public class AlbastruDep extends LinearOpMode {
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
         Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
+
+
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -219,7 +226,7 @@ public class AlbastruDep extends LinearOpMode {
                 else v[3]++;
                 pixel.reset();
             }
-            pixelInit.setPosition(servo_pixel_start);
+            pixelInit.setPosition(servo_pixel_sus);
             intake.intakePos(0.1);
             telemetry.addData("Detect", nou);
             telemetry.update();
@@ -239,9 +246,9 @@ public class AlbastruDep extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
         if (opModeIsActive()) {
-
+            ElapsedTime run = new ElapsedTime();
+            run.startTime();
             telemetry.addData("Dreapta", v[1]);
             telemetry.addData("Stanga", v[2]);
             telemetry.addData("Mijloc", v[3]);
@@ -258,36 +265,29 @@ public class AlbastruDep extends LinearOpMode {
             Actions.runBlocking(
                     new ParallelAction(
                     drive.actionBuilder(beginPose)
-                            .strafeToLinearHeading(stackFarV,0)
+                            .strafeToLinearHeading(new Vector2d(-57.5, 35.5),0)// PRIMUL PIXEL
                             .waitSeconds(2)
-                            .strafeToLinearHeading(new Vector2d(-48,20),0)
+                            .strafeToLinearHeading(new Vector2d(-50,20),0)
                             .splineToLinearHeading(new Pose2d(-25,10,0),0)
                             .splineToLinearHeading(new Pose2d(15,10,0),0)
-//                .strafeToLinearHeading(new Vector2d(36,11),0)
-                            .splineToLinearHeading(new Pose2d(48,36,0),0.9)
+                            .splineToLinearHeading(new Pose2d(50,36,0),0.9) // AL DOILEA PIXEL
+                            .waitSeconds(2)
+                            .setReversed(true)
+                            .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
+                            .splineToLinearHeading(new Pose2d(-42 ,13,0),new Rotation2d(0,0))//x adevarat este -57.5
+                            .waitSeconds(2)
                             .build()
-                        ,
+                        ,new InstantAction(() -> {
+
+                        }),
                             (telemetryPacket )->{
-                               // if(drive.pose.position.x>=-36 &&drive.pose.position.y<=20 && drive.pose.position.x<=-20 &&drive.pose.position.y>=15){lift.goTarget(1200);pixelInit.setPosition(servo_pixel_start);dat_dru=false;}
-                               // if(drive.pose.position.x>=-36 &&drive.pose.position.y<=25){pixelInit.setPosition(servo_pixel_start);dat_dru=false;}
-                                lift.update();
-                                if(drive.pose.position.y<34)dat_dru=true;
-
-
-                                telemetry.addData("x", drive.pose.position.x);
-                                telemetry.addData("s-a dat", dat_dru  );
-                                telemetry.addData("y", drive.pose.position.y);
-                                telemetry.addData("Lift Posiion Right", lift.getPositionRight());
-                                telemetry.addData("Lift Posiion Left", lift.getPositionLeft());
-
-                                telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
 
                                 telemetry.update();
                                 return false;
                             }
                     )
                     );
-
+                drive.pose = new Pose2d(-57.5,drive.pose.position.y,Math.toRadians(drive.pose.heading.toDouble()));
 
 //            Actions.runBlocking(drive.actionBuilder(almostBoard).strafeTo(new Vector2d(40, 10)).build());
 
