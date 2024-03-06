@@ -35,8 +35,8 @@ public class Manual1 extends LinearOpMode {
     Gamepad previousGamepad2 = new Gamepad();
 
     private PIDFController controller;
-    public static double p = 0.003, i = 0.000077, d = 0.000065;
-    public static double f = 0.000002;
+    public static double p = 0.0052, i = 0.000135 , d = 0.000055;
+    public static double f = 0.000035;
     public static int target = 0;
     public static double relatieP = 0.00275;
 
@@ -56,6 +56,8 @@ public class Manual1 extends LinearOpMode {
     public static double LiftLowSvPos = 0.243;
     public static double LiftHighSvPos = 0.99;
     public static double minDistnace = 60;
+    public static double servo_usa_inchis= 0.5;
+    public static double servo_usa_deshis= 0.3;
     public static double vitBanda = 1;
     public static int pixel = 0;
     public static int ture = 0;
@@ -63,6 +65,8 @@ public class Manual1 extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     ElapsedTime aveon = new ElapsedTime();
+
+    ElapsedTime butonUsaCutie = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -98,7 +102,7 @@ public class Manual1 extends LinearOpMode {
 
 //        CRServo Aveon = hardwareMap.get(CRServo.class, "Aveon");
 
-        CRServo Usa = hardwareMap.get(CRServo.class, "Usa");
+        Servo usa = hardwareMap.get(Servo.class, "Usa");
 
         // Reverse Motors
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -131,6 +135,9 @@ public class Manual1 extends LinearOpMode {
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
 
+            double ridicat = gamepad2.left_trigger;
+            double  coborat = gamepad2.right_trigger;
+
             controller.setPIDF(p, i, d, f);
             double liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2.0;
             double pidf = controller.calculate(liftPos, target);
@@ -144,57 +151,36 @@ public class Manual1 extends LinearOpMode {
 
             switch (robotState) {
                 case START:
+                    usa.setPosition(servo_usa_inchis);
                     intake.setPower(0);
                     banda.setPower(0);
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
-                    if(Math.abs(target - leftLift.getCurrentPosition()) > 10
-                            || Math.abs(target - rightLift.getCurrentPosition()) > 10)
-                        Usa.setPower(leftLiftPower / fixer / 1.25 * 0.5);
-                        else Usa.setPower(0);
+                    usa.setPosition(servo_usa_inchis);
                     break;
                 case COLLECTING:
+                    usa.setPosition(servo_usa_inchis);
                     leftIntakeSv.setPosition(IntakeLowSvPos);
                     rightIntakeSv.setPosition(IntakeLowSvPos);
                     intake.setPower(1);
                     banda.setPower(vitBanda);
                     break;
-                case NEUTRAL:
+                case SCORING:
+                    usa.setPosition(servo_usa_inchis);
                     intake.setPower(0);
-                    banda.setPower(0);
+                    usa.setPosition(servo_usa_inchis);
+
+                    target = (int) (2500*coborat);
+
                     if (timer.seconds() >= 0.8) {
                         leftIntakeSv.setPosition(IntakeMidSvPos);
                         rightIntakeSv.setPosition(IntakeMidSvPos);
                     }
                     break;
 
-                case SCORING:
-//                    if(Dist.getDistance(DistanceUnit.CM)< 15){
-//                        dom2 = 4;
-//                    }
-//                    else dom2=1;
-                    target = 2000;
-                    if(Math.abs(target - leftLift.getCurrentPosition()) > 10
-                            || Math.abs(target - rightLift.getCurrentPosition()) > 10)
-                        Usa.setPower(leftLiftPower / fixer / 1.25);
-                        else Usa.setPower(0);
-
-//                    while(liftPos < 2000){
-//                        Usa.setPower(0.8);
-//                        liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2;
-//                    }
-//                    Usa.setPower(0);
-//                    }
-                    break;
-
-                case BEFORE_SCORING:
-//                    if(Dist.getDistance(DistanceUnit.CM)< 15){
-//                        dom2 = 4;
-//                    }
-//                    else dom2=1;
-                    break;
                 case RETRACTING:
+                    usa.setPosition(servo_usa_inchis);
                     if (liftPos <= 25) {
                         robotState = RobotState.START;
                     }
@@ -243,6 +229,8 @@ public class Manual1 extends LinearOpMode {
 
             //CIPRIAN/VLAD
 
+
+
             double ServVit = gamepad2.left_stick_y;
             PullupServo.setPower(ServVit);
 
@@ -269,10 +257,10 @@ public class Manual1 extends LinearOpMode {
 //                Aveon.setPower(0);
             }
 
-            if (gamepad1.x) {
-                leftIntakeSv.setPosition(0.5);
-                rightIntakeSv.setPosition(0.5);
-            }
+//            if (gamepad1.x) {
+//                leftIntakeSv.setPosition(0.5);
+//                rightIntakeSv.setPosition(0.5);
+//            }
 
 //            if(gamepad2.left_bumper){
 //                banda.setPower(0);
@@ -282,6 +270,21 @@ public class Manual1 extends LinearOpMode {
 //            }
             if(gamepad2.dpad_up)
                 robotState = RobotState.BEFORE_SCORING;
+
+
+
+            if(gamepad2.left_bumper && robotState== RobotState.SCORING) {
+                butonUsaCutie.reset();
+                usa.setPosition(servo_usa_deshis);
+            }
+
+            if(butonUsaCutie.seconds()>= 1.5 ) usa.setPosition(servo_usa_inchis);
+
+
+
+
+
+
 
 
             //SPRE BACKDROP

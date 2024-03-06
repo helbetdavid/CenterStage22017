@@ -70,9 +70,14 @@ public class AlbastruDep extends LinearOpMode {
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
-    public static double servo_pixel_sus= 1;
+
+    public static double servo_pixel_sus= 0.4;
+    public static double servo_pixel_jos = 0.97;
+    public static double servo_intake_pos= 0.44;
+    public static double servo_usa_inchis= 0.5;
+    public static double servo_usa_deshis= 0.3;
     public static int numaratoare= 0;
-    public static double servo_pixel_jos = 0.5;
+
     public static boolean dat_dru=false;
     //maxim 0.5= pozitia sus 1=pozitia jos
 
@@ -112,6 +117,7 @@ public class AlbastruDep extends LinearOpMode {
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
         Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
+        Servo ServoUsa = hardwareMap.get(Servo.class, "Usa");
 
 
 
@@ -144,58 +150,6 @@ public class AlbastruDep extends LinearOpMode {
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
-        goToMij = drive.actionBuilder(boardMij).strafeTo(new Vector2d(40, 12)).build();
-        boardToMijCorrected = drive.actionBuilder(almostBoard)
-                .strafeTo(new Vector2d(53, 36))
-                .build();
-        stackToMijBetter = drive.actionBuilder(drive.pose)
-                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
-                .build();
-
-        mijStackPreg = drive.actionBuilder(mij)
-                .strafeTo(stackPregV)
-                .turnTo(0)
-                .build();
-
-
-        Action caseMijloc = drive.actionBuilder(beginPose)
-                .strafeToLinearHeading(new Vector2d(-46, 19),0)
-                .strafeToLinearHeading(new Vector2d(-46, 11),Math.PI/2)
-                .strafeToLinearHeading(stackFrontV, 0)
-                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
-                .build();
-
-        switch (stackPixel) {
-            case pixelStackFar:
-                pixelStack = drive.actionBuilder(stackPreg)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackFar, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackFar)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackMid:
-                pixelStack = drive.actionBuilder(stackPreg)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackMid, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackMid)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackFront:
-                pixelStack = drive.actionBuilder(stackPreg)
-//                        .turn(Math.PI)
-                        .strafeTo(stackFrontV)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackFront)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-        }
 
 
 
@@ -203,6 +157,8 @@ public class AlbastruDep extends LinearOpMode {
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         DcMotor rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
         DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        DcMotor banda = hardwareMap.get(DcMotorEx.class, "banda");
+        DcMotor intake1 = hardwareMap.get(DcMotorEx.class, "intake");
 
 
 
@@ -226,8 +182,9 @@ public class AlbastruDep extends LinearOpMode {
                 else v[3]++;
                 pixel.reset();
             }
-            pixelInit.setPosition(servo_pixel_sus);
+            pixelInit.setPosition(servo_pixel_jos);
             intake.intakePos(0.1);
+            ServoUsa.setPosition(servo_usa_inchis);
             telemetry.addData("Detect", nou);
             telemetry.update();
         }
@@ -265,48 +222,149 @@ public class AlbastruDep extends LinearOpMode {
             Actions.runBlocking(
                     new ParallelAction(
                     drive.actionBuilder(beginPose)
-                            .strafeToLinearHeading(new Vector2d(-57.5, 35.5),0)// PRIMUL PIXEL
-                            .waitSeconds(2)
-                            .strafeToLinearHeading(new Vector2d(-50,20),0)
+                            .strafeToLinearHeading(new Vector2d(-57.7, 35.5),0)// PRIMUL PIXEL
+                            .waitSeconds(0.15)
+                            .strafeToLinearHeading(new Vector2d(-41,25),0)
                             .splineToLinearHeading(new Pose2d(-25,10,0),0)
                             .splineToLinearHeading(new Pose2d(15,10,0),0)
-                            .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
-                            .waitSeconds(2)
+                            .splineToLinearHeading(new Pose2d(48.9,36,0),0.9) // AL DOILEA PIXEL
+                            .waitSeconds(0.4)
                             .setReversed(true)
                             .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
-                            .splineToLinearHeading(new Pose2d(-42 ,13,0),new Rotation2d(0,0))//x adevarat este -57.5
-                            .waitSeconds(2)
+                            .splineToLinearHeading(new Pose2d(-45 ,16,0),new Rotation2d(0,0))//x adevarat este -57.5
+                            .waitSeconds(1)
                             .build()
                         ,new InstantAction(() -> {
 
                         }),
                             (telemetryPacket )->{
+                                lift.update();
+                                if(drive.pose.position.y<22 && drive.pose.position.x>-40.5)pixelInit.setPosition(servo_pixel_sus);//x>-47 pentru dreapta sau 42 LOL sau 40/41 pentru mijloc
+                                if(drive.pose.position.x<-35 && drive.pose.position.y<50){
+                                    leftIntakeSv.setPosition(servo_intake_pos);
+                                    rightIntakeSv.setPosition(servo_intake_pos);
+                                    banda.setPower(0.7);
+                                    intake1.setPower(1);
+
+                                }
+                                else {
+
+                                    intake1.setPower(0);
+                                }
+                                if(drive.pose.position.x>35){
+                                    lift.goTarget(1200);
+                                    banda.setPower(0);
+                                }
+                                    else {
+                                        lift.goTarget(0);
+                                    ServoUsa.setPosition(servo_usa_inchis);
+                                }
+                                if(drive.pose.position.x>47){
+                                    ServoUsa.setPosition(servo_usa_deshis);
+                                }
+                                if(run.seconds()>11){
+                                    run.reset();
+                                    return false;
+                                }
 
                                 telemetry.update();
-                                return false;
+                                return true;
                             }
                     )
                     );
-                drive.pose = new Pose2d(-56.5,drive.pose.position.y,Math.toRadians(drive.pose.heading.toDouble()));
+                drive.pose = new Pose2d(-58,10,Math.toRadians(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(
                     new ParallelAction(
                             drive.actionBuilder(drive.pose)
-                                    .splineToLinearHeading(new Pose2d(15,13,0),0)
-                                    .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
-                                    .waitSeconds(2)
+                                    .splineToLinearHeading(new Pose2d(15,10,0),0)
+                                    .splineToLinearHeading(new Pose2d(51,36,0),0.9) // AL DOILEA PIXEL
+                                    .waitSeconds(0.4)
                                     .setReversed(true)
                                     .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
-                                    .splineToLinearHeading(new Pose2d(-42 ,12,0),new Rotation2d(0,0))//x adevarat este -57.5
-                                    .waitSeconds(2)
+                                    .splineToLinearHeading(new Pose2d(-44.5 ,14,0),new Rotation2d(0,0))//x adevarat este -57.5
+                                    .waitSeconds(1)
                                     .build()
                             ,new InstantAction(() -> {
 
                     }),
                             (telemetryPacket )->{
+                                lift.update();
+                                if(drive.pose.position.y<20)pixelInit.setPosition(servo_pixel_sus);
+                                if(drive.pose.position.x<-35){
+                                    leftIntakeSv.setPosition(servo_intake_pos+0.06);
+                                    rightIntakeSv.setPosition(servo_intake_pos+0.06);
+                                    banda.setPower(0.8);
+                                    intake1.setPower(1);
 
+                                }
+                                else {
+
+                                    intake1.setPower(0);
+                                }
+                                if(drive.pose.position.x>38){
+                                    lift.goTarget(1600);
+                                    banda.setPower(0);
+                                }
+
+                                else {
+                                    lift.goTarget(0);
+                                    ServoUsa.setPosition(servo_usa_inchis);
+                                }
+                                if(drive.pose.position.x>48){
+                                    ServoUsa.setPosition(servo_usa_deshis);
+                                }
+                                if(run.seconds()>11){
+                                    run.reset();
+                                    return false;
+                                }
+                                //return false;
                                 telemetry.update();
-                                return false;
+                                return true;
+                            }
+                    )
+            );
+            drive.pose = new Pose2d(-58.5,10,Math.toRadians(drive.pose.heading.toDouble()));
+
+            Actions.runBlocking(
+                    new ParallelAction(
+                            drive.actionBuilder(drive.pose)
+                                    .splineToLinearHeading(new Pose2d(15,10,0),0)
+                                    .splineToLinearHeading(new Pose2d(52.5,36,0),0.9) // AL DOILEA PIXEL
+                                    .waitSeconds(0.4)
+                                    .build()
+                            ,new InstantAction(() -> {
+
+                    }),
+                            (telemetryPacket )->{
+                                lift.update();
+                                if(drive.pose.position.y<20)pixelInit.setPosition(servo_pixel_sus);
+                                if(drive.pose.position.x<-35){
+                                    leftIntakeSv.setPosition(servo_intake_pos);
+                                    rightIntakeSv.setPosition(servo_intake_pos);
+                                    banda.setPower(0.8);
+                                    intake1.setPower(1);
+
+                                }
+                                else {
+
+                                    intake1.setPower(0);
+                                }
+                                if(drive.pose.position.x>35){
+                                    lift.goTarget(1600);
+                                    banda.setPower(0);
+                                }
+                                else {
+                                    lift.goTarget(0);
+                                    ServoUsa.setPosition(servo_usa_inchis);
+                                }
+                                if(drive.pose.position.x>48.5){
+                                    ServoUsa.setPosition(servo_usa_deshis);
+                                    return false;
+                                }
+                                //return false;
+                                telemetry.update();
+                                return true;
                             }
                     )
             );

@@ -123,7 +123,7 @@ public class Albastru_Ap extends LinearOpMode {
                 .strafeTo(new Vector2d(53, 36))
                 .build();
         stackToMijBetter = drive.actionBuilder(stackFront)
-                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
+                .splineToLinearHeading(new Pose2d(48, 36, 0), 0.75)
                 .build();
 
         mijStackPreg = drive.actionBuilder(mij)
@@ -178,7 +178,6 @@ public class Albastru_Ap extends LinearOpMode {
         intake.init(hardwareMap);
 
 
-
         initOpenCV(telemetry);
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = new MultipleTelemetry(telemetry, dashboard.getTelemetry());
@@ -200,84 +199,6 @@ public class Albastru_Ap extends LinearOpMode {
         }
         controlHubCam.stopStreaming();
 
-
-
-        if (v[1] > v[2] && v[1] > v[3]) {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(5.5,34.5), -Math.PI*3/4)
-
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(20,41,Math.PI),0)
-                    .turnTo(0)
-                    .setReversed(false)
-                    .splineTo(new Vector2d(48,36),0)
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardDrV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardDr)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardDr)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-        } else if (v[3] > v[1] && v[3] > v[2]) {
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                 .strafeToLinearHeading(new Vector2d(22,21 ),-Math.PI*3/4-0.1)
-                        .setReversed(true)
-                .splineToLinearHeading(new Pose2d(34,30,Math.PI),0)
-                        .turnTo(0)
-                        .strafeTo(new Vector2d(48,36))
-                    .build();
-            parking = drive.actionBuilder(boardMij)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardMijV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardMij)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-//            drive.updatePoseEstimate();
-        } else {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeToLinearHeading(new Vector2d(28,36 ),-Math.PI/2-0.4)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(45,37,-Math.PI),-1)
-                    .turnTo(0)
-                    .strafeTo(almostBoardV)
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardStV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardSt)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardSt)
-                    .strafeTo(new Vector2d(42,61))
-                    .strafeTo(new Vector2d(58,61))
-                    .build();
-//            drive.updatePoseEstimate();
-        }
 
 
 
@@ -302,119 +223,9 @@ public class Albastru_Ap extends LinearOpMode {
             telemetry.update();
 
 
-            Actions.runBlocking(
-                    new SequentialAction(
-                            new ParallelAction(
-                                    pixelToBoardNT,
-                                    (telemetryPacket) -> {
-                                        telemetry.addData("x", drive.pose.position.x);
-                                        telemetry.addData("y", drive.pose.position.y);
-                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-                                        telemetry.update();
-                                        return false;
-                                    }),
-
-                            new ParallelAction(
-                                    exactBoard,
-                                    (telemetryPacket) -> {
-//                                        timer.reset();
-//                                        lift.goTarget(3000);
-//                                        lift.update();
-//
-//                                        while (timer.seconds() < 1.5) {
-//                                            lift.update();
-//                                        }
-//                                        lift.goTarget(0);
-//                                        lift.update();
-//                                        while (timer.seconds() < 3) {
-//                                            lift.update();
-//                                        }
-
-
-                                        telemetry.addData("x", drive.pose.position.x);
-                                        telemetry.addData("y", drive.pose.position.y);
-                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-                                        telemetry.update();
-                                        return false;
-                                    }),
-                            new ParallelAction(
-                                    (telemetryPacket) -> {
-                                        timer.reset();
-                                        lift.goTarget(3000);
-                                        lift.update();
-
-                                        while (timer.seconds() < 1.5) {
-                                            lift.update();
-                                        }
-                                        lift.goTarget(0);
-                                        lift.update();
-                                        while (timer.seconds() < 3) {
-                                            lift.update();
-                                        }
-
-
-                                        telemetry.addData("x", drive.pose.position.x);
-                                        telemetry.addData("y", drive.pose.position.y);
-                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-                                        telemetry.update();
-                                        return false;
-                                    }),
-
-
-
-                            new ParallelAction(
-                                    parking,
-                                    (telemetryPacket) -> {
-                                        intake.intakePos(0);
-                                        intake.pwrIntake(0);
-                                        intake.pwrBanda(0);
-                                        telemetry.addData("x", drive.pose.position.x);//                                        telemetry.addData("y", drive.pose.position.y);
-                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-                                        telemetry.update();
-                                        return false;
-                                    })
-//                            new ParallelAction(
-//                                    pixelToPreg,
-//                                    (telemetryPacket) -> {
-//                                        telemetry.addData("x", drive.pose.position.x);
-//                                        telemetry.addData("y", drive.pose.position.y);
-//                                        telemetry.addData("heading (deg)", Math.toDegrees(drive.pose.heading.toDouble()));
-//                                        telemetry.update();
-//                                        return false;
-//                                    })
-
-//                            pixelToPreg
-//                            drive.actionBuilder( new Pose2d(48, 46, 0)).strafeTo(new Vector2d(53,36)),
-
-
-                    ));
-
-
-//            Actions.runBlocking(drive.actionBuilder(almostBoard).strafeTo(new Vector2d(40, 10)).build());
-
-
-
-//            while (DistSpateSt.getDistance(DistanceUnit.CM) > 15 && DistSpateDr.getDistance(DistanceUnit.CM) > 15) {
-//                double unghi = 90 - imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-//                leftFront.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
-//                leftRear.setPower(-0.5 - Range.clip(unghi / 2, -0.5, 0.5)/3);
-//                rightRear.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
-//                rightFront.setPower(-0.5 + Range.clip(unghi / 2, -0.5, 0.5)/3);
-//
-//                telemetry.addData("SenzorDr", DistSpateDr.getDistance(DistanceUnit.CM));
-//                telemetry.addData("SenzorSt", DistSpateSt.getDistance(DistanceUnit.CM));
-//                telemetry.update();
-//            }
-//            movement.forward(0);
 
 
         }
-//        Actions.runBlocking(drive.actionBuilder( new Pose2d(48, 46, 0))
-//                .strafeTo(new Vector2d(53,36))
-//
-//        );
-//        controlHubCam.stopStreaming();
-
     }
 
     private void initOpenCV(Telemetry telemetry) {

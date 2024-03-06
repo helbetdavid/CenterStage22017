@@ -19,8 +19,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class IntakeAction {
 
-    public static double p = 0.0052, i = 0.000135 , d = 0.000055;
-    public static double f = 0.000035;
+    public static double p = 0.0052, i = 0.000125 , d = 0.000062;
+    public static double f = 0.000034;
     public static int target = 0;
     public static double relatieP = 0.0062;
     DcMotorEx rightLift, leftLift;
@@ -108,6 +108,7 @@ public class IntakeAction {
 
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            timer.reset();
             liftPos = (rightLift.getCurrentPosition() + leftLift.getCurrentPosition()) / 2.0;
             pidf = controller.calculate(liftPos, target);
             motorRelativeError = Math.abs(leftLift.getCurrentPosition() - rightLift.getCurrentPosition()) > 10 ? leftLift.getCurrentPosition() - rightLift.getCurrentPosition() : 0;
@@ -122,8 +123,7 @@ public class IntakeAction {
             rightLift.setPower(rightLiftPower / fixer );
             leftLift.setPower(leftLiftPower / fixer );
 
-
-            return false;
+            return !(liftPos >= target - 50) && !(timer.seconds() > 3);
         }
 
     }

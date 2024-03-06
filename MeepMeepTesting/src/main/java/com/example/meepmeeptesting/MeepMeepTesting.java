@@ -39,26 +39,18 @@ public class MeepMeepTesting {
 
 
         myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
-                .strafeToLinearHeading(stackFarV,0)
-                .waitSeconds(2)
-                .strafeToLinearHeading(new Vector2d(-48,20),0)
-                .splineToLinearHeading(new Pose2d(-25,11,0),0)
-                .splineToLinearHeading(new Pose2d(25,11,0),0)
-                .splineToLinearHeading(new Pose2d(48,36,0),0.9)
-                .waitSeconds(2)
+                .strafeToLinearHeading(new Vector2d(-57.7, 35.5),0)// PRIMUL PIXEL
+                .waitSeconds(0.3)
+                .strafeToLinearHeading(new Vector2d(-42,25),0)
+                        .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(-25,10,0),0)
+                .splineToLinearHeading(new Pose2d(15,10,0),0)
+                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+                .waitSeconds(0.4)
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
-                .splineToLinearHeading(new Pose2d(-50,11,0),new Rotation2d(0,0))
-                .waitSeconds(2)
-//                .strafeToLinearHeading(new Vector2d(-50,20),0)
-//                .splineToLinearHeading(new Pose2d(-25,10,0),0)
-                .splineToLinearHeading(new Pose2d(25,11,0),0)
-                .splineToLinearHeading(new Pose2d(50,36,0),0.9) // AL DOILEA PIXEL
-                .waitSeconds(2)
-                .setReversed(true)
-                .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
-                .splineToLinearHeading(new Pose2d(-42 ,11,0),new Rotation2d(0,0))//x adevarat este -57.5
-                .waitSeconds(2)
+                .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
+                .splineToLinearHeading(new Pose2d(-47 ,16,0),new Rotation2d(0,0))//x adevarat este -57.5
+                .waitSeconds(1)
 //                .strafeTo(new Vector2d(-35,10))
 //                        .splineTo(new Vector2d(15,10),1)
 //                .setReversed(true)

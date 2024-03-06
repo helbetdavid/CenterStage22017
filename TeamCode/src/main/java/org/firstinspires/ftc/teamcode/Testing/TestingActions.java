@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Testing;
 
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
@@ -41,26 +42,33 @@ public class TestingActions extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive() && !isStopRequested()){
+        if (opModeIsActive() && !isStopRequested()){
 
             Actions.runBlocking(
-
                     new SequentialAction(
+                            intake.setTargetMid(),
+                            new ParallelAction(
                             TrajTest,
                             intake.Start(),
-                            intake.Wait(),
+                            intake.gotToTarget()
+//                            intake.Wait(),
+//                            intake.Stop(),
+//                            intake.setPosition(),
+//                            intake.Wait(),
+//                            intake.setTargetMid(),
+//                            intake.gotToTarget(),
+//                            intake.Wait(),
+//                            intake.setTargetMigh(),
+//                            intake.gotToTarget(),
+//                            intake.Wait(),
+//                            intake.setTargetLow(),
+//                            intake.gotToTarget(),
+//                            intake.Wait()
+
+                    ),
                             intake.Stop(),
-                            intake.setPosition(),
-                            intake.Wait(),
                             intake.setTargetMid(),
-                            intake.gotToTarget(),
-                            intake.Wait(),
-                            intake.setTargetMigh(),
-                            intake.gotToTarget(),
-                            intake.Wait(),
-                            intake.setTargetLow(),
-                            intake.gotToTarget(),
-                            intake.Wait()
+                            intake.gotToTarget()
 
 
                     )
