@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Testing;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -32,7 +33,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
     P.S.2  Daca nu functioneaza cum ar trebui, mai am o varianta :) (doar spune-mi)
  *
  *     */
-
+@Disabled
 @TeleOp
 @Config
 public class NrPixeli extends LinearOpMode {
