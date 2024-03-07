@@ -29,45 +29,131 @@ public class MeepMeepTesting {
         Vector2d stackFrontV = new Vector2d(-58, 11.25);
 //        Pose2d stackMid = new Pose2d(-58, 23.5, 0);
         Vector2d stackMidV = new Vector2d(-58, 23.5);
-        Pose2d stackFar = new Pose2d(-58, 42, Math.PI/9);
+        Pose2d stackFar = new Pose2d(-58, 42, Math.PI / 9);
         Vector2d stackFarV = new Vector2d(-58, 35.5);
 //        Pose2d stackPreg = new Pose2d(-40, 11, 0);
 //        Vector2d stackPregV = new Vector2d(-40, 11.25);
 
 
-
-
-
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, 61, -Math.PI / 2))
-                .strafeToLinearHeading(new Vector2d(-57.7, 35.5),0)// PRIMUL PIXEL
-                .waitSeconds(0.3)
-                .strafeToLinearHeading(new Vector2d(-42,25),0)
-                        .waitSeconds(2)
-                .splineToLinearHeading(new Pose2d(-25,10,0),0)
-                .splineToLinearHeading(new Pose2d(15,10,0),0)
-                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
-                .waitSeconds(0.4)
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, -61, Math.PI / 2))
+                .strafeToLinearHeading(new Vector2d(-34, -35), Math.PI / 2)// PRIMUL PIXEL
+                .strafeToLinearHeading(new Vector2d(-57.5, -35.5), 0)
+                .waitSeconds(0.2)
+                .strafeToLinearHeading(new Vector2d(-50, -20), 0)
+                .splineToLinearHeading(new Pose2d(-25, -10, 0), 0)
+                .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
+                .splineToLinearHeading(new Pose2d(49, -36, 0), 0.9) // AL DOILEA PIXEL
+                .waitSeconds(0.2)
                 .setReversed(true)
-                .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
-                .splineToLinearHeading(new Pose2d(-47 ,16,0),new Rotation2d(0,0))//x adevarat este -57.5
-                .waitSeconds(1)
-//                .strafeTo(new Vector2d(-35,10))
-//                        .splineTo(new Vector2d(15,10),1)
-//                .setReversed(true)
-//                .splineToLinearHeading(new Pose2d(-35,10,0),0)
-//                .splineToLinearHeading(new Pose2d(-58,12,0),0)
-//                .splineToLinearHeading(new Pose2d(20,10,0),1)
-//                .splineToLinearHeading(new Pose2d(15,10,0),-0.75)
-//                .splineToLinearHeading(new Pose2d(-58,12,0),0)
+                .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+                .splineToLinearHeading(new Pose2d(-42, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                .waitSeconds(0.2)
 
 
-
-//                .strafeToLinearHeading(new Vector2d(-46, 11),Math.PI/2)
-//                .strafeToLinearHeading(stackFrontV, 0)
-//                .strafeToLinearHeading(new Vector2d(20, 10), Math.toRadians(42))
                 .build());
 
+        //Rosu Dep dr
+//         strafeToLinearHeading(new Vector2d(-34, -35),-Math.PI / 2)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(-57.5, -35.5),0)
+//                .waitSeconds(0.2)
+//                .strafeToLinearHeading(new Vector2d(-50,-20),0)
+//                .splineToLinearHeading(new Pose2d(-25,-10,0),0)
+//                .splineToLinearHeading(new Pose2d(15,-10,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30,-20,0),new Rotation2d(-0.75,0.75))
+//                .splineToLinearHeading(new Pose2d(-42 ,-13,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,-20,0),new Rotation2d(-0.75,0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,-12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
 
+        //Albastru dep stanga
+
+//          .strafeToLinearHeading(new Vector2d(-34, 35),-Math.PI / 2)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(-57.5, 35.5),0)
+//                .waitSeconds(0.2)
+//                .strafeToLinearHeading(new Vector2d(-50,20),0)
+//                .splineToLinearHeading(new Pose2d(-25,10,0),0)
+//                .splineToLinearHeading(new Pose2d(15,10,0),0)
+//                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
+//                .splineToLinearHeading(new Pose2d(-42 ,13,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+
+        //Albastru dep dreapta
+//        .strafeToLinearHeading(new Vector2d(-57.5, 35.5),-Math.PI / 2)// PRIMUL PIXEL
+//                .waitSeconds(0.2)
+//                .strafeToLinearHeading(new Vector2d(-50,20),0)
+//                .splineToLinearHeading(new Pose2d(-25,10,0),0)
+//                .splineToLinearHeading(new Pose2d(15,10,0),0)
+//                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30,20,0),new Rotation2d(-0.75,-0.75))
+//                .splineToLinearHeading(new Pose2d(-42 ,13,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+
+
+        //La Albastru aproape beginPos  =  new Pose2d(15, 61, -Math.PI / 2)
+        //Albastru Aproape stanga
+//          .strafeToLinearHeading(new Vector2d(50, 36), 0) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, 20, 0), new Rotation2d(-0.75, -0.75))
+//                .splineToLinearHeading(new Pose2d(-56, 13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+
+
+        //Albastru Aproape mij
+//         .strafeToLinearHeading(new Vector2d(15, 34.5), 0)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(50, 36), 0) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, 20, 0), new Rotation2d(-0.75, -0.75))
+//                .splineToLinearHeading(new Pose2d(-56, 13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+
+        //Albastru Aproape dreapta
+//         .strafeToLinearHeading(new Vector2d(10, 36.5), Math.PI / 2)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(50, 36), 0) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, 20, 0), new Rotation2d(-0.75, -0.75))
+//                .splineToLinearHeading(new Pose2d(-56, 13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,20,0),new Rotation2d(-0.75,-0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+
+
+//
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
                 .setDarkMode(true)
@@ -75,4 +161,5 @@ public class MeepMeepTesting {
                 .addEntity(myBot)
                 .start();
     }
+
 }
