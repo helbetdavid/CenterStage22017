@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 public class Localizare extends LinearOpMode {
 
     public static final double distBoardWallX = 9.8425; // inch - arpox 25 centimetri
-    public static final double distBoardWallY = 34; // inch - arpox 25 centimetri
+    public static final double distBoardWallY = 34; // inch - arpox ?? centimetri
     public static  double distCamGrob = 5.3992; // inch - arpox 16 centimetri
 
     public static double correctdX = NULL;

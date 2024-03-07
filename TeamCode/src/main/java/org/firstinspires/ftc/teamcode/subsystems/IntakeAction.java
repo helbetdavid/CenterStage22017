@@ -33,8 +33,14 @@ public class IntakeAction {
     double liftPos, pidf, motorRelativeError, rightLiftPower, leftLiftPower, fixer;
     private DcMotorEx intake  = null;
     private Servo leftIntakeSv = null;
+    private Servo usa = null;
+    public static double servo_usa_inchis= 0.5;
+    public static double servo_usa_deshis= 0.3;
     private DcMotorEx banda = null;
     private Servo rightIntakeSv = null;
+    private Servo pixelInit = null;
+    public static double servo_pixel_sus= 0.4;
+    public static double servo_pixel_jos = 0.91;
     ElapsedTime timer = new ElapsedTime();
 
 
@@ -44,11 +50,13 @@ public class IntakeAction {
         intake = hwmap.get(DcMotorEx.class, "intake");
         rightIntakeSv = hwmap.get(Servo.class, "rightIntakeSv");
         leftIntakeSv = hwmap.get(Servo.class, "leftIntakeSv");
+        usa = hwmap.get(Servo.class, "Usa");
 
         banda =hwmap.get(DcMotorEx.class, "banda");
 
         rightLift = hwmap.get(DcMotorEx.class, "rightLift");
         leftLift = hwmap.get(DcMotorEx.class, "leftLift");
+        pixelInit = hwmap.get(Servo.class, "PixelStartSv");
 
         leftLift.setDirection(DcMotorSimple.Direction.REVERSE);
         controller.setPIDF(p, i, d, f);
@@ -154,6 +162,38 @@ public class IntakeAction {
             return false;
         }
     }
+    public class SetUsaOpen implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            usa.setPosition(servo_usa_deshis);
+            return false;
+        }
+    }
+    public class SetUsaClose implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            usa.setPosition(servo_usa_inchis);
+            return false;
+        }
+    }
+    public class SetLatSus implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            pixelInit.setPosition(servo_pixel_sus);
+            return false;
+        }
+    }
+    public class SetLatJos implements Action{
+
+        @Override
+        public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+            pixelInit.setPosition(servo_pixel_sus);
+            return false;
+        }
+    }
 
     public Action Start(){
         return new IntakeStart();
@@ -172,6 +212,10 @@ public class IntakeAction {
     public Action setTargetLow(){return new SetTargetLow();}
     public Action setTargetMid(){return new SetTargetMid();}
     public Action setTargetMigh(){return new SetTargetHigh();}
+    public Action setUsaOpen(){return new SetUsaOpen();}
+    public Action setUsaClose(){return new SetUsaClose();}
+    public Action setLatSus(){return new SetLatSus();}
+    public Action setLatJos(){return new SetLatJos();}
 
 
 

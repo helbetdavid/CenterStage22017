@@ -28,6 +28,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
 
 @TeleOp
+@Config
 public class Manual1 extends LinearOpMode {
     Gamepad currentGamepad1 = new Gamepad();
     Gamepad currentGamepad2 = new Gamepad();
@@ -50,6 +51,7 @@ public class Manual1 extends LinearOpMode {
     }
 
     RobotState robotState = RobotState.START;
+    public static double servo_pixel_sus= 0.4;
 
     public static double IntakeLowSvPos = 0.56;
     public static double IntakeMidSvPos = 0.35;
@@ -57,14 +59,18 @@ public class Manual1 extends LinearOpMode {
     public static double LiftHighSvPos = 0.99;
     public static double minDistnace = 60;
     public static double servo_usa_inchis= 0.5;
-    public static double servo_usa_deshis= 0.3;
+    public static double servo_usa_deshis= 0.2;
+    public static double aveonZboara= 0.5;
+    public static double aveonInchide= 0.2;
+
     public static double vitBanda = 1;
     public static int pixel = 0;
     public static int ture = 0;
+    public static boolean onOffBanda = false;
     public int dom2=1;
 
     ElapsedTime timer = new ElapsedTime();
-    ElapsedTime aveon = new ElapsedTime();
+    ElapsedTime aveonRes = new ElapsedTime();
 
     ElapsedTime butonUsaCutie = new ElapsedTime();
 
@@ -94,7 +100,8 @@ public class Manual1 extends LinearOpMode {
         Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
         Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
 
-//        Servo aveon = hardwareMap.get(Servo.class, "aveon");
+        Servo aveon = hardwareMap.get(Servo.class, "aveon");
+        Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
 
         //Agatat
         CRServo PullupServo = hardwareMap.get(CRServo.class, "PullupServo");
@@ -125,6 +132,7 @@ public class Manual1 extends LinearOpMode {
 
         leftIntakeSv.setPosition(0.1);
         rightIntakeSv.setPosition(0.1);
+        pixelInit.setPosition(servo_pixel_sus);
 
         //Pozitie initiala
         MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(61, -61.5, 0));
@@ -151,25 +159,25 @@ public class Manual1 extends LinearOpMode {
 
             switch (robotState) {
                 case START:
-                    usa.setPosition(servo_usa_inchis);
+//                    usa.setPosition(servo_usa_inchis);
                     intake.setPower(0);
-                    banda.setPower(0);
+//                    banda.setPower(0);
                     target = 0;
                     leftIntakeSv.setPosition(IntakeMidSvPos);
                     rightIntakeSv.setPosition(IntakeMidSvPos);
                     usa.setPosition(servo_usa_inchis);
                     break;
                 case COLLECTING:
-                    usa.setPosition(servo_usa_inchis);
+//                    usa.setPosition(servo_usa_inchis);
                     leftIntakeSv.setPosition(IntakeLowSvPos);
                     rightIntakeSv.setPosition(IntakeLowSvPos);
                     intake.setPower(1);
                     banda.setPower(vitBanda);
                     break;
                 case SCORING:
-                    usa.setPosition(servo_usa_inchis);
+//                    usa.setPosition(servo_usa_inchis);
                     intake.setPower(0);
-                    usa.setPosition(servo_usa_inchis);
+//                    usa.setPosition(servo_usa_inchis);
 
                     target = (int) (2500*coborat);
 
@@ -180,7 +188,7 @@ public class Manual1 extends LinearOpMode {
                     break;
 
                 case RETRACTING:
-                    usa.setPosition(servo_usa_inchis);
+//                    usa.setPosition(servo_usa_inchis);
                     if (liftPos <= 25) {
                         robotState = RobotState.START;
                     }
@@ -212,6 +220,13 @@ public class Manual1 extends LinearOpMode {
                 target = 0;
                 robotState = RobotState.RETRACTING;
             }
+            if (gamepad2.right_bumper) {
+                onOffBanda=!onOffBanda;
+            }
+            if(onOffBanda){
+                banda.setPower(0.8);
+            }
+            else banda.setPower(0);
 
             //            if (Dist.getDistance(DistanceUnit.CM) < minDistnace && y>0) y = 0;
 
@@ -250,11 +265,12 @@ public class Manual1 extends LinearOpMode {
             }
 
             if (gamepad1.left_bumper){
-                aveon.reset();
+                aveon.setPosition(aveonZboara);
+                aveonRes.reset();
 //                Aveon.setPower(1);
             }
-            if(aveon.seconds()>1.8){
-//                Aveon.setPower(0);
+            if(aveonRes.seconds()>1.8){
+               aveon.setPosition(aveonInchide);
             }
 
 //            if (gamepad1.x) {
@@ -273,12 +289,12 @@ public class Manual1 extends LinearOpMode {
 
 
 
-            if(gamepad2.left_bumper && robotState== RobotState.SCORING) {
+            if(gamepad2.left_bumper && robotState== RobotState.SCORING && liftPos>400) {
                 butonUsaCutie.reset();
                 usa.setPosition(servo_usa_deshis);
             }
 
-            if(butonUsaCutie.seconds()>= 1.5 ) usa.setPosition(servo_usa_inchis);
+            if(liftPos<400 ||butonUsaCutie.seconds()>1.5 ) usa.setPosition(servo_usa_inchis);
 
 
 
