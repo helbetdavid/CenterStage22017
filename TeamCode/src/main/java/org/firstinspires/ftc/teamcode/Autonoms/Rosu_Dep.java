@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.Autonoms;
 import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -32,7 +31,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipAlbastru;
+import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipRosuAp;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
 import org.firstinspires.ftc.teamcode.Testing.Distractie;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -44,19 +43,32 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
-@Config
-public class AlbastruDep extends LinearOpMode {
+public class Rosu_Dep extends LinearOpMode {
 
     public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
             RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
     public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
-    Pose2d beginPose = new Pose2d(-38, 61, -Math.PI / 2);
+    Pose2d beginPose = new Pose2d(-38, -61, Math.PI / 2);
     IMU imu;
+
+//    public class Drive implements Action{
+//        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+//
+//        public boolean run(@NonNull TelemetryPacket packet) {
+//            drive.updatePoseEstimate();
+//            return false;
+//        }
+//
+//
+//    }
+//    public Action panaMea(){
+//        return new Drive();
+//    }
+
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
-
     public static double servo_pixel_sus = 0.4;
     public static double servo_pixel_jos = 0.97;
     public static double servo_intake_pos = 0.44;
@@ -64,8 +76,6 @@ public class AlbastruDep extends LinearOpMode {
     public static double servo_usa_deshis = 0.3;
     public static int numaratoare = 0;
 
-    public static boolean dat_dru = false;
-    //maxim 0.5= pozitia sus 1=pozitia jos
 
     public enum StackPixel {
         pixelStackFront,
@@ -75,7 +85,7 @@ public class AlbastruDep extends LinearOpMode {
 
     public StackPixel stackPixel;
     private OpenCvCamera controlHubCam;  // Use OpenCvCamera class from FTC SDK
-    private static volatile OpenCvPipAlbastru.detectie nou;
+    private static volatile OpenCvPipRosuAp.detectie nou;
 
     Action pixelToBoardNT, boardToMij, exactBoard, pixelStack, pixelToPreg, mijStackPreg, goToMij, stackToMijBetter, parking, boardToMijCorrected;
 
@@ -83,29 +93,12 @@ public class AlbastruDep extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-
         stackPixel = StackPixel.pixelStackFront;
-
-        Lift lift = new Lift();
-        Movement movement = new Movement();
-        Intake intake = new Intake();
-        IntakeAction intakenou = new IntakeAction(hardwareMap);
-
-        lift.init(hardwareMap);
-        movement.init(hardwareMap);
-        intake.init(hardwareMap);
 
         DistanceSensor DistSpateSt = hardwareMap.get(DistanceSensor.class, "DistSpateSt");
         Rev2mDistanceSensor sensorTimeOfFlight = (Rev2mDistanceSensor) DistSpateSt;
         DistanceSensor DistSpateDr = hardwareMap.get(DistanceSensor.class, "DistSpateDr");
         Rev2mDistanceSensor sensorTimeOfFlight1 = (Rev2mDistanceSensor) DistSpateDr;
-
-
-        Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
-        Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
-        Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
-        Servo ServoUsa = hardwareMap.get(Servo.class, "Usa");
-
 
         imu = hardwareMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
@@ -115,27 +108,35 @@ public class AlbastruDep extends LinearOpMode {
 
         //albastru dep
 
-        Pose2d almostBoard = new Pose2d(48, 36, 0);
-        Vector2d almostBoardV = new Vector2d(48, 36);
-        Pose2d boardMij = new Pose2d(51.5, 36, 0);
-        Vector2d boardMijV = new Vector2d(51.5, 36);
-        Pose2d boardSt = new Pose2d(51.5, 41, 0);
-        Vector2d boardStV = new Vector2d(51.5, 41);
-        Pose2d boardDr = new Pose2d(51.5, 29, 0);
-        Vector2d boardDrV = new Vector2d(51.5, 29);
-        Pose2d mij = new Pose2d(11, 15, Math.PI);// y era y=17
-        Vector2d mijV = new Vector2d(11, 14);
-        Pose2d stackFront = new Pose2d(-60, 14, 0);
-        Vector2d stackFrontV = new Vector2d(-59.5, 14);
-        Pose2d stackMid = new Pose2d(-58, 23.5, 0);
-        Vector2d stackMidV = new Vector2d(-58, 23.5);
-        Pose2d stackFar = new Pose2d(-58, 35.5, 0);
-        Vector2d stackFarV = new Vector2d(-59, 35.5);
-        Pose2d stackPreg = new Pose2d(-40, 14, 0);
-        Vector2d stackPregV = new Vector2d(-40, 14);
+        Pose2d almostBoard = new Pose2d(48, -36, 0);
+        Vector2d almostBoardV = new Vector2d(48, - 36);
+        Pose2d boardMij = new Pose2d(53, -32, 0);
+        Vector2d boardMijV = new Vector2d(53, -32);
+        Pose2d boardSt = new Pose2d(53, -39, 0);
+        Vector2d boardStV = new Vector2d(53, -39);
+        Pose2d boardDr = new Pose2d(53, -27, 0);
+        Vector2d boardDrV = new Vector2d(53, -27);
+        Pose2d mij = new Pose2d(11, -9, Math.PI);
+        Vector2d mijV = new Vector2d(11, -11);
+        Pose2d stackFront = new Pose2d(-58, -11, 0);
+        Vector2d stackFrontV = new Vector2d(-58, -11.25);
+        Pose2d stackMid = new Pose2d(-58, -23.5, 0);
+        Vector2d stackMidV = new Vector2d(-58, -23.5);
+        Pose2d stackFar = new Pose2d(-58, -42, Math.PI/9);
+        Vector2d stackFarV = new Vector2d(-58, -35.5);
+        Pose2d stackPreg = new Pose2d(-40, -11, 0);
+        Vector2d stackPregV = new Vector2d(-40, -11.25);
         Vector2d caz = null;
 
+
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
+
+
+
+        Lift lift = new Lift();
+        Movement movement = new Movement();
+        Intake intake = new Intake();
+        IntakeAction intakenou = new IntakeAction(hardwareMap);
 
         DcMotor leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         DcMotor leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
@@ -143,6 +144,17 @@ public class AlbastruDep extends LinearOpMode {
         DcMotor rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         DcMotor banda = hardwareMap.get(DcMotorEx.class, "banda");
         DcMotor intake1 = hardwareMap.get(DcMotorEx.class, "intake");
+
+
+        lift.init(hardwareMap);
+        movement.init(hardwareMap);
+        intake.init(hardwareMap);
+
+
+        Servo rightIntakeSv = hardwareMap.get(Servo.class, "rightIntakeSv");
+        Servo leftIntakeSv = hardwareMap.get(Servo.class, "leftIntakeSv");
+        Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
+        Servo ServoUsa = hardwareMap.get(Servo.class, "Usa");
 
         initOpenCV(telemetry);
         FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -153,37 +165,27 @@ public class AlbastruDep extends LinearOpMode {
         v[1] = 0;
         v[2] = 0;
         v[3] = 0;
-        ElapsedTime pixel = new ElapsedTime();
-        ElapsedTime pixel2 = new ElapsedTime();
-        pixel.startTime();
-        pixel2.startTime();
+
         while (opModeInInit() && !isStopRequested()) {
-            if (pixel.seconds() > 1) {
-                nou = OpenCvPipAlbastru.getAnalysis();
-                if (nou == OpenCvPipAlbastru.detectie.Dreapta) v[1]++;
-                else if (nou == OpenCvPipAlbastru.detectie.Stanga) v[2]++;
-                else v[3]++;
-                pixel.reset();
-            }
-            if(pixel2.seconds() > 5){
-                v[1]=0;
-                v[2]=0;
-                v[3]=0;
-                pixel2.reset();
-            }
-            pixelInit.setPosition(servo_pixel_jos);
+            nou = OpenCvPipRosuAp.getAnalysis();
+            if (nou == OpenCvPipRosuAp.detectie.Dreapta) v[1]++;
+            else if(nou==null);
+            else if (nou == OpenCvPipRosuAp.detectie.Stanga) v[2]++;
+            else v[3]++;
             intake.intakePos(0.1);
-            ServoUsa.setPosition(servo_usa_inchis);
             telemetry.addData("Detect", nou);
+            telemetry.addData("Dreapta", v[1]);
+            telemetry.addData("Stanga", v[2]);
+            telemetry.addData("Mijloc", v[3]);
             telemetry.update();
         }
-
         controlHubCam.stopStreaming();
 
 
         waitForStart();
 
         if (isStopRequested()) return;
+
 
         if (opModeIsActive()) {
             ElapsedTime run = new ElapsedTime();
@@ -195,37 +197,40 @@ public class AlbastruDep extends LinearOpMode {
             telemetry.addData("Mijloc", v[3]);
             telemetry.addData("x", drive.pose.position.x);
             telemetry.addData("y", drive.pose.position.y);
+//            telemetry.addData("sdfhdfh", drive.updatePoseEstimate());
             telemetry.addData("heading", Math.toDegrees(drive.pose.heading.toDouble()));
-            if (nou == OpenCvPipAlbastru.detectie.Dreapta) telemetry.addLine("Dreapta");
-            else if (nou == OpenCvPipAlbastru.detectie.Stanga) telemetry.addLine("Stanga");
+            if (nou == OpenCvPipRosuAp.detectie.Dreapta) telemetry.addLine("Dreapta");
+            else if (nou == OpenCvPipRosuAp.detectie.Stanga) telemetry.addLine("Stanga");
             else telemetry.addLine("Mijloc");
             telemetry.update();
 
 
+            // DE VAZUT REGIO
             if(v[3]>v[1] && v[3]>v[1]){ //Mijloc
-                caz = new Vector2d(-39,20);
+                caz = new Vector2d(-39,-20);
             }
             else if(v[2]>v[1] && v[2]>v[3]){ //Stanga
                 //                Vector2d caz = new Vector2d()
             }
             else{ //Dreapta
-                caz = new Vector2d(-42,22);
+                caz = new Vector2d(-42,-22);
             }
+
             Actions.runBlocking(
                     new ParallelAction(
                             drive.actionBuilder(beginPose)
-                                    .strafeToLinearHeading(new Vector2d(-57.7, 35.5), 0)// PRIMUL PIXEL
+                                    .strafeToLinearHeading(new Vector2d(-57.7, -35.5), 0)// PRIMUL PIXEL
                                     .waitSeconds(0.15)
                                     .strafeToLinearHeading(caz, 0)
                                     .stopAndAdd(intakenou.setLatSus())
-                                    .splineToLinearHeading(new Pose2d(-25, 10, 0), 0)
-                                    .splineToLinearHeading(new Pose2d(15, 10, 0), 0)
-                                    .splineToLinearHeading(new Pose2d(49.5, 36, 0), 0.9)
+                                    .splineToLinearHeading(new Pose2d(-25, -10, 0), 0)
+                                    .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
+                                    .splineToLinearHeading(new Pose2d(49.5, -36, 0), -0.9)
                                     .stopAndAdd(intakenou.setUsaOpen())// AL DOILEA PIXEL
                                     .waitSeconds(0.1)
                                     .setReversed(true)
-                                    .splineToLinearHeading(new Pose2d(30, 20, 0), new Rotation2d(-0.75, -0.75))
-                                    .splineToLinearHeading(new Pose2d(-45, 16, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                                    .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+                                    .splineToLinearHeading(new Pose2d(-45, -16, 0), new Rotation2d(0, 0))//x adevarat este -57.5
                                     .waitSeconds(1)
                                     .build()
                             , new InstantAction(() -> {
@@ -233,7 +238,7 @@ public class AlbastruDep extends LinearOpMode {
                     }),
                             (telemetryPacket) -> {
                                 lift.update();
-                                if (drive.pose.position.x < -35 && drive.pose.position.y < 50) {
+                                if (drive.pose.position.x < -35 && drive.pose.position.y > -50) {
                                     leftIntakeSv.setPosition(servo_intake_pos);
                                     rightIntakeSv.setPosition(servo_intake_pos);
                                     banda.setPower(0.7);
@@ -263,17 +268,17 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
             );
-            drive.pose = new Pose2d(-60, 10, Math.toRadians(drive.pose.heading.toDouble()));
+            drive.pose = new Pose2d(-60, -10, Math.toRadians(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(
                     new ParallelAction(
                             drive.actionBuilder(drive.pose)
-                                    .splineToLinearHeading(new Pose2d(15, 10, 0), 0)
-                                    .splineToLinearHeading(new Pose2d(51, 36, 0), 0.9) // AL DOILEA PIXEL
+                                    .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
+                                    .splineToLinearHeading(new Pose2d(51, -36, 0), -0.9) // AL DOILEA PIXEL
                                     .waitSeconds(0.4)
                                     .setReversed(true)
-                                    .splineToLinearHeading(new Pose2d(35, 20, 0), new Rotation2d(-0.75, -0.75))
-                                    .splineToLinearHeading(new Pose2d(-42.5, 14, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                                    .splineToLinearHeading(new Pose2d(35, -20, 0), new Rotation2d(-0.75, 0.75))
+                                    .splineToLinearHeading(new Pose2d(-42.5, -14, 0), new Rotation2d(0, 0))//x adevarat este -57.5
                                     .waitSeconds(1)
                                     .build()
                             , new InstantAction(() -> {
@@ -281,8 +286,6 @@ public class AlbastruDep extends LinearOpMode {
                     }),
                             (telemetryPacket) -> {
                                 lift.update();
-                                if (drive.pose.position.y < 20)
-                                    pixelInit.setPosition(servo_pixel_sus);
                                 if (drive.pose.position.x < -35) {
                                     leftIntakeSv.setPosition(servo_intake_pos + 0.06);
                                     rightIntakeSv.setPosition(servo_intake_pos + 0.06);
@@ -312,13 +315,13 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
             );
-            drive.pose = new Pose2d(-60, 11, Math.toRadians(drive.pose.heading.toDouble()));
+            drive.pose = new Pose2d(-60, -11, Math.toRadians(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(
                     new ParallelAction(
                             drive.actionBuilder(drive.pose)
-                                    .splineToLinearHeading(new Pose2d(15, 10, 0), 0)
-                                    .splineToLinearHeading(new Pose2d(51.5, 36, 0), 0.9) // AL DOILEA PIXEL
+                                    .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
+                                    .splineToLinearHeading(new Pose2d(51.5, -36, 0), -0.9) // AL DOILEA PIXEL
                                     .waitSeconds(0.4)
                                     .build()
                             , new InstantAction(() -> {
@@ -356,7 +359,10 @@ public class AlbastruDep extends LinearOpMode {
                     )
             );
             while (total.seconds() < 30) lift.update();
+
+
         }
+
     }
 
     private void initOpenCV(Telemetry telemetry) {
@@ -371,9 +377,9 @@ public class AlbastruDep extends LinearOpMode {
                 hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
 
 
-        OpenCvPipAlbastru OpenCvPipAlbastru = new OpenCvPipAlbastru(telemetry);
+        OpenCvPipRosuAp OpenCvPipRosuAp = new OpenCvPipRosuAp(telemetry);
 
-        controlHubCam.setPipeline(OpenCvPipAlbastru);
+        controlHubCam.setPipeline(OpenCvPipRosuAp);
         controlHubCam.openCameraDevice();
 
         controlHubCam.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
