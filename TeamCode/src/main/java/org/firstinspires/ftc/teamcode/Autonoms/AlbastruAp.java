@@ -1,36 +1,25 @@
-package org.firstinspires.ftc.teamcode.OpModes;
+package org.firstinspires.ftc.teamcode.Autonoms;
 
-
-import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
-import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.Pose2d;
-import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.OpenCv.OpenCvPipRosuAp;
 import org.firstinspires.ftc.teamcode.RR.MecanumDrive;
-import org.firstinspires.ftc.teamcode.Testing.Distractie;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Lift;
 import org.firstinspires.ftc.teamcode.subsystems.Movement;
@@ -39,7 +28,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
 @Autonomous
-public class Rosu_Dep extends LinearOpMode {
+public class AlbastruAp extends LinearOpMode {
 
     public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
             RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
@@ -47,21 +36,6 @@ public class Rosu_Dep extends LinearOpMode {
             RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
     Pose2d beginPose = new Pose2d(-38, -61, Math.PI / 2);
     IMU imu;
-
-//    public class Drive implements Action{
-//        MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-//
-//        public boolean run(@NonNull TelemetryPacket packet) {
-//            drive.updatePoseEstimate();
-//            return false;
-//        }
-//
-//
-//    }
-//    public Action panaMea(){
-//        return new Drive();
-//    }
-
 
     private static final int CAMERA_WIDTH = 1280;
     private static final int CAMERA_HEIGHT = 720;
@@ -115,8 +89,6 @@ public class Rosu_Dep extends LinearOpMode {
         Vector2d stackFarV = new Vector2d(-58, -35.5);
         Pose2d stackPreg = new Pose2d(-40, -11, 0);
         Vector2d stackPregV = new Vector2d(-40, -11.25);
-        Vector2d caz = null;
-
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -163,6 +135,11 @@ public class Rosu_Dep extends LinearOpMode {
         controlHubCam.stopStreaming();
 
 
+
+
+
+
+
         waitForStart();
 
         if (isStopRequested()) return;
@@ -181,18 +158,6 @@ public class Rosu_Dep extends LinearOpMode {
             else if (nou == OpenCvPipRosuAp.detectie.Stanga) telemetry.addLine("Stanga");
             else telemetry.addLine("Mijloc");
             telemetry.update();
-
-            if(v[3]>v[1] && v[3]>v[1]){ //Mijloc
-                caz = new Vector2d(-39,20);
-            }
-            else if(v[2]>v[1] && v[2]>v[3]){ //Stanga
-                //                Vector2d caz = new Vector2d()
-            }
-            else{ //Dreapta
-                caz = new Vector2d(-42,22);
-            }
-
-
 
         }
 
