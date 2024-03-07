@@ -35,22 +35,95 @@ public class MeepMeepTesting {
 //        Vector2d stackPregV = new Vector2d(-40, 11.25);
 
 
-        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(-38, -61, Math.PI / 2))
-                .strafeToLinearHeading(new Vector2d(-34, -35), Math.PI / 2)// PRIMUL PIXEL
-                .strafeToLinearHeading(new Vector2d(-57.5, -35.5), 0)
-                .waitSeconds(0.2)
-                .strafeToLinearHeading(new Vector2d(-50, -20), 0)
-                .splineToLinearHeading(new Pose2d(-25, -10, 0), 0)
-                .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
-                .splineToLinearHeading(new Pose2d(49, -36, 0), 0.9) // AL DOILEA PIXEL
+        myBot.runAction(myBot.getDrive().actionBuilder(new Pose2d(15, -61, Math.PI / 2))
+//                .strafeToLinearHeading(new Vector2d(-34, -35), Math.PI / 2)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(-57.5, -35.5), 0)
+//                .waitSeconds(0.2)
+//                .strafeToLinearHeading(new Vector2d(-50, -20), 0)
+//                .splineToLinearHeading(new Pose2d(-25, -10, 0), 0)
+//                .splineToLinearHeading(new Pose2d(15, -10, 0), 0)
+//                .splineToLinearHeading(new Pose2d(49, -36, 0), 0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+//                .splineToLinearHeading(new Pose2d(-42, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+                // AL DOILEA PIXEL
+
+                .strafeToLinearHeading(new Vector2d(10, -36.5), Math.PI / 2)// PRIMUL PIXEL
+
+                .strafeToLinearHeading(new Vector2d(50, -28), 0) // AL DOILEA PIXEL
                 .waitSeconds(0.2)
                 .setReversed(true)
                 .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
-                .splineToLinearHeading(new Pose2d(-42, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                .splineToLinearHeading(new Pose2d(-56, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
                 .waitSeconds(0.2)
-
-
+                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+                .splineToLinearHeading(new Pose2d(49,-28,0),0.9) // AL DOILEA PIXEL
+                .waitSeconds(0.2)
+                .setReversed(true)
+                .splineToLinearHeading(new Pose2d(35,-20,0),new Rotation2d(-0.75,0.75))
+                .splineToLinearHeading(new Pose2d(-56 ,-12,0),new Rotation2d(0,0))//x adevarat este -57.5
+                .waitSeconds(0.2)
+                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+                .splineToLinearHeading(new Pose2d(49,-28,0),0.9)
                 .build());
+
+
+        //Rosu apr stange
+//        .strafeToLinearHeading(new Vector2d(10, -36.5), Math.PI / 2)// PRIMUL PIXEL
+//
+//                .strafeToLinearHeading(new Vector2d(50, -28), 0) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+//                .splineToLinearHeading(new Pose2d(-56, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-28,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,-20,0),new Rotation2d(-0.75,0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,-12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-28,0),0.9)
+
+
+        //Rosu apr mij
+//        .strafeToLinearHeading(new Vector2d(15, -34.5), 0)// PRIMUL PIXEL
+//                .strafeToLinearHeading(new Vector2d(50, -36), 0) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+//                .splineToLinearHeading(new Pose2d(-56, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-36,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,-20,0),new Rotation2d(-0.75,0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,-12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-36,0),0.9)
+
+        //Rosu apr dr
+//         .strafeToLinearHeading(new Vector2d(50, -42), 0)
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(30, -20, 0), new Rotation2d(-0.75, 0.75))
+//                .splineToLinearHeading(new Pose2d(-56, -13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-42,0),0.9) // AL DOILEA PIXEL
+//                .waitSeconds(0.2)
+//                .setReversed(true)
+//                .splineToLinearHeading(new Pose2d(35,-20,0),new Rotation2d(-0.75,0.75))
+//                .splineToLinearHeading(new Pose2d(-56 ,-12,0),new Rotation2d(0,0))//x adevarat este -57.5
+//                .waitSeconds(0.2)
+//                .splineToLinearHeading(new Pose2d(15,-13,0),0)
+//                .splineToLinearHeading(new Pose2d(49,-42,0),0.9)
 
         //Rosu Dep dr
 //         strafeToLinearHeading(new Vector2d(-34, -35),-Math.PI / 2)// PRIMUL PIXEL
