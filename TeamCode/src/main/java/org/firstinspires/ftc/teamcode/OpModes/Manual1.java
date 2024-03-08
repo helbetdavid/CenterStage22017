@@ -60,8 +60,10 @@ public class Manual1 extends LinearOpMode {
     public static double minDistnace = 60;
     public static double servo_usa_inchis= 0.5;
     public static double servo_usa_deshis= 0.2;
-    public static double aveonZboara= 0.5;
-    public static double aveonInchide= 0.2;
+    public static double aveonZboara= 0.75;
+    public static double aveonInchide= 0.55;
+    public static double sigurantaInchis = 0.54;
+    public static double sigutantaDeschis=0.62;
 
     public static double vitBanda = 1;
     public static int pixel = 0;
@@ -73,9 +75,11 @@ public class Manual1 extends LinearOpMode {
     ElapsedTime aveonRes = new ElapsedTime();
 
     ElapsedTime butonUsaCutie = new ElapsedTime();
+    ElapsedTime sigurantaTimp = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
+
 
         controller = new PIDFController(p, i, d, f);
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -102,6 +106,7 @@ public class Manual1 extends LinearOpMode {
 
         Servo aveon = hardwareMap.get(Servo.class, "aveon");
         Servo pixelInit = hardwareMap.get(Servo.class, "PixelStartSv");
+        Servo siguranta = hardwareMap.get(Servo.class,"siguranta");
 
         //Agatat
         CRServo PullupServo = hardwareMap.get(CRServo.class, "PullupServo");
@@ -139,6 +144,7 @@ public class Manual1 extends LinearOpMode {
 
 
         waitForStart();
+        sigurantaTimp.startTime();
 
         if (isStopRequested()) return;
         while (opModeIsActive() && !isStopRequested()) {
@@ -179,7 +185,7 @@ public class Manual1 extends LinearOpMode {
                     intake.setPower(0);
 //                    usa.setPosition(servo_usa_inchis);
 
-                    target = (int) (2500*coborat);
+                    target = (int) (2800*coborat);
 
                     if (timer.seconds() >= 0.8) {
                         leftIntakeSv.setPosition(IntakeMidSvPos);
@@ -224,7 +230,7 @@ public class Manual1 extends LinearOpMode {
                 onOffBanda=!onOffBanda;
             }
             if(onOffBanda){
-                banda.setPower(0.8);
+                banda.setPower(vitBanda);
             }
             else banda.setPower(0);
 
@@ -247,6 +253,10 @@ public class Manual1 extends LinearOpMode {
 
 
             double ServVit = gamepad2.left_stick_y;
+            if(gamepad2.left_stick_y>0.1 && sigurantaTimp.seconds()>90 || gamepad2.dpad_up){
+                siguranta.setPosition(sigutantaDeschis);
+            }
+//            else siguranta.setPosition(sigurantaInchis);
             PullupServo.setPower(ServVit);
 
 

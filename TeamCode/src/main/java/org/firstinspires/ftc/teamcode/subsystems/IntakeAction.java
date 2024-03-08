@@ -35,7 +35,7 @@ public class IntakeAction {
     private Servo leftIntakeSv = null;
     private Servo usa = null;
     public static double servo_usa_inchis= 0.5;
-    public static double servo_usa_deshis= 0.3;
+    public static double servo_usa_deshis= 0.2;
     private DcMotorEx banda = null;
     private Servo rightIntakeSv = null;
     private Servo pixelInit = null;

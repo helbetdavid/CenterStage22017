@@ -25,8 +25,8 @@ public class OpenCvPipRosu extends OpenCvPipeline {
     static final Scalar Green = new Scalar(0, 255, 0);
 
     //Colturile din stanga sus ale dreptunghiurilor
-    public static Point DREPTUNGHI_2_COLT_STANGA_SUS = new Point(440, 275);
-    public static Point DREPTUNGHI_3_COLT_STANGA_SUS = new Point(950, 300);
+    public static Point DREPTUNGHI_2_COLT_STANGA_SUS = new Point(400, 520);
+    public static Point DREPTUNGHI_3_COLT_STANGA_SUS = new Point(950, 545);
     public static int REGION_WIDTH = 125;
     public static int REGION_HEIGHT = 125;
 
@@ -46,7 +46,7 @@ public class OpenCvPipRosu extends OpenCvPipeline {
             DREPTUNGHI_3_COLT_STANGA_SUS.x + REGION_WIDTH,
             DREPTUNGHI_3_COLT_STANGA_SUS.y + REGION_HEIGHT);
 
-    public static double threshold = 300000;
+    public static double threshold = 250000;
 
     public void draw(detectie pozitiecurenta, Mat input, Mat mat, Point sus, Point jos){
         Scalar sum = Core.sumElems(mat);

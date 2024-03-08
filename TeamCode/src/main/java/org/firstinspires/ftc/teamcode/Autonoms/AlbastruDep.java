@@ -49,10 +49,11 @@ public class AlbastruDep extends LinearOpMode {
     private static final int CAMERA_HEIGHT = 720;
 
     public static double servo_pixel_sus = 0.4;
-    public static double servo_pixel_jos = 0.97;
+    public static double servo_pixel_jos = 0.96;
     public static double servo_intake_pos = 0.44;
     public static double servo_usa_inchis = 0.5;
     public static double servo_usa_deshis = 0.3;
+    public static double heading;
     public static int numaratoare = 0;
 
     public static boolean dat_dru = false;
@@ -106,24 +107,7 @@ public class AlbastruDep extends LinearOpMode {
 
         //albastru dep
 
-        Pose2d almostBoard = new Pose2d(48, 36, 0);
-        Vector2d almostBoardV = new Vector2d(48, 36);
-        Pose2d boardMij = new Pose2d(51.5, 36, 0);
-        Vector2d boardMijV = new Vector2d(51.5, 36);
-        Pose2d boardSt = new Pose2d(51.5, 41, 0);
-        Vector2d boardStV = new Vector2d(51.5, 41);
-        Pose2d boardDr = new Pose2d(51.5, 29, 0);
-        Vector2d boardDrV = new Vector2d(51.5, 29);
-        Pose2d mij = new Pose2d(11, 15, Math.PI);// y era y=17
-        Vector2d mijV = new Vector2d(11, 14);
-        Pose2d stackFront = new Pose2d(-60, 14, 0);
-        Vector2d stackFrontV = new Vector2d(-59.5, 14);
-        Pose2d stackMid = new Pose2d(-58, 23.5, 0);
-        Vector2d stackMidV = new Vector2d(-58, 23.5);
-        Pose2d stackFar = new Pose2d(-58, 35.5, 0);
-        Vector2d stackFarV = new Vector2d(-59, 35.5);
-        Pose2d stackPreg = new Pose2d(-40, 14, 0);
-        Vector2d stackPregV = new Vector2d(-40, 14);
+
         Vector2d caz = null;
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -162,6 +146,9 @@ public class AlbastruDep extends LinearOpMode {
                 v[3]=0;
                 pixel2.reset();
             }
+            telemetry.addData("Dreapta", v[1]);
+            telemetry.addData("Stanga", v[2]);
+            telemetry.addData("Mijloc", v[3]);
             pixelInit.setPosition(servo_pixel_jos);
             intake.intakePos(0.1);
             ServoUsa.setPosition(servo_usa_inchis);
@@ -170,7 +157,6 @@ public class AlbastruDep extends LinearOpMode {
         }
 
         controlHubCam.stopStreaming();
-
 
         waitForStart();
 
@@ -193,30 +179,35 @@ public class AlbastruDep extends LinearOpMode {
             telemetry.update();
 
 
-            if(v[3]>v[1] && v[3]>v[1]){ //Mijloc
-                caz = new Vector2d(-39,20);
+            if(v[3]>v[1] && v[3]>v[2]){ //Mijloc
+                caz = new Vector2d(-33,13);
+                heading=0;
             }
             else if(v[2]>v[1] && v[2]>v[3]){ //Stanga
-                //                Vector2d caz = new Vector2d()
+                caz = new Vector2d(-33,23);
+                heading = -Math.PI/2;
             }
             else{ //Dreapta
-                caz = new Vector2d(-42,22);
+                caz = new Vector2d(-41,23);
+                heading = 0;
             }
             Actions.runBlocking(
                     new ParallelAction(
                             drive.actionBuilder(beginPose)
-                                    .strafeToLinearHeading(new Vector2d(-57.7, 35.5), 0)// PRIMUL PIXEL
-                                    .waitSeconds(0.15)
-                                    .strafeToLinearHeading(caz, 0)
+                                    .strafeToLinearHeading(new Vector2d(-58.5, 35.5), 0)// PRIMUL PIXEL
+                                    .waitSeconds(0.2)
+                                    .strafeToLinearHeading(caz, heading)
                                     .stopAndAdd(intakenou.setLatSus())
+                                    .setReversed(true)
+                                    .splineToLinearHeading(new Pose2d(-47,12,0),0)
                                     .splineToLinearHeading(new Pose2d(-25, 10, 0), 0)
                                     .splineToLinearHeading(new Pose2d(15, 10, 0), 0)
-                                    .splineToLinearHeading(new Pose2d(49.5, 36, 0), 0.9)
+                                    .splineToLinearHeading(new Pose2d(54, 34, 0), 0.9)//BACKBOARD
                                     .stopAndAdd(intakenou.setUsaOpen())// AL DOILEA PIXEL
                                     .waitSeconds(0.1)
                                     .setReversed(true)
                                     .splineToLinearHeading(new Pose2d(30, 20, 0), new Rotation2d(-0.75, -0.75))
-                                    .splineToLinearHeading(new Pose2d(-45, 16, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                                    .splineToLinearHeading(new Pose2d(-58, 13, 0), new Rotation2d(0, 0))//x adevarat este -57.5
                                     .waitSeconds(1)
                                     .build()
                             , new InstantAction(() -> {
@@ -224,7 +215,7 @@ public class AlbastruDep extends LinearOpMode {
                     }),
                             (telemetryPacket) -> {
                                 lift.update();
-                                if (drive.pose.position.x < -35 && drive.pose.position.y < 50) {
+                                if (drive.pose.position.x <-20 && drive.pose.position.y < 55) {
                                     leftIntakeSv.setPosition(servo_intake_pos);
                                     rightIntakeSv.setPosition(servo_intake_pos);
                                     banda.setPower(0.7);
@@ -254,7 +245,7 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
             );
-            drive.pose = new Pose2d(-60, 10, Math.toRadians(drive.pose.heading.toDouble()));
+            drive.pose = new Pose2d(-60, 14, Math.toRadians(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(
                     new ParallelAction(
@@ -264,7 +255,7 @@ public class AlbastruDep extends LinearOpMode {
                                     .waitSeconds(0.4)
                                     .setReversed(true)
                                     .splineToLinearHeading(new Pose2d(35, 20, 0), new Rotation2d(-0.75, -0.75))
-                                    .splineToLinearHeading(new Pose2d(-42.5, 14, 0), new Rotation2d(0, 0))//x adevarat este -57.5
+                                    .splineToLinearHeading(new Pose2d(-58, 14, 0), new Rotation2d(0, 0))//x adevarat este -57.5
                                     .waitSeconds(1)
                                     .build()
                             , new InstantAction(() -> {
@@ -303,7 +294,7 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
             );
-            drive.pose = new Pose2d(-60, 11, Math.toRadians(drive.pose.heading.toDouble()));
+            drive.pose = new Pose2d(-60, 13, Math.toRadians(drive.pose.heading.toDouble()));
 
             Actions.runBlocking(
                     new ParallelAction(
@@ -346,7 +337,7 @@ public class AlbastruDep extends LinearOpMode {
                             }
                     )
             );
-            while (total.seconds() < 30) lift.update();
+            while (total.seconds() < 30 && !isStopRequested()) lift.update();
         }
     }
 

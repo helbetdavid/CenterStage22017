@@ -89,71 +89,8 @@ public class Rosu_Ap extends LinearOpMode {
 
         //albastru dep
 
-        Pose2d almostBoard = new Pose2d(48, 36, 0);
-        Vector2d almostBoardV = new Vector2d(48, 36);
-        Pose2d boardMij = new Pose2d(53, 36, 0);
-        Vector2d boardMijV = new Vector2d(53, -36);
-        Pose2d boardSt = new Pose2d(53, -41, 0);
-        Vector2d boardStV = new Vector2d(53, -41);
-        Pose2d boardDr = new Pose2d(53, 29, 0);
-        Vector2d boardDrV = new Vector2d(53, 29);
-        Pose2d mij = new Pose2d(11, 11, Math.PI);
-        Vector2d mijV = new Vector2d(11, 11);
-        Pose2d stackFront = new Pose2d(-58, 11, 0);
-        Vector2d stackFrontV = new Vector2d(-58, 11.25);
-        Pose2d stackMid = new Pose2d(-58, 23.5, 0);
-        Vector2d stackMidV = new Vector2d(-58, 23.5);
-        Pose2d stackFar = new Pose2d(-58, 42, Math.PI/9);
-        Vector2d stackFarV = new Vector2d(-58, 35.5);
-        Pose2d stackPreg = new Pose2d(-40, 11, 0);
-        Vector2d stackPregV = new Vector2d(-40, 11.25);
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
-
-        goToMij = drive.actionBuilder(boardMij).strafeTo(new Vector2d(40, 12)).build();
-        boardToMijCorrected = drive.actionBuilder(almostBoard)
-                .strafeTo(new Vector2d(53, 36))
-                .build();
-        stackToMijBetter = drive.actionBuilder(stackFront)
-                .splineToLinearHeading(new Pose2d(48,36,0),0.75)
-                .build();
-
-        mijStackPreg = drive.actionBuilder(mij)
-                .strafeTo(stackPregV)
-                .turnTo(0)
-                .build();
-
-        switch (stackPixel) {
-            case pixelStackFar:
-                pixelStack = drive.actionBuilder(stackPreg)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackFar, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackFar)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackMid:
-                pixelStack = drive.actionBuilder(stackPreg)
-                        .setReversed(true)
-                        .splineToLinearHeading(stackMid, 3)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackMid)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-
-            case pixelStackFront:
-                pixelStack = drive.actionBuilder(stackPreg)
-//                        .turn(Math.PI)
-                        .strafeTo(stackFrontV)
-                        .build();
-                pixelToPreg = drive.actionBuilder(stackFront)
-                        .strafeTo(stackPregV)
-                        .build();
-                break;
-        }
 
 
         Lift lift = new Lift();
@@ -194,83 +131,7 @@ public class Rosu_Ap extends LinearOpMode {
 
 
 
-        if (v[1] > v[2] && v[1] > v[3]) {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeToLinearHeading(new Vector2d(31,-37 ),Math.PI*3/4-0.1)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(48,-36,Math.PI),-1)
-                    .turnTo(0)
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardStV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardDr)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardDr)
-                    .strafeTo(new Vector2d(42,-59))
-                    .strafeTo(new Vector2d(58,-59))
-                    .build();
-//            drive.updatePoseEstimate();
-        } else if (v[3] > v[1] && v[3] > v[2]) {
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .strafeToLinearHeading(new Vector2d(23,-30 ),-Math.PI)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(34,-30,Math.PI),0)
-                    .turnTo(0)
-//                    .strafeTo(new Vector2d(48,-36))
 
-                    .splineToLinearHeading(new Pose2d(48,-36,0),1)
-                    .build();
-            parking = drive.actionBuilder(boardMij)
-                    .strafeTo(new Vector2d(42,-59))
-                    .strafeTo(new Vector2d(58,-59))
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardMijV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardMij)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-//            drive.updatePoseEstimate();
-        } else {
-            telemetry.addLine("am ajuns aici");
-            telemetry.update();
-            pixelToBoardNT = drive.actionBuilder(beginPose)
-                    .splineTo(new Vector2d(7,-37),2)
-                    .setReversed(true)
-                    .splineToLinearHeading(new Pose2d(15,-44,Math.PI*3/4),1)
-
-                    .splineToLinearHeading(new Pose2d(48,-36,0),1)
-
-
-                    .build();
-//            drive.updatePoseEstimate();
-            exactBoard = drive.actionBuilder(almostBoard)
-                    .strafeTo(boardDrV)
-//                    .waitSeconds(3)
-                    .build();
-//            drive.updatePoseEstimate();
-            boardToMij = drive.actionBuilder(boardSt)
-                    .setReversed(true)
-                    .splineToLinearHeading(mij,-3)
-                    .build();
-            parking = drive.actionBuilder(boardSt)
-                    .strafeTo(new Vector2d(42,-59))
-                    .strafeTo(new Vector2d(58,-59))
-                    .build();
-//            drive.updatePoseEstimate();
-        }
 
 
 
